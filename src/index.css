@@ -443,6 +443,145 @@ button,
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
 
+/* Light Theme Styles - Gargantua Black Hole Aesthetic */
+.light {
+  /* Light theme base colors */
+  --light-bg: #fafafa;
+  --light-text: #1a1a1a;
+  --light-text-secondary: #4a4a4a;
+  --light-accent: #d97706;
+  --light-accent-hover: #b45309;
+}
+
+.light .glass-morphism-dark {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.light .glass-morphism {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  backdrop-filter: blur(15px);
+}
+
+.light .interstellar-text {
+  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 50%, #1a1a1a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.light .accretion-disk {
+  background: linear-gradient(135deg, #d97706, #b45309, #92400e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light .text-white {
+  color: var(--light-text) !important;
+}
+
+.light .text-white\/70 {
+  color: var(--light-text-secondary) !important;
+}
+
+.light .text-white\/80 {
+  color: var(--light-text-secondary) !important;
+}
+
+.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.light .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light .shadow-glow-lg {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 20px rgba(217, 119, 6, 0.1);
+}
+
+.light .shadow-glow-md {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), 0 0 15px rgba(217, 119, 6, 0.08);
+}
+
+/* Light theme event horizon effect */
+.light .event-horizon-hover:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Light theme glow effects */
+.light .glow-accretion {
+  color: var(--light-accent);
+  text-shadow: 0 0 10px rgba(217, 119, 6, 0.3);
+}
+
+/* Light theme navigation */
+.light nav {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid rgba(217, 119, 6, 0.1);
+}
+
+/* Light theme buttons */
+.light button {
+  color: var(--light-text);
+}
+
+.light .bg-orange-500 {
+  background-color: var(--light-accent) !important;
+}
+
+.light .bg-orange-500:hover {
+  background-color: var(--light-accent-hover) !important;
+}
+
+.light .text-orange-400 {
+  color: var(--light-accent) !important;
+}
+
+/* Light theme form inputs */
+.light input,
+.light textarea {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  color: var(--light-text);
+}
+
+.light input:focus,
+.light textarea:focus {
+  border-color: var(--light-accent);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+
+/* Light theme noise texture */
+.light .noise-texture {
+  background-image: none;
+}
+
+/* Light theme terminal */
+.light .glass-morphism-dark .text-green-400 {
+  color: #059669 !important;
+}
+
+.light .glass-morphism-dark .text-orange-400 {
+  color: var(--light-accent) !important;
+}
+
+/* Light theme skill bars */
+.light .bg-gradient-to-r {
+  background: linear-gradient(
+    to right,
+    var(--light-accent),
+    #f59e0b
+  ) !important;
+}
+
 /* Mobile optimizations */
 @media (max-width: 640px) {
   /* Prevent horizontal scroll */
