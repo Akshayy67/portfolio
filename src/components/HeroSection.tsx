@@ -103,64 +103,6 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 1, delay: 0.2 }}
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight">
-            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-2 sm:mb-4">
-              {/* Futuristic "A" Logo */}
-              <motion.div
-                className="relative flex items-center justify-center"
-                initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
-                animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.3,
-                  type: "spring",
-                  stiffness: 100,
-                }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              >
-                {/* Outer Glow Ring */}
-                <div className="absolute inset-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-gradient-to-r from-orange-400/30 to-orange-600/30 blur-lg animate-pulse" />
-
-                {/* Main Logo Container */}
-                <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-xl shadow-glow-lg flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                  {/* Inner Glow */}
-                  <div className="absolute inset-1 bg-gradient-to-br from-orange-300/50 to-transparent rounded-lg" />
-
-                  {/* Letter "A" */}
-                  <span className="relative text-black font-display font-black text-xl sm:text-2xl md:text-3xl lg:text-4xl text-shadow-soft select-none">
-                    A
-                  </span>
-
-                  {/* Corner Accent */}
-                  <div className="absolute top-1 right-1 w-2 h-2 bg-white/60 rounded-full" />
-                </div>
-
-                {/* Orbiting Particles */}
-                <motion.div
-                  className="absolute w-1 h-1 bg-orange-300 rounded-full"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  style={{
-                    transformOrigin: "0 0",
-                    x: 40,
-                    y: 40,
-                  }}
-                />
-                <motion.div
-                  className="absolute w-0.5 h-0.5 bg-white rounded-full"
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  style={{
-                    transformOrigin: "0 0",
-                    x: -35,
-                    y: -35,
-                  }}
-                />
-              </motion.div>
-            </div>
             <span className="text-white text-shadow-soft block sm:inline">
               Hi, I'm{" "}
             </span>
