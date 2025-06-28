@@ -313,7 +313,7 @@ Please reply directly to ${formData.email}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julubi Akshay - Resume</title>
+    <title>Akshay Juluri - Full Stack Developer Resume</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; color: #333; }
         .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
@@ -336,18 +336,24 @@ Please reply directly to ${formData.email}
 </head>
 <body>
     <div class="header">
-        <h1>JULUBI AKSHAY</h1>
+        <h1>AKSHAY JULURI</h1>
         <div class="contact-info">
-            📧 akshayjuluri6704@gmail.com | 📱 7382005522<br>
-            🔗 <a href="https://github.com/Akshayy67" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">GitHub</a> | 💼 <a href="https://www.linkedin.com/in/akshay-juluri-84813928a/" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">LinkedIn</a>
+            <strong>Full Stack Developer & Computer Science Engineer</strong><br>
+            📧 akshayjuluri6704@gmail.com | 📱 +91-7382005522 | 📍 Hyderabad, India<br>
+            🔗 <a href="https://github.com/Akshayy67" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">GitHub: Akshayy67</a> | 💼 <a href="https://www.linkedin.com/in/akshay-juluri-84813928a/" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">LinkedIn</a>
         </div>
+    </div>
+
+    <div class="section">
+        <h2>PROFESSIONAL SUMMARY</h2>
+        <p>Passionate Computer Science Engineering student with expertise in full-stack development, machine learning, and mobile app development. Proven track record with 500+ LeetCode problems solved, hackathon victories, and hands-on experience in modern technologies including React, Flutter, Python, and JavaScript. Strong foundation in data structures, algorithms, and software engineering principles with a focus on building scalable, user-centric applications.</p>
     </div>
 
     <div class="section">
         <h2>EDUCATION</h2>
         <div class="education-item">
             <h3>Sreenidhi Institute of Science and Technology (SNIST)</h3>
-            <div class="education-details">Computer Science and Engineering, B.Tech | CGPA: 7.9 | 2022 - 2026 | Ghatkesar</div>
+            <div class="education-details">Computer Science and Engineering, B.Tech | CGPA: 8.1/10 | 2022 - 2026 | Ghatkesar, Telangana</div>
         </div>
         <div class="education-item">
             <h3>Narayana Junior College</h3>
@@ -435,21 +441,34 @@ Please reply directly to ${formData.email}
     </div>
 
     <div class="section">
-        <h2>CERTIFICATIONS</h2>
-        <ul>
-            <li>Supervised Machine Learning: Regression and Classification - DeepLearning.AI, Stanford University (Coursera)</li>
-            <li>500+ solved on Leetcode, #Contest rating - 1,600+</li>
-            <li>Juniper Networks Virtual Internship</li>
-            <li>ServiceNow SNAF,CAD badges</li>
-        </ul>
+        <h2>TECHNICAL SKILLS</h2>
+        <div class="skill-category">
+            <strong>Programming Languages:</strong> C, Java, Python, Dart, JavaScript, TypeScript, HTML5, CSS3
+        </div>
+        <div class="skill-category">
+            <strong>Frameworks & Libraries:</strong> React.js, Flutter, TensorFlow, Node.js, Express.js, Framer Motion
+        </div>
+        <div class="skill-category">
+            <strong>Databases & Tools:</strong> SQLite, Git, GitHub, ServiceNow, Vite, Tailwind CSS
+        </div>
+        <div class="skill-category">
+            <strong>Specializations:</strong> Data Structures & Algorithms, Machine Learning, Full-Stack Development, Mobile Development
+        </div>
     </div>
 
     <div class="section">
-        <h2>HONORS & AWARDS</h2>
-        <div class="achievement">Won Summer Hackathon at SNIST</div>
-        <div class="achievement">100Days Leetcoding badge</div>
-        <div class="achievement">Hackathon finalist at SNIST by swedha(IIIT Hyderabad)</div>
+        <h2>CERTIFICATIONS & ACHIEVEMENTS</h2>
+        <ul>
+            <li><strong>Supervised Machine Learning: Regression and Classification</strong> - DeepLearning.AI, Stanford University (Coursera) - 2024</li>
+            <li><strong>LeetCode Achievements:</strong> 500+ problems solved, Contest rating: 1,600+, 100Days Leetcoding badge</li>
+            <li><strong>Juniper Networks Virtual Internship</strong> - Network Technologies & Solutions - 2024</li>
+            <li><strong>ServiceNow Certified:</strong> SNAF (ServiceNow Application Developer), CAD (Certified Application Developer) badges</li>
+            <li><strong>Hackathon Winner:</strong> Summer Hackathon at SNIST - 2024</li>
+            <li><strong>Hackathon Finalist:</strong> SNIST by Swedha (IIIT Hyderabad) - 2024</li>
+        </ul>
     </div>
+
+
 </body>
 </html>`;
 
@@ -458,7 +477,7 @@ Please reply directly to ${formData.email}
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "Julubi_Akshay_Resume.html";
+    link.download = "Akshay_Juluri_Resume.html";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
