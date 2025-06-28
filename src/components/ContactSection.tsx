@@ -555,55 +555,55 @@ Please reply directly to ${formData.email}
         ))}
       </div>
 
-      <div ref={ref} className="max-w-6xl mx-auto px-4">
+      <div ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
             Get In <span className="interstellar-text">Touch</span>
           </h2>
-          <p className="text-xl text-white/70 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto px-2 sm:px-0">
             Ready to collaborate on your next project? Let's connect and build
             something amazing together.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
           {/* Contact Information */}
           <motion.div
-            className="space-y-8"
+            className="space-y-6 sm:space-y-8"
             initial={{ opacity: 0, x: -50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <div className="glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg">
-              <h3 className="text-2xl font-mono text-orange-400 mb-6 glow-accretion">
+            <div className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg">
+              <h3 className="text-xl sm:text-2xl font-mono text-orange-400 mb-4 sm:mb-6 glow-accretion">
                 Contact Information
               </h3>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {contactInfo.map((info, index) => (
                   <motion.div
                     key={info.label}
-                    className="flex items-start gap-4 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                    className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
                     initial={{ opacity: 0, y: 20 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
                   >
-                    <div className="p-2 bg-orange-400/20 rounded-lg">
-                      <info.icon className="text-orange-400" size={20} />
+                    <div className="p-1.5 sm:p-2 bg-orange-400/20 rounded-lg flex-shrink-0">
+                      <info.icon className="text-orange-400" size={18} />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-mono text-white font-medium mb-1">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-mono text-white font-medium mb-1 text-sm sm:text-base">
                         {info.label}
                       </h4>
-                      <p className="text-orange-400 font-mono text-sm mb-1">
+                      <p className="text-orange-400 font-mono text-xs sm:text-sm mb-1 break-all">
                         {info.value}
                       </p>
-                      <p className="text-white/60 text-xs">
+                      <p className="text-white/60 text-xs leading-relaxed">
                         {info.description}
                       </p>
                     </div>
@@ -667,15 +667,17 @@ Please reply directly to ${formData.email}
 
           {/* Contact Form */}
           <motion.div
-            className="glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg"
+            className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg"
             initial={{ opacity: 0, x: 50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <h3 className="text-2xl font-mono text-white mb-6">Send Message</h3>
+            <h3 className="text-xl sm:text-2xl font-mono text-white mb-4 sm:mb-6">
+              Send Message
+            </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-white/70 text-sm font-mono mb-2">
                     <User size={16} className="inline mr-2" />
@@ -691,7 +693,7 @@ Please reply directly to ${formData.email}
                       value={formData.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full glass-morphism rounded-xl px-4 py-3 text-white font-mono transition-all duration-300 event-horizon-hover ${
+                      className={`w-full glass-morphism rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-all duration-300 event-horizon-hover ${
                         fieldTouched.name && fieldErrors.name
                           ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
                           : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
@@ -737,7 +739,7 @@ Please reply directly to ${formData.email}
                       value={formData.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors ${
+                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-colors ${
                         fieldTouched.email && fieldErrors.email
                           ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
                           : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"

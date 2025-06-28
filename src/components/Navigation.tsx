@@ -34,10 +34,10 @@ const Navigation: React.FC = () => {
       transition={{ delay: 0.5, duration: 0.8 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
           <motion.div
-            className="flex items-center gap-2 font-mono text-orange-400 text-xl font-bold event-horizon-hover"
+            className="flex items-center gap-1.5 sm:gap-2 font-mono text-orange-400 text-lg sm:text-xl font-bold event-horizon-hover"
             whileHover={{ scale: 1.05 }}
           >
             <motion.div
@@ -45,9 +45,12 @@ const Navigation: React.FC = () => {
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
             >
-              <Rocket size={24} />
+              <Rocket size={20} className="sm:w-6 sm:h-6" />
             </motion.div>
-            <span className="glow-starlight">Akshay Juluri</span>
+            <span className="glow-starlight hidden xs:inline sm:inline">
+              Akshay Juluri
+            </span>
+            <span className="glow-starlight xs:hidden sm:hidden">AJ</span>
           </motion.div>
 
           {/* Desktop Navigation */}

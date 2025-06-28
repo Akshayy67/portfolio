@@ -95,42 +95,102 @@ const HeroSection: React.FC = () => {
 
       <div
         ref={ref}
-        className="relative z-10 text-center max-w-4xl mx-auto px-4"
+        className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6">
-            <span className="text-white text-shadow-soft">Hi, I'm </span>
-            <span className="interstellar-text accretion-disk">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-2 sm:mb-4">
+              {/* Futuristic "A" Logo */}
+              <motion.div
+                className="relative flex items-center justify-center"
+                initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                transition={{
+                  duration: 1.2,
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                {/* Outer Glow Ring */}
+                <div className="absolute inset-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-gradient-to-r from-orange-400/30 to-orange-600/30 blur-lg animate-pulse" />
+
+                {/* Main Logo Container */}
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-xl shadow-glow-lg flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                  {/* Inner Glow */}
+                  <div className="absolute inset-1 bg-gradient-to-br from-orange-300/50 to-transparent rounded-lg" />
+
+                  {/* Letter "A" */}
+                  <span className="relative text-black font-display font-black text-xl sm:text-2xl md:text-3xl lg:text-4xl text-shadow-soft select-none">
+                    A
+                  </span>
+
+                  {/* Corner Accent */}
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-white/60 rounded-full" />
+                </div>
+
+                {/* Orbiting Particles */}
+                <motion.div
+                  className="absolute w-1 h-1 bg-orange-300 rounded-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  style={{
+                    transformOrigin: "0 0",
+                    x: 40,
+                    y: 40,
+                  }}
+                />
+                <motion.div
+                  className="absolute w-0.5 h-0.5 bg-white rounded-full"
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  style={{
+                    transformOrigin: "0 0",
+                    x: -35,
+                    y: -35,
+                  }}
+                />
+              </motion.div>
+            </div>
+            <span className="text-white text-shadow-soft block sm:inline">
+              Hi, I'm{" "}
+            </span>
+            <span className="interstellar-text accretion-disk block sm:inline">
               Akshay Juluri
             </span>
           </h1>
-          <h2 className="text-2xl md:text-4xl font-mono text-white/80 mb-8 text-shadow-soft">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-mono text-white/80 mb-6 sm:mb-8 text-shadow-soft px-2 sm:px-0 leading-relaxed">
             Computer Science Engineer & Full Stack Developer
           </h2>
         </motion.div>
 
         {/* Terminal Code Animation */}
         <motion.div
-          className="glass-morphism-dark noise-texture rounded-xl p-6 font-mono text-left max-w-2xl mx-auto mb-8 shadow-glow-lg"
+          className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 font-mono text-left max-w-2xl mx-auto mb-6 sm:mb-8 shadow-glow-lg"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <div className="flex items-center mb-4">
-            <div className="flex space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          <div className="flex items-center mb-3 sm:mb-4">
+            <div className="flex space-x-1.5 sm:space-x-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
             </div>
-            <span className="text-white/60 text-sm ml-4">
+            <span className="text-white/60 text-xs sm:text-sm ml-3 sm:ml-4 truncate">
               ~/juluri-akshay-dev
             </span>
           </div>
-          <div className="text-green-400 text-sm md:text-base">
+          <div className="text-green-400 text-xs sm:text-sm md:text-base overflow-x-auto">
             <span className="text-orange-400">$</span>{" "}
             <span ref={typedRef}></span>
           </div>
@@ -138,7 +198,7 @@ const HeroSection: React.FC = () => {
 
         {/* Mission Statement */}
         <motion.p
-          className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed font-body text-shadow-soft"
+          className="text-base sm:text-lg md:text-xl text-white/70 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed font-body text-shadow-soft px-2 sm:px-0"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -150,14 +210,14 @@ const HeroSection: React.FC = () => {
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4 sm:px-0"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 1 }}
         >
           <motion.a
             href="#projects"
-            className="px-8 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 glow-accretion event-horizon-hover"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 glow-accretion event-horizon-hover text-center"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -165,7 +225,7 @@ const HeroSection: React.FC = () => {
           </motion.a>
           <motion.a
             href="#contact"
-            className="px-8 py-3 border border-orange-400/50 text-orange-400 font-mono font-medium rounded-full hover:bg-orange-400/10 hover:border-orange-400 transition-all duration-300 glow-accretion event-horizon-hover"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 border border-orange-400/50 text-orange-400 font-mono font-medium rounded-full hover:bg-orange-400/10 hover:border-orange-400 transition-all duration-300 glow-accretion event-horizon-hover text-center"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -175,7 +235,7 @@ const HeroSection: React.FC = () => {
 
         {/* Social Links */}
         <motion.div
-          className="flex gap-6 justify-center mt-8"
+          className="flex gap-4 sm:gap-6 justify-center mt-6 sm:mt-8"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 1.2 }}
@@ -184,21 +244,21 @@ const HeroSection: React.FC = () => {
             href="https://github.com/Akshayy67"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 glass-morphism-subtle rounded-full text-white/80 hover:text-orange-400 transition-all duration-300 glow-subtle event-horizon-hover"
+            className="p-2.5 sm:p-3 glass-morphism-subtle rounded-full text-white/80 hover:text-orange-400 transition-all duration-300 glow-subtle event-horizon-hover"
             whileHover={{ scale: 1.1, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Github size={24} />
+            <Github size={20} className="sm:w-6 sm:h-6" />
           </motion.a>
           <motion.a
             href="https://www.linkedin.com/in/akshay-juluri-84813928a/"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 glass-morphism-subtle rounded-full text-white/80 hover:text-orange-400 transition-all duration-300 glow-subtle event-horizon-hover"
+            className="p-2.5 sm:p-3 glass-morphism-subtle rounded-full text-white/80 hover:text-orange-400 transition-all duration-300 glow-subtle event-horizon-hover"
             whileHover={{ scale: 1.1, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Linkedin size={24} />
+            <Linkedin size={20} className="sm:w-6 sm:h-6" />
           </motion.a>
         </motion.div>
       </div>
