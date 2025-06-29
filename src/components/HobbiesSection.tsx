@@ -68,7 +68,10 @@ const HobbiesSection: React.FC = () => {
   const currentHobby = hobbies[currentHobbyIndex];
 
   return (
-    <section className="py-16 relative overflow-hidden">
+    <section
+      data-section="skills"
+      className="py-16 relative overflow-hidden skills-section"
+    >
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-10 left-20 w-1 h-1 bg-purple-400 rounded-full animate-pulse" />

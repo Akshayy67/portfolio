@@ -29,6 +29,7 @@ const BlackHoleScene: React.FC<BlackHoleSceneProps> = ({
 
   return (
     <div
+      className="black-hole-cursor"
       style={{
         position: "fixed",
         top: 0,
@@ -48,7 +49,7 @@ const BlackHoleScene: React.FC<BlackHoleSceneProps> = ({
       {/* Skip Button */}
       <motion.button
         onClick={onSkip}
-        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-6 py-3 bg-orange-500/80 text-white rounded-full hover:bg-orange-400 transition-all duration-300 font-mono text-sm shadow-lg backdrop-blur-sm border border-orange-400/30"
+        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-6 py-3 bg-orange-500/80 text-white rounded-full hover:bg-orange-400 transition-all duration-300 font-mono text-sm shadow-lg backdrop-blur-sm border border-orange-400/30 rocket-cursor"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5 }}

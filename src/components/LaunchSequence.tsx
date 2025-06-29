@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play } from "lucide-react";
+import { audioManager } from "../utils/audioManager";
 
 interface LaunchSequenceProps {
   onSkip: () => void;
@@ -13,6 +14,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
   >("countdown");
   const [windowWidth, setWindowWidth] = useState(1920);
   const [shakeIntensity, setShakeIntensity] = useState(0);
+  const [audioActive, setAudioActive] = useState(false);
 
   // Set window width on client side
   useEffect(() => {
@@ -28,10 +30,44 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
     }
   }, []);
 
-  // Debug logging
+  // Debug logging and audio initialization
   useEffect(() => {
     console.log("🚀 LaunchSequence component mounted!");
     console.log("Initial phase:", phase, "countdown:", countdown);
+
+    // Initialize audio and start rocket launch sequence sounds after user interaction
+    const initializeAudio = async () => {
+      try {
+        await audioManager.initialize();
+        setAudioActive(true);
+        await audioManager.playRocketLaunchSequence();
+        console.log("🎵 Rocket launch audio sequence started");
+
+        // Turn off audio indicator after sequence completes
+        setTimeout(() => setAudioActive(false), 6000);
+      } catch (error) {
+        console.warn("Failed to initialize launch audio:", error);
+      }
+    };
+
+    // Wait for user interaction before starting audio
+    const handleUserInteraction = () => {
+      initializeAudio();
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+      document.removeEventListener("touchstart", handleUserInteraction);
+    };
+
+    // Add event listeners for user interaction
+    document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("keydown", handleUserInteraction);
+    document.addEventListener("touchstart", handleUserInteraction);
+
+    return () => {
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+      document.removeEventListener("touchstart", handleUserInteraction);
+    };
   }, []);
 
   useEffect(() => {
@@ -213,6 +249,31 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
         Press <span className="text-orange-400">SPACE</span> or{" "}
         <span className="text-orange-400">ENTER</span> to skip
       </motion.div>
+
+      {/* Audio Indicator */}
+      {audioActive && (
+        <motion.div
+          className="fixed top-4 left-4 z-50 flex items-center gap-2 px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full backdrop-blur-sm border border-orange-400/30"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="w-2 h-2 bg-orange-400 rounded-full"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [1, 0.5, 1],
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <span className="text-sm font-mono">Audio Active</span>
+        </motion.div>
+      )}
 
       {/* Stars Background */}
       <div className="absolute inset-0 z-10">

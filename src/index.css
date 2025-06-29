@@ -26,20 +26,28 @@ html {
 
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(251, 146, 60, 0.5);
-  border-radius: 4px;
+  background: rgba(251, 146, 60, 0.4);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(251, 146, 60, 0.8);
+  background: rgba(251, 146, 60, 0.7);
+  background-clip: content-box;
+}
+
+/* Ensure content doesn't overlap with scrollbar */
+html {
+  scrollbar-gutter: stable;
 }
 
 /* Line clamp utilities */
@@ -784,6 +792,121 @@ a,
   .glow-orbital,
   .glow-nebula {
     filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.3));
+  }
+
+  /* Audio Controls Slider Styling */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-track {
+    background: rgba(255, 255, 255, 0.2);
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #f97316;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  }
+
+  input[type="range"]::-moz-range-track {
+    background: rgba(255, 255, 255, 0.2);
+    height: 8px;
+    border-radius: 4px;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #f97316;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  }
+
+  input[type="range"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Hide default cursor globally for custom cursor */
+  * {
+    cursor: none !important;
+  }
+
+  /* Keep text cursor for input elements */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  [contenteditable="true"] {
+    cursor: text !important;
+  }
+
+  /* Cursor trail particle animations */
+  @keyframes particle-float {
+    0% {
+      transform: translateY(0) scale(0) rotate(0deg);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-30px) scale(1.5) rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes particle-twinkle {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  .cursor-particle {
+    animation: particle-float 1.5s ease-out forwards;
+  }
+
+  .cursor-particle.twinkle {
+    animation: particle-twinkle 0.8s ease-in-out infinite;
+  }
+
+  /* Glitter effect for different particle types */
+  .particle-star {
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  .particle-diamond {
+    filter: drop-shadow(0 0 3px currentColor) brightness(1.2);
+  }
+
+  .particle-sparkle {
+    filter: drop-shadow(0 0 5px currentColor) saturate(1.3);
+  }
+
+  .particle-circle {
+    filter: drop-shadow(0 0 2px currentColor);
   }
 
   /* Optimize animations for mobile */

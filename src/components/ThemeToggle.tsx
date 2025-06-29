@@ -32,7 +32,7 @@ const ThemeToggle: React.FC = () => {
     <motion.button
       onClick={handleToggle}
       className={`
-        fixed top-20 right-4 z-50 p-3 rounded-full
+        fixed top-20 right-4 z-50 p-3 rounded-full star-cursor
         ${
           isDarkMode
             ? "bg-white/10 text-orange-400 hover:bg-white/20 border-white/20"

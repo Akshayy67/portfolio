@@ -32,7 +32,11 @@ const AboutSection: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="min-h-screen py-20 relative overflow-hidden">
+    <section
+      id="about"
+      data-section="about"
+      className="min-h-screen py-20 relative overflow-hidden about-section"
+    >
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />

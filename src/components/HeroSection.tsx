@@ -88,7 +88,8 @@ const HeroSection: React.FC = () => {
     <section
       ref={containerRef}
       id="hero"
-      className="min-h-screen relative flex items-center justify-center overflow-hidden"
+      data-section="hero"
+      className="min-h-screen relative flex items-center justify-center overflow-hidden hero-section"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -118,13 +119,13 @@ const HeroSection: React.FC = () => {
       <div
         ref={ref}
         className={`relative z-10 text-center mx-auto px-4 sm:px-6 lg:px-8 ${
-          isMobile ? "max-w-5xl py-8 sm:py-12" : "max-w-4xl"
+          isMobile ? "max-w-5xl py-8 sm:py-12 mt-20" : "max-w-4xl mt-24"
         }`}
       >
         {/* Dynamic Greeting */}
         {isMobile ? (
           <motion.div
-            className="mb-6 sm:mb-8"
+            className="mb-10 sm:mb-12"
             animate={{
               y: [0, -5, 0],
             }}
@@ -137,7 +138,7 @@ const HeroSection: React.FC = () => {
             <DynamicGreeting className="relative" showDetails={false} />
           </motion.div>
         ) : (
-          <div className="mb-4">
+          <div className="mb-8">
             <DynamicGreeting className="relative" showDetails={false} />
           </div>
         )}
@@ -197,7 +198,7 @@ const HeroSection: React.FC = () => {
             <motion.h2
               className={`text-xl sm:text-2xl md:text-3xl lg:text-5xl font-mono ${
                 isDarkMode ? "text-white/90" : "text-gray-700"
-              } mt-4 sm:mt-6 text-shadow-soft leading-relaxed`}
+              } mt-8 sm:mt-10 text-shadow-soft leading-relaxed`}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1, delay: 0.5 }}
@@ -228,7 +229,7 @@ const HeroSection: React.FC = () => {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-6 sm:mb-8 leading-tight">
               <span
                 className={`${
                   isDarkMode ? "text-white" : "text-gray-900"
@@ -243,7 +244,7 @@ const HeroSection: React.FC = () => {
             <h2
               className={`text-lg sm:text-xl md:text-2xl lg:text-4xl font-mono ${
                 isDarkMode ? "text-white/80" : "text-gray-700"
-              } mb-6 sm:mb-8 text-shadow-soft px-2 sm:px-0 leading-relaxed`}
+              } mb-10 sm:mb-12 text-shadow-soft px-2 sm:px-0 leading-relaxed`}
             >
               Computer Science Engineer & Full Stack Developer
             </h2>
@@ -456,7 +457,7 @@ const HeroSection: React.FC = () => {
 
         {/* Social Links */}
         <motion.div
-          className="flex gap-6 sm:gap-8 justify-center mb-20 sm:mb-24"
+          className="flex gap-6 sm:gap-8 justify-center mb-32 sm:mb-40 px-4 sm:px-6 max-w-md mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 1.8 }}
@@ -465,7 +466,7 @@ const HeroSection: React.FC = () => {
             href="https://github.com/Akshayy67"
             target="_blank"
             rel="noopener noreferrer"
-            className={`group relative p-4 sm:p-5 glass-morphism-subtle rounded-full ${
+            className={`group relative p-4 sm:p-5 glass-morphism-subtle rounded-full star-cursor ${
               isDarkMode ? "text-white/80" : "text-gray-700"
             } overflow-hidden`}
             whileHover={{
@@ -499,7 +500,7 @@ const HeroSection: React.FC = () => {
             href="https://www.linkedin.com/in/akshay-juluri-84813928a/"
             target="_blank"
             rel="noopener noreferrer"
-            className={`group relative p-4 sm:p-5 glass-morphism-subtle rounded-full ${
+            className={`group relative p-4 sm:p-5 glass-morphism-subtle rounded-full star-cursor ${
               isDarkMode ? "text-white/80" : "text-gray-700"
             } overflow-hidden`}
             whileHover={{
@@ -543,7 +544,7 @@ const HeroSection: React.FC = () => {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 z-20"
+        className="absolute bottom-12 sm:bottom-16 left-1/2 transform -translate-x-1/2 z-20"
         animate={{
           y: [0, 15, 0],
           rotateX: [0, 10, 0],

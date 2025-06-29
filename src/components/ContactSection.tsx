@@ -1230,7 +1230,8 @@ Time: ${new Date().toLocaleString()}`;
   return (
     <section
       id="contact"
-      className="min-h-screen py-20 relative overflow-hidden"
+      data-section="contact"
+      className="min-h-screen py-20 relative overflow-hidden contact-section"
     >
       {/* Background Signal Animation */}
       <div className="absolute inset-0">

@@ -13,6 +13,9 @@ import ThemeToggle from "./components/ThemeToggle";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import VoiceNavigation from "./components/VoiceNavigation";
 import HobbiesSection from "./components/HobbiesSection";
+import AudioControls from "./components/AudioControls";
+import GlobalCustomCursor from "./components/GlobalCustomCursor";
+
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
@@ -49,6 +52,8 @@ const MainContent: React.FC = () => {
     measurePerformance();
     preloadCriticalResources();
 
+    // Default cursor behavior restored
+
     // Register service worker only in production
     if (import.meta.env.PROD) {
       registerSW({
@@ -57,6 +62,10 @@ const MainContent: React.FC = () => {
         onOfflineReady: () => console.log("App ready for offline use"),
       });
     }
+
+    return () => {
+      // Cleanup
+    };
   }, []); // Run only once on mount
 
   // Handle animation sequence based on device preferences
@@ -154,6 +163,9 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="relative">
+      {/* Global custom cursor - works everywhere */}
+      <GlobalCustomCursor />
+
       <AnimatePresence mode="wait">
         {currentScene === "launch" && (
           <LaunchSequence key="launch" onSkip={skipToMain} />
@@ -186,6 +198,7 @@ const MainContent: React.FC = () => {
             {/* Navigation and Content */}
             {showNavigation && <Navigation />}
             <ThemeToggle />
+            <AudioControls />
 
             <VoiceNavigation />
             <AnalyticsDashboard />

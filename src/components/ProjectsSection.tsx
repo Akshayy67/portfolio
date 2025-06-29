@@ -111,7 +111,8 @@ const ProjectsSection: React.FC = () => {
   return (
     <section
       id="projects"
-      className="min-h-screen py-20 relative overflow-hidden bg-black/20"
+      data-section="projects"
+      className="min-h-screen py-20 relative overflow-hidden bg-black/20 projects-section"
     >
       {/* Background Stars */}
       <div className="absolute inset-0">
