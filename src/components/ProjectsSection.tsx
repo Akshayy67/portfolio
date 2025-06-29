@@ -5,8 +5,9 @@ import { ExternalLink, Github, Rocket } from "lucide-react";
 
 const ProjectsSection: React.FC = () => {
   const { ref, inView } = useInView({
-    threshold: 0.1,
+    threshold: 0.01,
     triggerOnce: true,
+    rootMargin: "100px 0px",
   });
 
   const [clickedProject, setClickedProject] = useState<number | null>(null);
@@ -108,7 +109,7 @@ const ProjectsSection: React.FC = () => {
   return (
     <section
       id="projects"
-      className="min-h-screen py-20 relative overflow-hidden"
+      className="min-h-screen py-20 relative overflow-hidden bg-black/20"
     >
       {/* Background Stars */}
       <div className="absolute inset-0">
@@ -155,7 +156,7 @@ const ProjectsSection: React.FC = () => {
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
-              className="group relative glass-morphism-dark noise-texture rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 event-horizon-hover cursor-pointer"
+              className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer"
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.2 }}

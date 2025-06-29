@@ -1,8 +1,8 @@
-import ReactGA from 'react-ga4';
+import ReactGA from "react-ga4";
 
 // Analytics configuration
-const TRACKING_ID = 'G-XXXXXXXXXX'; // Replace with your Google Analytics 4 tracking ID
-const DEBUG = process.env.NODE_ENV === 'development';
+const TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID || "G-XXXXXXXXXX"; // Replace with your Google Analytics 4 tracking ID
+const DEBUG = import.meta.env.DEV;
 
 // Initialize Google Analytics
 export const initGA = () => {
@@ -17,14 +17,19 @@ export const initGA = () => {
 // Track page views
 export const trackPageView = (path: string, title?: string) => {
   ReactGA.send({
-    hitType: 'pageview',
+    hitType: "pageview",
     page: path,
     title: title || document.title,
   });
 };
 
 // Track custom events
-export const trackEvent = (action: string, category: string, label?: string, value?: number) => {
+export const trackEvent = (
+  action: string,
+  category: string,
+  label?: string,
+  value?: number
+) => {
   ReactGA.event({
     action,
     category,
@@ -35,32 +40,32 @@ export const trackEvent = (action: string, category: string, label?: string, val
 
 // Track user interactions
 export const trackUserInteraction = (element: string, action: string) => {
-  trackEvent(action, 'User Interaction', element);
+  trackEvent(action, "User Interaction", element);
 };
 
 // Track section views (for portfolio sections)
 export const trackSectionView = (section: string) => {
-  trackEvent('view', 'Section', section);
+  trackEvent("view", "Section", section);
 };
 
 // Track contact form submissions
 export const trackContactForm = (method: string) => {
-  trackEvent('submit', 'Contact Form', method);
+  trackEvent("submit", "Contact Form", method);
 };
 
 // Track voice commands
 export const trackVoiceCommand = (command: string) => {
-  trackEvent('voice_command', 'Voice Navigation', command);
+  trackEvent("voice_command", "Voice Navigation", command);
 };
 
 // Track theme changes
 export const trackThemeChange = (theme: string) => {
-  trackEvent('theme_change', 'UI', theme);
+  trackEvent("theme_change", "UI", theme);
 };
 
 // Track project clicks
 export const trackProjectClick = (projectName: string) => {
-  trackEvent('click', 'Project', projectName);
+  trackEvent("click", "Project", projectName);
 };
 
 // Local storage analytics (for offline tracking)
@@ -78,21 +83,23 @@ interface LocalAnalytics {
   }>;
 }
 
-const ANALYTICS_KEY = 'portfolio_analytics';
+const ANALYTICS_KEY = "portfolio_analytics";
 
 export const getLocalAnalytics = (): LocalAnalytics => {
   try {
     const stored = localStorage.getItem(ANALYTICS_KEY);
-    return stored ? JSON.parse(stored) : {
-      pageViews: {},
-      events: [],
-      sessions: []
-    };
+    return stored
+      ? JSON.parse(stored)
+      : {
+          pageViews: {},
+          events: [],
+          sessions: [],
+        };
   } catch {
     return {
       pageViews: {},
       events: [],
-      sessions: []
+      sessions: [],
     };
   }
 };
@@ -103,7 +110,7 @@ export const updateLocalAnalytics = (update: Partial<LocalAnalytics>) => {
     const updated = { ...current, ...update };
     localStorage.setItem(ANALYTICS_KEY, JSON.stringify(updated));
   } catch (error) {
-    console.warn('Failed to update local analytics:', error);
+    console.warn("Failed to update local analytics:", error);
   }
 };
 
@@ -113,8 +120,8 @@ export const trackLocalPageView = (path: string) => {
   analytics.pageViews[path] = (analytics.pageViews[path] || 0) + 1;
   analytics.events.push({
     timestamp: Date.now(),
-    type: 'pageview',
-    data: { path }
+    type: "pageview",
+    data: { path },
   });
   updateLocalAnalytics(analytics);
 };
@@ -124,7 +131,7 @@ export const startSession = () => {
   const analytics = getLocalAnalytics();
   const newSession = {
     start: Date.now(),
-    pages: [window.location.pathname]
+    pages: [window.location.pathname],
   };
   analytics.sessions.push(newSession);
   updateLocalAnalytics(analytics);
@@ -145,34 +152,39 @@ export const getAnalyticsSummary = () => {
   const analytics = getLocalAnalytics();
   const now = Date.now();
   const today = new Date().toDateString();
-  
+
   // Calculate today's events
-  const todayEvents = analytics.events.filter(event => 
-    new Date(event.timestamp).toDateString() === today
+  const todayEvents = analytics.events.filter(
+    (event) => new Date(event.timestamp).toDateString() === today
   );
-  
+
   // Calculate total page views
-  const totalPageViews = Object.values(analytics.pageViews).reduce((sum, views) => sum + views, 0);
-  
+  const totalPageViews = Object.values(analytics.pageViews).reduce(
+    (sum, views) => sum + views,
+    0
+  );
+
   // Calculate average session time
-  const completedSessions = analytics.sessions.filter(s => s.end);
-  const avgSessionTime = completedSessions.length > 0 
-    ? completedSessions.reduce((sum, s) => sum + (s.end! - s.start), 0) / completedSessions.length
-    : 0;
-  
+  const completedSessions = analytics.sessions.filter((s) => s.end);
+  const avgSessionTime =
+    completedSessions.length > 0
+      ? completedSessions.reduce((sum, s) => sum + (s.end! - s.start), 0) /
+        completedSessions.length
+      : 0;
+
   // Get top pages
   const topPages = Object.entries(analytics.pageViews)
-    .sort(([,a], [,b]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
-    .map(([page, views]) => ({ page: page.replace('/', '') || 'Home', views }));
-  
+    .map(([page, views]) => ({ page: page.replace("/", "") || "Home", views }));
+
   return {
     totalVisitors: analytics.sessions.length,
-    todayVisitors: todayEvents.filter(e => e.type === 'pageview').length,
+    todayVisitors: todayEvents.filter((e) => e.type === "pageview").length,
     pageViews: totalPageViews,
     avgTimeOnSite: formatTime(avgSessionTime),
     topPages,
-    recentEvents: analytics.events.slice(-10).reverse()
+    recentEvents: analytics.events.slice(-10).reverse(),
   };
 };
 

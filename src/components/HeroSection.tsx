@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Github, Linkedin } from "lucide-react";
 import Typed from "typed.js";
+import DynamicGreeting from "./DynamicGreeting";
 
 const HeroSection: React.FC = () => {
   const typedRef = useRef<HTMLSpanElement>(null);
@@ -97,6 +98,11 @@ const HeroSection: React.FC = () => {
         ref={ref}
         className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
       >
+        {/* Small Dynamic Greeting */}
+        <div className="mb-4">
+          <DynamicGreeting className="relative" showDetails={false} />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -104,7 +110,7 @@ const HeroSection: React.FC = () => {
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight">
             <span className="text-white text-shadow-soft block sm:inline">
-              Hi, I'm{" "}
+              I'm{" "}
             </span>
             <span className="interstellar-text accretion-disk block sm:inline">
               Akshay Juluri

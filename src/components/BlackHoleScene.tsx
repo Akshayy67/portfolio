@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { Play } from "lucide-react";
 
 interface BlackHoleSceneProps {
   onSkip: () => void;
@@ -16,13 +16,29 @@ const BlackHoleScene: React.FC<BlackHoleSceneProps> = ({ onSkip }) => {
       transition={{ duration: 1 }}
     >
       {/* Skip Button */}
-      <button
+      <motion.button
         onClick={onSkip}
-        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors font-mono text-sm"
+        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-6 py-3 bg-orange-500/80 text-white rounded-full hover:bg-orange-400 transition-all duration-300 font-mono text-sm shadow-lg backdrop-blur-sm border border-orange-400/30"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <Play size={16} />
         Skip Intro
-      </button>
+      </motion.button>
+
+      {/* Keyboard hint */}
+      <motion.div
+        className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40 text-white/60 text-sm font-mono text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        Press <span className="text-orange-400">SPACE</span> or{" "}
+        <span className="text-orange-400">ENTER</span> to skip
+      </motion.div>
 
       {/* Background Stars */}
       <div className="absolute inset-0">
@@ -73,13 +89,13 @@ const BlackHoleScene: React.FC<BlackHoleSceneProps> = ({ onSkip }) => {
               rgba(251, 146, 60, 0.6) 300deg,
               rgba(251, 146, 60, 0.1) 330deg,
               transparent 360deg
-            )`
+            )`,
           }}
           animate={{ rotate: 360 }}
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         >
           {/* Event Horizon */}
@@ -96,16 +112,16 @@ const BlackHoleScene: React.FC<BlackHoleSceneProps> = ({ onSkip }) => {
               transparent 60%,
               rgba(255, 255, 255, 0.05) 80%,
               transparent 100%
-            )`
+            )`,
           }}
           animate={{
             scale: [1, 1.1, 1],
-            opacity: [0.5, 0.8, 0.5]
+            opacity: [0.5, 0.8, 0.5],
           }}
           transition={{
             duration: 4,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
       </motion.div>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Play } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play } from "lucide-react";
 
 interface LaunchSequenceProps {
   onSkip: () => void;
@@ -8,7 +8,9 @@ interface LaunchSequenceProps {
 
 const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
   const [countdown, setCountdown] = useState(3);
-  const [phase, setPhase] = useState<'countdown' | 'launch' | 'travel'>('countdown');
+  const [phase, setPhase] = useState<"countdown" | "launch" | "travel">(
+    "countdown"
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -16,14 +18,14 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
         if (prev > 0) {
           return prev - 1;
         } else {
-          setPhase('launch');
+          setPhase("launch");
           return 0;
         }
       });
     }, 1000);
 
     setTimeout(() => {
-      setPhase('travel');
+      setPhase("travel");
     }, 4500);
 
     return () => clearInterval(timer);
@@ -38,13 +40,29 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
       transition={{ duration: 0.5 }}
     >
       {/* Skip Button */}
-      <button
+      <motion.button
         onClick={onSkip}
-        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors font-mono text-sm"
+        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-6 py-3 bg-orange-500/80 text-white rounded-full hover:bg-orange-400 transition-all duration-300 font-mono text-sm shadow-lg backdrop-blur-sm border border-orange-400/30"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <Play size={16} />
         Skip Intro
-      </button>
+      </motion.button>
+
+      {/* Keyboard hint */}
+      <motion.div
+        className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40 text-white/60 text-sm font-mono text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+      >
+        Press <span className="text-orange-400">SPACE</span> or{" "}
+        <span className="text-orange-400">ENTER</span> to skip
+      </motion.div>
 
       {/* Stars Background */}
       <div className="absolute inset-0">
@@ -65,7 +83,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
 
       {/* Countdown */}
       <AnimatePresence>
-        {phase === 'countdown' && (
+        {phase === "countdown" && (
           <motion.div
             className="absolute inset-0 flex items-center justify-center"
             initial={{ opacity: 0 }}
@@ -81,10 +99,12 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
                 exit={{ scale: 1.5, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {countdown > 0 ? `T-${countdown}` : 'IGNITION!'}
+                {countdown > 0 ? `T-${countdown}` : "IGNITION!"}
               </motion.div>
               <div className="font-mono text-white/60 text-xl">
-                {countdown > 0 ? 'Preparing for launch...' : 'Engines firing...'}
+                {countdown > 0
+                  ? "Preparing for launch..."
+                  : "Engines firing..."}
               </div>
             </div>
           </motion.div>
@@ -93,7 +113,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
 
       {/* Rocket Launch */}
       <AnimatePresence>
-        {phase === 'launch' && (
+        {phase === "launch" && (
           <motion.div
             className="absolute inset-0 flex items-center justify-center"
             initial={{ opacity: 0 }}
@@ -111,15 +131,15 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
                 {/* Exhaust Trail */}
                 <motion.div
                   className="absolute top-full left-1/2 transform -translate-x-1/2 w-8 bg-gradient-to-b from-orange-400 via-red-500 to-transparent"
-                  style={{ height: '120px' }}
+                  style={{ height: "120px" }}
                   animate={{
-                    height: ['60px', '120px', '180px'],
-                    opacity: [0.8, 1, 0.6]
+                    height: ["60px", "120px", "180px"],
+                    opacity: [0.8, 1, 0.6],
                   }}
                   transition={{
                     duration: 0.3,
                     repeat: Infinity,
-                    repeatType: "reverse"
+                    repeatType: "reverse",
                   }}
                 />
               </div>
@@ -130,7 +150,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
 
       {/* Warp Speed Effect */}
       <AnimatePresence>
-        {phase === 'travel' && (
+        {phase === "travel" && (
           <motion.div
             className="absolute inset-0"
             initial={{ opacity: 0 }}
@@ -144,18 +164,18 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                  transformOrigin: 'left center',
+                  transformOrigin: "left center",
                 }}
-                initial={{ width: '2px', scaleX: 0 }}
-                animate={{ 
-                  width: '200px', 
+                initial={{ width: "2px", scaleX: 0 }}
+                animate={{
+                  width: "200px",
                   scaleX: 1,
-                  x: [0, window.innerWidth]
+                  x: [0, window.innerWidth],
                 }}
                 transition={{
                   duration: 1.5,
                   delay: Math.random() * 0.5,
-                  ease: "easeOut"
+                  ease: "easeOut",
                 }}
               />
             ))}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import LaunchSequence from "./components/LaunchSequence";
 import BlackHoleScene from "./components/BlackHoleScene";
@@ -12,42 +12,131 @@ import ParticleBackground from "./components/ParticleBackground";
 import ThemeToggle from "./components/ThemeToggle";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import VoiceNavigation from "./components/VoiceNavigation";
+import HobbiesSection from "./components/HobbiesSection";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
+import { useDeviceDetection } from "./hooks/useDeviceDetection";
+import {
+  registerSW,
+  measurePerformance,
+  preloadCriticalResources,
+} from "./utils/serviceWorker";
+import SmoothTransition from "./components/SmoothTransition";
+import LazySection from "./components/LazySection";
 
 // Main content component that uses theme
 const MainContent: React.FC = () => {
   const { isDarkMode } = useTheme();
   const analytics = useAnalytics();
+  const deviceInfo = useDeviceDetection();
+  const timer1Ref = useRef<NodeJS.Timeout | null>(null);
+  const timer2Ref = useRef<NodeJS.Timeout | null>(null);
+
   const [currentScene, setCurrentScene] = useState<
     "launch" | "blackhole" | "main"
-  >("launch");
-  const [showNavigation, setShowNavigation] = useState(false);
+  >(
+    deviceInfo.isMobile ||
+      deviceInfo.isLowEndDevice ||
+      deviceInfo.prefersReducedMotion
+      ? "main"
+      : "launch"
+  );
+  const [showNavigation, setShowNavigation] = useState(
+    deviceInfo.isMobile ||
+      deviceInfo.isLowEndDevice ||
+      deviceInfo.prefersReducedMotion
+  );
 
   useEffect(() => {
-    const timer1 = setTimeout(() => {
+    // Initialize performance monitoring
+    measurePerformance();
+    preloadCriticalResources();
+
+    // Register service worker only in production
+    if (import.meta.env.PROD) {
+      registerSW({
+        onSuccess: () => console.log("Service worker registered successfully"),
+        onUpdate: () => console.log("New content available"),
+        onOfflineReady: () => console.log("App ready for offline use"),
+      });
+    }
+
+    // Skip animations on mobile, low-end devices, or when user prefers reduced motion
+    if (
+      deviceInfo.isMobile ||
+      deviceInfo.isLowEndDevice ||
+      deviceInfo.prefersReducedMotion
+    ) {
+      setCurrentScene("main");
+      setShowNavigation(true);
+      return;
+    }
+
+    timer1Ref.current = setTimeout(() => {
       setCurrentScene("blackhole");
     }, 6000);
 
-    const timer2 = setTimeout(() => {
+    timer2Ref.current = setTimeout(() => {
       setCurrentScene("main");
       setShowNavigation(true);
     }, 12000);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      if (timer1Ref.current) clearTimeout(timer1Ref.current);
+      if (timer2Ref.current) clearTimeout(timer2Ref.current);
     };
-  }, []);
+  }, [
+    deviceInfo.isMobile,
+    deviceInfo.isLowEndDevice,
+    deviceInfo.prefersReducedMotion,
+  ]);
+
+  // Separate useEffect for keyboard events
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (
+        (e.code === "Space" || e.code === "Enter") &&
+        currentScene !== "main"
+      ) {
+        e.preventDefault();
+        skipToMain();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [currentScene]);
 
   const skipToMain = () => {
+    // Clear any pending timers to prevent automatic transitions
+    if (timer1Ref.current) {
+      clearTimeout(timer1Ref.current);
+      timer1Ref.current = null;
+    }
+    if (timer2Ref.current) {
+      clearTimeout(timer2Ref.current);
+      timer2Ref.current = null;
+    }
+
+    // Immediate state update
     setCurrentScene("main");
     setShowNavigation(true);
+
+    // Scroll to about section after a brief delay to ensure content is loaded
+    setTimeout(() => {
+      const aboutSection = document.getElementById("about");
+      if (aboutSection) {
+        aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 500);
   };
 
   return (
     <div className="relative">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {currentScene === "launch" && (
           <LaunchSequence key="launch" onSkip={skipToMain} />
         )}
@@ -65,8 +154,12 @@ const MainContent: React.FC = () => {
           >
             {/* Enhanced Background Elements */}
             <div className="fixed inset-0 z-0">
-              {/* Particle Background */}
-              <ParticleBackground isDarkMode={isDarkMode} />
+              {/* Particle Background - Optimized for mobile */}
+              {!deviceInfo.isMobile &&
+                !deviceInfo.isLowEndDevice &&
+                !deviceInfo.prefersReducedMotion && (
+                  <ParticleBackground isDarkMode={isDarkMode} />
+                )}
 
               {/* Distant Stars (only in dark mode) */}
               {isDarkMode &&
@@ -135,10 +228,26 @@ const MainContent: React.FC = () => {
             <AnalyticsDashboard />
 
             <HeroSection />
-            <AboutSection />
-            <ProjectsSection />
-            <AchievementsSection />
-            <ContactSection />
+
+            <SmoothTransition direction="up" duration={0.8} delay={0.2}>
+              <AboutSection />
+            </SmoothTransition>
+
+            <SmoothTransition direction="fade" duration={0.6} delay={0.1}>
+              <HobbiesSection />
+            </SmoothTransition>
+
+            <SmoothTransition direction="up" duration={0.8} stagger={true}>
+              <ProjectsSection />
+            </SmoothTransition>
+
+            <SmoothTransition direction="scale" duration={0.6}>
+              <AchievementsSection />
+            </SmoothTransition>
+
+            <SmoothTransition direction="up" duration={0.8} delay={0.3}>
+              <ContactSection />
+            </SmoothTransition>
           </div>
         )}
       </AnimatePresence>

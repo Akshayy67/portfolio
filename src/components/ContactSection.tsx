@@ -50,12 +50,30 @@ const ContactSection: React.FC = () => {
 
   const [isFormValid, setIsFormValid] = useState(false);
 
+  // Autocomplete suggestions state
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
   // Character limits
   const charLimits = {
     name: 50,
     subject: 100,
     message: 1000,
   };
+
+  // Message suggestions
+  const messageSuggestions = [
+    "I love your work!",
+    "How can I collaborate with you?",
+    "Let's connect!",
+    "I have a project idea for you.",
+    "I'd like to discuss a potential opportunity.",
+    "Your portfolio is impressive! Can we chat?",
+    "I'm interested in hiring you for a project.",
+    "Would you be available for freelance work?",
+    "I'd love to learn more about your experience.",
+    "Can you help me with my project?",
+  ];
 
   // Validation functions
   const validateEmail = (email: string): string => {
@@ -171,47 +189,33 @@ const ContactSection: React.FC = () => {
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      console.log("EmailJS Config:", {
-        serviceId,
-        templateId,
-        publicKey: publicKey ? "***" : "missing",
+      console.log("EmailJS Config Check:", {
+        serviceId: serviceId ? "✓ Available" : "✗ Missing",
+        templateId: templateId ? "✓ Available" : "✗ Missing",
+        publicKey: publicKey ? "✓ Available" : "✗ Missing",
       });
 
       // Check if EmailJS is configured
       if (!serviceId || !templateId || !publicKey) {
-        console.error("EmailJS configuration missing:", {
-          serviceId,
-          templateId,
-          publicKey,
-        });
-        throw new Error("EmailJS not configured");
+        console.warn("EmailJS not fully configured, using alternative method");
+        throw new Error("EmailJS service not available");
       }
 
-      // Prepare template parameters (simplified to work with existing template)
+      // Prepare template parameters with better formatting
       const templateParams = {
         from_name: formData.name,
         from_email: formData.email,
-        subject: `Portfolio Contact: ${formData.subject || "New Inquiry"}`,
-        message: `
-📧 NEW CONTACT FROM PORTFOLIO WEBSITE
-
-👤 FROM: ${formData.name}
-📧 EMAIL: ${formData.email}
-📝 SUBJECT: ${formData.subject || "General Inquiry"}
-🕒 TIME: ${new Date().toLocaleString()}
-
-💬 MESSAGE:
-${formData.message}
-
----
-This message was sent from your portfolio website contact form.
-Please reply directly to ${formData.email}
-        `.trim(),
+        to_email: "akshayjuluri6704@gmail.com", // Your email
+        subject: formData.subject || "New Portfolio Contact",
+        message: formData.message,
+        // Additional fields for better email formatting
+        reply_to: formData.email,
+        timestamp: new Date().toLocaleString(),
       };
 
-      console.log("Sending email with params:", templateParams);
+      console.log("Attempting to send email via EmailJS...");
 
-      // Send email using EmailJS
+      // Send email using EmailJS with better error handling
       const result = await emailjs.send(
         serviceId,
         templateId,
@@ -219,7 +223,7 @@ Please reply directly to ${formData.email}
         publicKey
       );
 
-      console.log("EmailJS result:", result);
+      console.log("EmailJS Response:", result);
 
       if (result.status === 200) {
         // Success - email sent directly
@@ -239,66 +243,105 @@ Please reply directly to ${formData.email}
           message: false,
         });
         showToastMessage(
-          "Message sent successfully! I will get back to you soon."
+          "✅ Message sent successfully! I'll get back to you soon."
         );
       } else {
         throw new Error("EmailJS failed");
       }
     } catch (error) {
       console.error("EmailJS failed:", error);
-      console.log("Using mailto fallback");
+      console.log("Using enhanced fallback options");
 
-      // Fallback: Use mailto approach with better UX
-      const messageText = `Name: ${formData.name}\nEmail: ${
-        formData.email
-      }\nSubject: ${
-        formData.subject || "Contact from Portfolio"
-      }\n\nMessage:\n${formData.message}`;
+      // Enhanced fallback with better user experience
+      const messageText = `Name: ${formData.name}
+Email: ${formData.email}
+Subject: ${formData.subject || "Contact from Portfolio"}
+
+Message:
+${formData.message}
+
+---
+Sent from: ${window.location.origin}
+Time: ${new Date().toLocaleString()}`;
 
       try {
-        // Copy to clipboard for user convenience
+        // Always try to copy to clipboard first
         await navigator.clipboard.writeText(messageText);
 
-        // Open email client
-        const subject = encodeURIComponent(
-          formData.subject || "Contact from Portfolio"
-        );
-        const body = encodeURIComponent(messageText);
-        const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
+        // Check if user is on mobile or desktop for better UX
+        const isMobile =
+          /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          );
 
-        window.location.href = mailtoLink;
+        if (isMobile) {
+          // On mobile, email apps work better
+          const subject = encodeURIComponent(
+            formData.subject || "Contact from Portfolio"
+          );
+          const body = encodeURIComponent(messageText);
+          const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
 
-        // Reset form and show success message
+          // Use window.open for better compatibility on mobile
+          const emailWindow = window.open(mailtoLink, "_blank");
+          if (!emailWindow) {
+            window.location.href = mailtoLink;
+          }
+
+          showToastMessage(
+            "📱 Email app opened with your message! Message also copied to clipboard."
+          );
+        } else {
+          // On desktop, give users more options
+          showToastMessage(
+            "📋 Message copied to clipboard! You can now paste it in Gmail, Outlook, or any email service. Or click below to open your default email app.",
+            "success"
+          );
+
+          // Add a secondary action button for email client
+          setTimeout(() => {
+            const shouldOpenEmail = confirm(
+              "Would you like to open your default email app with the message pre-filled?\n\n" +
+                "Click 'OK' to open email app, or 'Cancel' to use the copied message in your preferred email service."
+            );
+
+            if (shouldOpenEmail) {
+              const subject = encodeURIComponent(
+                formData.subject || "Contact from Portfolio"
+              );
+              const body = encodeURIComponent(messageText);
+              const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
+              window.open(mailtoLink, "_blank") ||
+                (window.location.href = mailtoLink);
+            }
+          }, 2000);
+        }
+
+        // Reset form
         setFormData({
           name: "",
           email: "",
           subject: "",
           message: "",
         });
-
-        showToastMessage(
-          "Email client opened with your message! Message also copied to clipboard. Please send the email to complete your inquiry."
-        );
+        localStorage.removeItem("portfolio-contact-form");
+        setFieldTouched({
+          name: false,
+          email: false,
+          subject: false,
+          message: false,
+        });
       } catch (clipboardError) {
-        // If clipboard fails, still open email client
-        const subject = encodeURIComponent(
-          formData.subject || "Contact from Portfolio"
-        );
-        const body = encodeURIComponent(messageText);
-        const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
+        console.warn("Clipboard not available:", clipboardError);
 
-        window.location.href = mailtoLink;
-
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
-
+        // If clipboard fails, show alternative instructions
         showToastMessage(
-          "Email client opened with your message! Please send the email to complete your inquiry."
+          "📧 Alternative: Send your message directly to akshayjuluri6704@gmail.com or connect via LinkedIn!",
+          "error"
         );
+
+        // Show the message in console for easy copying
+        console.log("Message to send:", messageText);
       }
     } finally {
       setIsSubmitting(false);
@@ -507,6 +550,57 @@ Please reply directly to ${formData.email}
       ...fieldTouched,
       [name]: true,
     });
+
+    // Hide suggestions when textarea loses focus (with delay for clicks)
+    if (name === "message") {
+      setTimeout(() => setShowSuggestions(false), 150);
+    }
+  };
+
+  const handleMessageFocus = () => {
+    if (formData.message.length === 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setFormData({
+      ...formData,
+      message: suggestion,
+    });
+    setShowSuggestions(false);
+    setSelectedSuggestionIndex(-1);
+  };
+
+  const handleMessageKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (!showSuggestions) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedSuggestionIndex((prev) =>
+          prev < messageSuggestions.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedSuggestionIndex((prev) =>
+          prev > 0 ? prev - 1 : messageSuggestions.length - 1
+        );
+        break;
+      case "Enter":
+        if (selectedSuggestionIndex >= 0) {
+          e.preventDefault();
+          handleSuggestionClick(messageSuggestions[selectedSuggestionIndex]);
+        }
+        break;
+      case "Escape":
+        setShowSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+        break;
+    }
   };
 
   const contactInfo = [
@@ -588,6 +682,12 @@ Please reply directly to ${formData.email}
             Ready to collaborate on your next project? Let's connect and build
             something amazing together.
           </p>
+          <div className="mt-4 p-3 bg-orange-400/10 border border-orange-400/20 rounded-lg max-w-2xl mx-auto">
+            <p className="text-sm text-orange-400/90 text-center">
+              💡 <strong>Multiple ways to reach me:</strong> Form submission,
+              direct email, or LinkedIn - choose what works best for you!
+            </p>
+          </div>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
@@ -855,6 +955,8 @@ Please reply directly to ${formData.email}
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    onFocus={handleMessageFocus}
+                    onKeyDown={handleMessageKeyDown}
                     rows={6}
                     className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors resize-none ${
                       fieldTouched.message && fieldErrors.message
@@ -864,6 +966,39 @@ Please reply directly to ${formData.email}
                     placeholder="Tell me about your project or how we can work together..."
                     maxLength={charLimits.message}
                   />
+
+                  {/* Autocomplete Suggestions Dropdown */}
+                  {showSuggestions && (
+                    <motion.div
+                      className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10 max-h-48 overflow-y-auto"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="p-2">
+                        <div className="text-xs text-orange-400 font-mono mb-2 px-2">
+                          💡 Quick suggestions:
+                        </div>
+                        {messageSuggestions.map((suggestion, index) => (
+                          <motion.button
+                            key={suggestion}
+                            type="button"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            className={`w-full text-left px-3 py-2 rounded-md font-mono text-sm transition-colors ${
+                              index === selectedSuggestionIndex
+                                ? "bg-orange-400/20 text-orange-400"
+                                : "text-white/80 hover:bg-white/10 hover:text-white"
+                            }`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            {suggestion}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
                   {fieldTouched.message &&
                     !fieldErrors.message &&
                     formData.message && (
