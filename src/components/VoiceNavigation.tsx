@@ -24,45 +24,66 @@ const VoiceNavigation: React.FC = () => {
   const commands: VoiceCommand[] = [
     {
       command: "go to home",
-      action: () =>
-        document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" }),
+      action: () => {
+        if (typeof document !== "undefined") {
+          document
+            .getElementById("hero")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      },
       response: "Navigating to home section",
     },
     {
       command: "show about",
-      action: () =>
-        document
-          .getElementById("about")
-          ?.scrollIntoView({ behavior: "smooth" }),
+      action: () => {
+        if (typeof document !== "undefined") {
+          document
+            .getElementById("about")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      },
       response: "Showing about section",
     },
     {
       command: "view projects",
-      action: () =>
-        document
-          .getElementById("projects")
-          ?.scrollIntoView({ behavior: "smooth" }),
+      action: () => {
+        if (typeof document !== "undefined") {
+          document
+            .getElementById("projects")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      },
       response: "Displaying projects",
     },
     {
       command: "contact me",
-      action: () =>
-        document
-          .getElementById("contact")
-          ?.scrollIntoView({ behavior: "smooth" }),
+      action: () => {
+        if (typeof document !== "undefined") {
+          document
+            .getElementById("contact")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      },
       response: "Opening contact section",
     },
     {
       command: "show achievements",
-      action: () =>
-        document
-          .getElementById("achievements")
-          ?.scrollIntoView({ behavior: "smooth" }),
+      action: () => {
+        if (typeof document !== "undefined") {
+          document
+            .getElementById("achievements")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      },
       response: "Showing achievements",
     },
     {
       command: "scroll to top",
-      action: () => window.scrollTo({ top: 0, behavior: "smooth" }),
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      },
       response: "Scrolling to top",
     },
     {
@@ -75,11 +96,16 @@ const VoiceNavigation: React.FC = () => {
 
   useEffect(() => {
     // Check if speech recognition is supported
+    if (typeof window === "undefined") {
+      return;
+    }
+
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       setIsSupported(true);
 
       const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
 
       recognition.continuous = false;

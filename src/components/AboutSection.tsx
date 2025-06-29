@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Code2, Rocket, Globe, Database } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 const AboutSection: React.FC = () => {
   const { isDarkMode } = useTheme();
+  const deviceInfo = useDeviceDetection();
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -64,7 +66,9 @@ const AboutSection: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Personal Planet Visualization */}
           <motion.div
-            className="relative h-96 flex items-center justify-center"
+            className={`relative ${
+              deviceInfo.isMobile ? "h-80" : "h-96"
+            } flex items-center justify-center overflow-hidden`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, delay: 0.3 }}
@@ -76,50 +80,64 @@ const AboutSection: React.FC = () => {
             </div>
 
             {/* Orbiting Satellites (Skills) */}
-            {orbitingSkills.map((skill, index) => (
-              <motion.div
-                key={skill}
-                className="absolute w-6 h-6 bg-white/80 rounded-full flex items-center justify-center text-xs font-mono font-bold text-black"
-                style={{
-                  transformOrigin: "0 0",
-                }}
-                animate={{
-                  rotate: 360,
-                }}
-                transition={{
-                  duration: 10 + index * 2,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                initial={{
-                  x:
-                    120 +
-                    Math.cos((index * 45 * Math.PI) / 180) * (80 + index * 10),
-                  y:
-                    120 +
-                    Math.sin((index * 45 * Math.PI) / 180) * (80 + index * 10),
-                }}
-              >
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono whitespace-nowrap">
-                  {skill}
-                </div>
-              </motion.div>
-            ))}
+            {orbitingSkills.map((skill, index) => {
+              const baseRadius = deviceInfo.isMobile ? 60 : 80; // Smaller radius on mobile
+              const radiusIncrement = deviceInfo.isMobile ? 8 : 10; // Smaller increments on mobile
+              const radius = baseRadius + index * radiusIncrement;
+
+              return (
+                <motion.div
+                  key={skill}
+                  className="absolute inset-0 flex items-center justify-center"
+                  animate={
+                    deviceInfo.prefersReducedMotion
+                      ? {}
+                      : {
+                          rotate: 360,
+                        }
+                  }
+                  transition={{
+                    duration: deviceInfo.isMobile
+                      ? 15 + index * 3
+                      : 10 + index * 2, // Slower on mobile for better performance
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <div
+                    className="absolute w-6 h-6 bg-white/80 rounded-full flex items-center justify-center text-xs font-mono font-bold text-black"
+                    style={{
+                      transform: `translateX(${radius}px)`,
+                    }}
+                  >
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono whitespace-nowrap">
+                      {skill}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
 
             {/* Orbital Paths */}
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full border border-white/10"
-                style={{
-                  width: `${320 + i * 40}px`,
-                  height: `${320 + i * 40}px`,
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            ))}
+            {[...Array(3)].map((_, i) => {
+              const baseSize = deviceInfo.isMobile ? 240 : 320; // Much smaller on mobile to fit
+              const increment = deviceInfo.isMobile ? 24 : 40; // Smaller increments on mobile
+              const size = baseSize + i * increment;
+
+              return (
+                <div
+                  key={i}
+                  className="absolute rounded-full border border-white/10"
+                  style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              );
+            })}
           </motion.div>
 
           {/* About Content */}

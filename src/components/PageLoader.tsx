@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PageLoaderProps {
   onLoadComplete?: () => void;
@@ -12,7 +12,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onLoadComplete }) => {
   useEffect(() => {
     // Simulate loading progress
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
@@ -59,7 +59,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onLoadComplete }) => {
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 />
-                <div className="absolute inset-2 bg-gradient-to-r from-orange-400 to-purple-500 rounded-full flex items-center justify-center">
+                <div className="absolute inset-2 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-xl">A</span>
                 </div>
               </div>
@@ -75,7 +75,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onLoadComplete }) => {
             <div className="w-64 mx-auto">
               <div className="bg-white/10 rounded-full h-2 overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-orange-400 to-purple-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.3 }}

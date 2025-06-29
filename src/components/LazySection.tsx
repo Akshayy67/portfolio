@@ -23,6 +23,16 @@ const LazySection: React.FC<LazySectionProps> = ({
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      // Fallback for SSR or browsers without IntersectionObserver
+      setIsInView(true);
+      setHasLoaded(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasLoaded) {

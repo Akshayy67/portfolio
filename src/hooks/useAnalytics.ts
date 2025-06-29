@@ -17,6 +17,10 @@ import {
 export const useAnalytics = () => {
   // Initialize analytics on mount
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     initGA();
     startSession();
 
@@ -84,6 +88,13 @@ export const useSectionTracking = (sectionName: string, threshold = 0.5) => {
   const analytics = useAnalytics();
 
   useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

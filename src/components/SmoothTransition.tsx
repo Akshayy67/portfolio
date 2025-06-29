@@ -49,6 +49,16 @@ const SmoothTransition: React.FC<SmoothTransitionProps> = ({
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
 
   useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      // Fallback for SSR or browsers without IntersectionObserver
+      setIsInView(true);
+      setHasAnimated(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -215,6 +225,11 @@ export const useScrollAnimation = (threshold = 0.1) => {
   const { scrollY } = useScroll();
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      setIsInView(true);
+      return;
+    }
+
     const unsubscribe = scrollY.onChange((latest) => {
       const windowHeight = window.innerHeight;
       const elementTop = latest;

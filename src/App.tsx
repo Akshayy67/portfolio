@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import LaunchSequence from "./components/LaunchSequence";
 import BlackHoleScene from "./components/BlackHoleScene";
 import HeroSection from "./components/HeroSection";
@@ -34,20 +34,17 @@ const MainContent: React.FC = () => {
 
   const [currentScene, setCurrentScene] = useState<
     "launch" | "blackhole" | "main"
-  >(
-    deviceInfo.isMobile ||
-      deviceInfo.isLowEndDevice ||
-      deviceInfo.prefersReducedMotion
-      ? "main"
-      : "launch"
-  );
-  const [showNavigation, setShowNavigation] = useState(
-    deviceInfo.isMobile ||
-      deviceInfo.isLowEndDevice ||
-      deviceInfo.prefersReducedMotion
-  );
+  >("launch"); // Always start with launch sequence
+  const [showNavigation, setShowNavigation] = useState(false);
 
+  // Debug logging for scene changes
   useEffect(() => {
+    console.log("Current scene changed to:", currentScene);
+  }, [currentScene]);
+
+  // Initialize app once on mount
+  useEffect(() => {
+    console.log("App initialized, current scene:", currentScene);
     // Initialize performance monitoring
     measurePerformance();
     preloadCriticalResources();
@@ -60,36 +57,43 @@ const MainContent: React.FC = () => {
         onOfflineReady: () => console.log("App ready for offline use"),
       });
     }
+  }, []); // Run only once on mount
 
-    // Skip animations on mobile, low-end devices, or when user prefers reduced motion
-    if (
-      deviceInfo.isMobile ||
-      deviceInfo.isLowEndDevice ||
-      deviceInfo.prefersReducedMotion
-    ) {
-      setCurrentScene("main");
-      setShowNavigation(true);
-      return;
+  // Handle animation sequence based on device preferences
+  useEffect(() => {
+    console.log("Device info:", deviceInfo);
+    console.log("Prefers reduced motion:", deviceInfo.prefersReducedMotion);
+
+    // Auto-skip animations only if user explicitly prefers reduced motion
+    // TEMPORARILY DISABLED FOR DEBUGGING
+    // if (deviceInfo.prefersReducedMotion) {
+    //   console.log("Skipping animations due to reduced motion preference");
+    //   setCurrentScene("main");
+    //   setShowNavigation(true);
+    //   return;
+    // }
+
+    // Only start timer if we're in launch scene
+    if (currentScene === "launch") {
+      console.log("Starting launch sequence timer");
+      timer1Ref.current = setTimeout(() => {
+        console.log("🌌 Timer 1 fired: Transitioning to blackhole");
+        setCurrentScene("blackhole");
+      }, 6000); // 6 seconds total for launch sequence
     }
-
-    timer1Ref.current = setTimeout(() => {
-      setCurrentScene("blackhole");
-    }, 6000);
-
-    timer2Ref.current = setTimeout(() => {
-      setCurrentScene("main");
-      setShowNavigation(true);
-    }, 12000);
 
     return () => {
       if (timer1Ref.current) clearTimeout(timer1Ref.current);
       if (timer2Ref.current) clearTimeout(timer2Ref.current);
     };
-  }, [
-    deviceInfo.isMobile,
-    deviceInfo.isLowEndDevice,
-    deviceInfo.prefersReducedMotion,
-  ]);
+  }, [deviceInfo.prefersReducedMotion, currentScene]);
+
+  // Handle black hole sequence completion
+  const handleBlackHoleComplete = () => {
+    console.log("🏠 Black hole sequence completed: Transitioning to main");
+    setCurrentScene("main");
+    setShowNavigation(true);
+  };
 
   // Separate useEffect for keyboard events
   useEffect(() => {
@@ -100,6 +104,12 @@ const MainContent: React.FC = () => {
       ) {
         e.preventDefault();
         skipToMain();
+      }
+
+      // Press 'R' to restart animations when on main page
+      if (e.code === "KeyR" && currentScene === "main") {
+        e.preventDefault();
+        restartAnimations();
       }
     };
 
@@ -134,14 +144,26 @@ const MainContent: React.FC = () => {
     }, 500);
   };
 
+  const restartAnimations = () => {
+    setCurrentScene("launch");
+    setShowNavigation(false);
+    analytics.trackEvent("animations_restarted", { trigger: "manual" });
+  };
+
+  console.log("App rendering, currentScene:", currentScene);
+
   return (
     <div className="relative">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait">
         {currentScene === "launch" && (
           <LaunchSequence key="launch" onSkip={skipToMain} />
         )}
         {currentScene === "blackhole" && (
-          <BlackHoleScene key="blackhole" onSkip={skipToMain} />
+          <BlackHoleScene
+            key="blackhole"
+            onSkip={skipToMain}
+            onComplete={handleBlackHoleComplete}
+          />
         )}
         {currentScene === "main" && (
           <div
@@ -152,102 +174,45 @@ const MainContent: React.FC = () => {
                 : "bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900"
             }`}
           >
-            {/* Enhanced Background Elements */}
+            {/* Simplified Background */}
             <div className="fixed inset-0 z-0">
-              {/* Particle Background - Optimized for mobile */}
-              {!deviceInfo.isMobile &&
-                !deviceInfo.isLowEndDevice &&
-                !deviceInfo.prefersReducedMotion && (
-                  <ParticleBackground isDarkMode={isDarkMode} />
-                )}
-
-              {/* Distant Stars (only in dark mode) */}
-              {isDarkMode &&
-                [...Array(100)].map((_, i) => (
-                  <div
-                    key={`star-${i}`}
-                    className="absolute bg-white rounded-full"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                      width: `${Math.random() * 2 + 0.5}px`,
-                      height: `${Math.random() * 2 + 0.5}px`,
-                      opacity: Math.random() * 0.8 + 0.2,
-                      animation: `twinkle ${
-                        Math.random() * 4 + 2
-                      }s ease-in-out infinite`,
-                      animationDelay: `${Math.random() * 4}s`,
-                    }}
-                  />
-                ))}
-
-              {/* Theme-based gradients */}
               {isDarkMode ? (
-                <>
-                  <div className="absolute inset-0 bg-gargantua opacity-40" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/10 to-black" />
-                  <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/20 to-black/60" />
-                </>
+                <div className="absolute inset-0 bg-black" />
               ) : (
-                <>
-                  {/* Gargantua Black Hole Effect for Light Theme */}
-                  <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 opacity-20">
-                    {/* Event Horizon */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-black via-gray-800 to-transparent animate-pulse" />
-
-                    {/* Accretion Disk */}
-                    <div
-                      className="absolute inset-4 rounded-full bg-gradient-to-r from-orange-600 via-yellow-500 to-orange-600 opacity-60 animate-spin"
-                      style={{ animationDuration: "20s" }}
-                    />
-                    <div
-                      className="absolute inset-8 rounded-full bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 opacity-40 animate-spin"
-                      style={{
-                        animationDuration: "15s",
-                        animationDirection: "reverse",
-                      }}
-                    />
-
-                    {/* Photon Sphere */}
-                    <div className="absolute inset-12 rounded-full border-2 border-orange-300 opacity-30 animate-ping" />
-                  </div>
-
-                  {/* Subtle space distortion */}
-                  <div className="absolute inset-0 bg-gradient-radial from-transparent via-gray-50/30 to-white/80" />
-
-                  {/* Light rays */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-100/20 via-transparent to-yellow-100/20" />
-                </>
+                <div className="absolute inset-0 bg-white" />
               )}
             </div>
 
             {/* Navigation and Content */}
             {showNavigation && <Navigation />}
             <ThemeToggle />
+
+            {/* Restart Animations Button */}
+            {showNavigation && (
+              <motion.button
+                onClick={restartAnimations}
+                className="fixed top-4 left-4 z-40 flex items-center gap-2 px-4 py-2 bg-orange-500/80 text-white rounded-full hover:bg-orange-400 transition-all duration-300 font-mono text-sm shadow-lg backdrop-blur-sm border border-orange-400/30"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title="Restart Launch Animation (Press R)"
+              >
+                🚀 Replay
+              </motion.button>
+            )}
+
             <VoiceNavigation />
             <AnalyticsDashboard />
 
             <HeroSection />
 
-            <SmoothTransition direction="up" duration={0.8} delay={0.2}>
-              <AboutSection />
-            </SmoothTransition>
-
-            <SmoothTransition direction="fade" duration={0.6} delay={0.1}>
-              <HobbiesSection />
-            </SmoothTransition>
-
-            <SmoothTransition direction="up" duration={0.8} stagger={true}>
-              <ProjectsSection />
-            </SmoothTransition>
-
-            <SmoothTransition direction="scale" duration={0.6}>
-              <AchievementsSection />
-            </SmoothTransition>
-
-            <SmoothTransition direction="up" duration={0.8} delay={0.3}>
-              <ContactSection />
-            </SmoothTransition>
+            <AboutSection />
+            <HobbiesSection />
+            <ProjectsSection />
+            <AchievementsSection />
+            <ContactSection />
           </div>
         )}
       </AnimatePresence>

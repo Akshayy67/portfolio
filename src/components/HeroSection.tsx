@@ -56,26 +56,31 @@ const HeroSection: React.FC = () => {
   }, [isMobile]);
 
   useEffect(() => {
+    console.log("HeroSection mounted");
     if (typedRef.current) {
-      const typed = new Typed(typedRef.current, {
-        strings: [
-          "const developer = new ComputerScientist();",
-          'developer.skills = ["C", "Java", "Python", "Dart", "JavaScript"];',
-          'developer.frameworks = ["Flutter", "TensorFlow", "React"];',
-          'developer.mission = "Building innovative solutions";',
-          "developer.launch();",
-        ],
-        typeSpeed: 50,
-        backSpeed: 30,
-        backDelay: 2000,
-        loop: true,
-        showCursor: true,
-        cursorChar: "_",
-      });
+      try {
+        const typed = new Typed(typedRef.current, {
+          strings: [
+            "const developer = new ComputerScientist();",
+            'developer.skills = ["C", "Java", "Python", "Dart", "JavaScript"];',
+            'developer.frameworks = ["Flutter", "TensorFlow", "React"];',
+            'developer.mission = "Building innovative solutions";',
+            "developer.launch();",
+          ],
+          typeSpeed: 50,
+          backSpeed: 30,
+          backDelay: 2000,
+          loop: true,
+          showCursor: true,
+          cursorChar: "_",
+        });
 
-      return () => {
-        typed.destroy();
-      };
+        return () => {
+          typed.destroy();
+        };
+      } catch (error) {
+        console.error("Typed.js error:", error);
+      }
     }
   }, []);
 
@@ -87,107 +92,27 @@ const HeroSection: React.FC = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background - Enhanced for Mobile, Simple for Desktop */}
-      {isMobile ? (
-        <motion.div className="absolute inset-0" style={{ y: smoothParallaxY }}>
-          {/* Enhanced Mobile Background */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-radial from-orange-900/20 via-black to-black"
-            animate={{
-              background: [
-                "radial-gradient(circle at 50% 50%, rgba(255, 165, 0, 0.15) 0%, rgba(0, 0, 0, 1) 70%)",
-                "radial-gradient(circle at 60% 40%, rgba(255, 165, 0, 0.2) 0%, rgba(0, 0, 0, 1) 70%)",
-                "radial-gradient(circle at 40% 60%, rgba(255, 165, 0, 0.15) 0%, rgba(0, 0, 0, 1) 70%)",
-              ],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
+      {/* Simplified Background */}
+      <div className="absolute inset-0">
+        <div
+          className={`absolute inset-0 ${isDarkMode ? "bg-black" : "bg-white"}`}
+        />
 
-          {/* Enhanced Stars with Depth for Mobile */}
-          {[...Array(200)].map((_, i) => {
-            const depth = Math.random();
-            const size = depth * 3 + 0.5;
-            return (
-              <motion.div
-                key={i}
-                className="absolute bg-white rounded-full"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  zIndex: Math.floor(depth * 10),
-                }}
-                animate={{
-                  opacity: [0.2 + depth * 0.3, 1, 0.2 + depth * 0.3],
-                  scale: [1, 1 + depth * 0.5, 1],
-                  x: mousePosition.x * depth * 0.5,
-                  y: mousePosition.y * depth * 0.5,
-                }}
-                transition={{
-                  duration: Math.random() * 4 + 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                  x: { duration: 0.3 },
-                  y: { duration: 0.3 },
-                }}
-              />
-            );
-          })}
-        </motion.div>
-      ) : (
-        <div className="absolute inset-0">
-          {/* Simple Desktop Background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-orange-900/15 via-black to-black" />
-
-          {/* Simple Stars for Desktop */}
-          {[...Array(150)].map((_, i) => (
-            <motion.div
+        {/* Simple Stars */}
+        {isDarkMode &&
+          [...Array(50)].map((_, i) => (
+            <div
               key={i}
-              className="absolute bg-white rounded-full"
+              className="absolute bg-white rounded-full opacity-50"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 3 + 1}px`,
-                height: `${Math.random() * 3 + 1}px`,
-              }}
-              animate={{
-                opacity: [0.3, 1, 0.3],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: Math.random() * 4 + 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
+                width: `${Math.random() * 2 + 1}px`,
+                height: `${Math.random() * 2 + 1}px`,
               }}
             />
           ))}
-
-          {/* Simple Space Dust for Desktop */}
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={`dust-${i}`}
-              className="absolute bg-orange-400/8 rounded-full blur-sm"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 100 + 50}px`,
-                height: `${Math.random() * 100 + 50}px`,
-              }}
-              animate={{
-                x: [0, Math.random() * 100 - 50],
-                y: [0, Math.random() * 100 - 50],
-                opacity: [0.1, 0.3, 0.1],
-              }}
-              transition={{
-                duration: Math.random() * 20 + 10,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          ))}
-        </div>
-      )}
+      </div>
 
       {/* Content Container */}
       <div

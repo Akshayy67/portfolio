@@ -87,6 +87,13 @@ const ANALYTICS_KEY = "portfolio_analytics";
 
 export const getLocalAnalytics = (): LocalAnalytics => {
   try {
+    if (typeof localStorage === "undefined") {
+      return {
+        pageViews: {},
+        events: [],
+        sessions: [],
+      };
+    }
     const stored = localStorage.getItem(ANALYTICS_KEY);
     return stored
       ? JSON.parse(stored)
@@ -106,6 +113,9 @@ export const getLocalAnalytics = (): LocalAnalytics => {
 
 export const updateLocalAnalytics = (update: Partial<LocalAnalytics>) => {
   try {
+    if (typeof localStorage === "undefined") {
+      return;
+    }
     const current = getLocalAnalytics();
     const updated = { ...current, ...update };
     localStorage.setItem(ANALYTICS_KEY, JSON.stringify(updated));
@@ -128,6 +138,9 @@ export const trackLocalPageView = (path: string) => {
 
 // Start a new session
 export const startSession = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
   const analytics = getLocalAnalytics();
   const newSession = {
     start: Date.now(),

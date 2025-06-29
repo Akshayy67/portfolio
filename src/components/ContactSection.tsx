@@ -55,7 +55,11 @@ const ContactSection: React.FC = () => {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
-  const [useAI, setUseAI] = useState(false);
+  const [useAI, setUseAI] = useState(true); // Enable AI by default
+  const [aiStatus, setAiStatus] = useState<
+    "idle" | "loading" | "success" | "fallback" | "error"
+  >("idle");
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Character limits
   const charLimits = {
@@ -88,20 +92,40 @@ const ContactSection: React.FC = () => {
     "Let's discuss rates and timeline.",
   ];
 
-  // AI-powered suggestion generation
+  // Enhanced AI-powered suggestion generation with better error handling
   const generateAISuggestions = async (currentMessage: string) => {
     if (!currentMessage.trim() || currentMessage.length < 10) {
       return []; // Don't generate AI suggestions for very short messages
     }
 
     setIsLoadingAI(true);
+    setAiStatus("loading");
+    setAiError(null);
+
     try {
-      // Option 1: Using a simple AI completion service (you can replace with OpenAI, Claude, etc.)
+      console.log("🤖 Starting AI suggestion generation...");
       const aiSuggestions = await generateSmartSuggestions(currentMessage);
-      setAiSuggestions(aiSuggestions);
-      return aiSuggestions;
+
+      if (aiSuggestions.length > 0) {
+        setAiSuggestions(aiSuggestions);
+        setAiStatus("success");
+        console.log(
+          "✅ AI suggestions successful:",
+          aiSuggestions.length,
+          "suggestions"
+        );
+        return aiSuggestions;
+      } else {
+        setAiStatus("fallback");
+        console.log("⚠️ AI returned no suggestions, using fallback");
+        return [];
+      }
     } catch (error) {
-      console.warn("AI suggestions failed:", error);
+      console.error("❌ AI suggestions failed:", error);
+      setAiError(
+        error instanceof Error ? error.message : "AI service unavailable"
+      );
+      setAiStatus("error");
       return [];
     } finally {
       setIsLoadingAI(false);
@@ -130,12 +154,17 @@ const ContactSection: React.FC = () => {
     return await generateContextualFallback(message);
   };
 
-  // Try free AI services
-  const tryFreeAI = async (message: string): Promise<string[]> => {
-    // Option 1: Try Hugging Face Inference API (completely free)
+  // Try free AI services with better models and error handling
+  const tryFreeAI = async (
+    message: string,
+    retryCount = 0
+  ): Promise<string[]> => {
+    const maxRetries = 2;
+
+    // Option 1: Try Hugging Face with a better text completion model
     try {
       const response = await fetch(
-        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        "https://api-inference.huggingface.co/models/gpt2",
         {
           method: "POST",
           headers: {
@@ -144,10 +173,13 @@ const ContactSection: React.FC = () => {
           body: JSON.stringify({
             inputs: message,
             parameters: {
-              max_length: 100,
-              num_return_sequences: 3,
+              max_new_tokens: 30,
+              num_return_sequences: 4,
               temperature: 0.7,
               do_sample: true,
+              return_full_text: false,
+              repetition_penalty: 1.1,
+              top_p: 0.9,
             },
           }),
         }
@@ -155,28 +187,70 @@ const ContactSection: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Hugging Face response:", result);
+        console.log("🤖 Hugging Face GPT-2 response:", result);
 
         if (Array.isArray(result) && result.length > 0) {
           const suggestions = result
             .map((item: any) => {
               if (item.generated_text) {
-                // Extract the new part after the original message
-                const newText = item.generated_text.replace(message, "").trim();
-                return newText;
+                // Clean up the generated text
+                let text = item.generated_text.trim();
+
+                // Remove the original message if it's included
+                if (text.startsWith(message)) {
+                  text = text.substring(message.length).trim();
+                }
+
+                // Clean up and format
+                text = text
+                  .replace(/^\W+/, "") // Remove leading non-word characters
+                  .replace(/\s+/g, " ") // Normalize whitespace
+                  .trim();
+
+                // Ensure it starts with a space for proper concatenation
+                if (text && !text.startsWith(" ")) {
+                  text = " " + text;
+                }
+
+                return text;
               }
               return "";
             })
-            .filter((text: string) => text.length > 5 && text.length < 100)
+            .filter((text: string) => text.length > 3 && text.length < 80)
             .slice(0, 3);
 
           if (suggestions.length > 0) {
+            console.log("✅ Generated AI suggestions:", suggestions);
             return suggestions;
           }
+        }
+      } else {
+        console.warn("Hugging Face API response not OK:", response.status);
+        // If it's a 503 (service unavailable) and we haven't retried much, try again
+        if (response.status === 503 && retryCount < maxRetries) {
+          console.log(
+            `🔄 Retrying AI request (attempt ${retryCount + 1}/${maxRetries})`
+          );
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * (retryCount + 1))
+          ); // Exponential backoff
+          return tryFreeAI(message, retryCount + 1);
         }
       }
     } catch (error) {
       console.warn("Hugging Face API error:", error);
+      // Retry on network errors
+      if (retryCount < maxRetries) {
+        console.log(
+          `🔄 Retrying AI request after error (attempt ${
+            retryCount + 1
+          }/${maxRetries})`
+        );
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * (retryCount + 1))
+        );
+        return tryFreeAI(message, retryCount + 1);
+      }
     }
 
     // Option 2: Try a simpler text completion approach
@@ -1493,11 +1567,26 @@ Time: ${new Date().toLocaleString()}`;
                       }}
                       className={`text-xs font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded ${
                         useAI
-                          ? "bg-orange-400/20 text-orange-400 border border-orange-400/30"
+                          ? aiStatus === "success"
+                            ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                            : aiStatus === "error"
+                            ? "bg-red-400/20 text-red-400 border border-red-400/30"
+                            : aiStatus === "loading"
+                            ? "bg-blue-400/20 text-blue-400 border border-blue-400/30"
+                            : "bg-orange-400/20 text-orange-400 border border-orange-400/30"
                           : "text-white/60 hover:text-orange-300 border border-white/20"
                       }`}
                     >
-                      🤖 AI {useAI ? "ON" : "OFF"}
+                      🤖 AI{" "}
+                      {useAI
+                        ? aiStatus === "success"
+                          ? "✅"
+                          : aiStatus === "error"
+                          ? "❌"
+                          : aiStatus === "loading"
+                          ? "⏳"
+                          : "ON"
+                        : "OFF"}
                     </button>
                     {useAI && formData.message.length > 10 && (
                       <button
@@ -1589,7 +1678,22 @@ Time: ${new Date().toLocaleString()}`;
                           {isLoadingAI && (
                             <div className="px-4 py-3 text-gray-500 text-sm flex items-center gap-3">
                               <div className="animate-spin w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full"></div>
-                              <span>AI generating suggestions...</span>
+                              <span>🤖 AI generating smart suggestions...</span>
+                            </div>
+                          )}
+                          {aiStatus === "error" && aiError && (
+                            <div className="px-4 py-3 text-red-400 text-sm flex items-center gap-3">
+                              <span>⚠️</span>
+                              <span>
+                                AI temporarily unavailable - using smart
+                                fallbacks
+                              </span>
+                            </div>
+                          )}
+                          {aiStatus === "fallback" && (
+                            <div className="px-4 py-3 text-yellow-400 text-sm flex items-center gap-3">
+                              <span>💡</span>
+                              <span>Using contextual suggestions</span>
                             </div>
                           )}
                         </motion.div>
