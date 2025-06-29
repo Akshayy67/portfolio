@@ -53,6 +53,9 @@ const ContactSection: React.FC = () => {
   // Autocomplete suggestions state
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [useAI, setUseAI] = useState(false);
 
   // Character limits
   const charLimits = {
@@ -61,7 +64,7 @@ const ContactSection: React.FC = () => {
     message: 1000,
   };
 
-  // Message suggestions
+  // Message suggestions with categories
   const messageSuggestions = [
     "I love your work!",
     "How can I collaborate with you?",
@@ -73,7 +76,349 @@ const ContactSection: React.FC = () => {
     "Would you be available for freelance work?",
     "I'd love to learn more about your experience.",
     "Can you help me with my project?",
+    "I need help with web development.",
+    "Looking for a React developer.",
+    "Interested in full-stack development.",
+    "Want to discuss mobile app development.",
+    "Need assistance with UI/UX design.",
+    "Looking for machine learning expertise.",
+    "Interested in your Python skills.",
+    "Can we schedule a call?",
+    "What's your availability?",
+    "Let's discuss rates and timeline.",
   ];
+
+  // AI-powered suggestion generation
+  const generateAISuggestions = async (currentMessage: string) => {
+    if (!currentMessage.trim() || currentMessage.length < 10) {
+      return []; // Don't generate AI suggestions for very short messages
+    }
+
+    setIsLoadingAI(true);
+    try {
+      // Option 1: Using a simple AI completion service (you can replace with OpenAI, Claude, etc.)
+      const aiSuggestions = await generateSmartSuggestions(currentMessage);
+      setAiSuggestions(aiSuggestions);
+      return aiSuggestions;
+    } catch (error) {
+      console.warn("AI suggestions failed:", error);
+      return [];
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+
+  // Working AI suggestion generator using FREE APIs
+  const generateSmartSuggestions = async (
+    message: string
+  ): Promise<string[]> => {
+    console.log("🤖 Generating AI suggestions for:", message);
+
+    try {
+      // Try the free AI API first
+      const aiSuggestions = await tryFreeAI(message);
+      if (aiSuggestions.length > 0) {
+        console.log("✅ AI suggestions generated:", aiSuggestions);
+        return aiSuggestions;
+      }
+    } catch (error) {
+      console.warn("Free AI failed:", error);
+    }
+
+    // Fallback to smart contextual suggestions
+    console.log("Using smart contextual fallback");
+    return await generateContextualFallback(message);
+  };
+
+  // Try free AI services
+  const tryFreeAI = async (message: string): Promise<string[]> => {
+    // Option 1: Try Hugging Face Inference API (completely free)
+    try {
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            inputs: message,
+            parameters: {
+              max_length: 100,
+              num_return_sequences: 3,
+              temperature: 0.7,
+              do_sample: true,
+            },
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Hugging Face response:", result);
+
+        if (Array.isArray(result) && result.length > 0) {
+          const suggestions = result
+            .map((item: any) => {
+              if (item.generated_text) {
+                // Extract the new part after the original message
+                const newText = item.generated_text.replace(message, "").trim();
+                return newText;
+              }
+              return "";
+            })
+            .filter((text: string) => text.length > 5 && text.length < 100)
+            .slice(0, 3);
+
+          if (suggestions.length > 0) {
+            return suggestions;
+          }
+        }
+      }
+    } catch (error) {
+      console.warn("Hugging Face API error:", error);
+    }
+
+    // Option 2: Try a simpler text completion approach
+    try {
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/gpt2",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            inputs: message + " ",
+            parameters: {
+              max_new_tokens: 30,
+              temperature: 0.8,
+              return_full_text: false,
+            },
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("GPT-2 response:", result);
+
+        if (result && result[0] && result[0].generated_text) {
+          const completion = result[0].generated_text.trim();
+          if (completion.length > 5) {
+            // Split into sentences and clean up
+            const sentences = completion
+              .split(/[.!?]+/)
+              .map((s: string) => s.trim())
+              .filter((s: string) => s.length > 5 && s.length < 80)
+              .slice(0, 2);
+
+            if (sentences.length > 0) {
+              return sentences;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.warn("GPT-2 API error:", error);
+    }
+
+    return [];
+  };
+
+  // Improved contextual fallback (much better than before)
+  const generateContextualFallback = async (
+    message: string
+  ): Promise<string[]> => {
+    const messageLower = message.toLowerCase();
+
+    // Analyze the message for intent and context
+    const intents = {
+      needsHelp: /need help|assistance|support|guidance/.test(messageLower),
+      hasProject: /project|build|create|develop|make/.test(messageLower),
+      wantsToHire: /hire|employ|work with|looking for/.test(messageLower),
+      askingAbout: /about|regarding|concerning|question/.test(messageLower),
+      interested: /interested|curious|want to know/.test(messageLower),
+      technical: /web|app|mobile|react|javascript|python|database/.test(
+        messageLower
+      ),
+      business: /business|company|startup|enterprise/.test(messageLower),
+      timeline: /when|timeline|deadline|urgent|asap/.test(messageLower),
+      budget: /cost|price|budget|rate|fee/.test(messageLower),
+    };
+
+    let suggestions: string[] = [];
+
+    // Generate contextual suggestions based on detected intents
+    if (intents.hasProject && intents.technical) {
+      suggestions.push(
+        "I'd love to discuss the technical requirements and architecture.",
+        "What technologies are you considering for this project?",
+        "I can provide a detailed project timeline and cost estimate."
+      );
+    } else if (intents.wantsToHire) {
+      suggestions.push(
+        "I'm available for new projects and would love to learn more.",
+        "Let's schedule a call to discuss your requirements.",
+        "I can share my portfolio and recent work examples."
+      );
+    } else if (intents.needsHelp && intents.technical) {
+      suggestions.push(
+        "I specialize in full-stack development and can definitely help.",
+        "What specific challenges are you facing with your project?",
+        "I have experience solving similar technical problems."
+      );
+    } else if (intents.timeline || intents.budget) {
+      suggestions.push(
+        "I offer flexible pricing options for different project sizes.",
+        "My typical turnaround time depends on project complexity.",
+        "Let's discuss your timeline and budget requirements."
+      );
+    } else if (intents.business) {
+      suggestions.push(
+        "I work with businesses of all sizes, from startups to enterprises.",
+        "I can help scale your technical infrastructure as you grow.",
+        "Let's explore how technology can drive your business goals."
+      );
+    } else {
+      // General professional suggestions
+      suggestions.push(
+        "I'd be happy to discuss how I can help with your project.",
+        "Feel free to share more details about what you're looking for.",
+        "Let's connect and explore potential collaboration opportunities."
+      );
+    }
+
+    return suggestions.slice(0, 4);
+  };
+
+  // YouTube-style suggestion system
+  const getYouTubeLikeSuggestions = () => {
+    const currentMessage = formData.message.trim();
+
+    // If message is empty, show popular starting phrases
+    if (!currentMessage) {
+      return [
+        "I need help with",
+        "I'm looking for",
+        "Can you help me",
+        "I want to hire",
+        "I have a project",
+        "I'm interested in",
+        "Looking for a developer",
+        "Need assistance with",
+      ];
+    }
+
+    // Get all possible completions (AI + static)
+    let allSuggestions: string[] = [];
+
+    // Add AI suggestions if available
+    if (useAI && aiSuggestions.length > 0) {
+      allSuggestions.push(
+        ...aiSuggestions.map((s) => currentMessage + " " + s)
+      );
+    }
+
+    // Add contextual completions based on what they're typing
+    const completions = getContextualCompletions(currentMessage);
+    allSuggestions.push(...completions);
+
+    // Filter and sort by relevance (like YouTube)
+    return allSuggestions
+      .filter(
+        (suggestion) =>
+          suggestion.toLowerCase().startsWith(currentMessage.toLowerCase()) ||
+          suggestion.toLowerCase().includes(currentMessage.toLowerCase())
+      )
+      .slice(0, 8) // Show max 8 suggestions like YouTube
+      .sort((a, b) => {
+        // Prioritize suggestions that start with the current text
+        const aStarts = a
+          .toLowerCase()
+          .startsWith(currentMessage.toLowerCase());
+        const bStarts = b
+          .toLowerCase()
+          .startsWith(currentMessage.toLowerCase());
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return a.length - b.length; // Shorter suggestions first
+      });
+  };
+
+  // Generate contextual completions like YouTube search suggestions
+  const getContextualCompletions = (currentText: string): string[] => {
+    const text = currentText.toLowerCase();
+    const completions: string[] = [];
+
+    // Common starting phrases and their completions
+    if (text.startsWith("i need")) {
+      completions.push(
+        "I need help with my website",
+        "I need a developer for my project",
+        "I need someone to build an app",
+        "I need assistance with React development",
+        "I need a full-stack developer"
+      );
+    } else if (text.startsWith("i'm looking")) {
+      completions.push(
+        "I'm looking for a web developer",
+        "I'm looking for someone to help with my project",
+        "I'm looking for a React specialist",
+        "I'm looking for a freelance developer",
+        "I'm looking for long-term collaboration"
+      );
+    } else if (text.startsWith("can you")) {
+      completions.push(
+        "Can you help me build a website",
+        "Can you develop a mobile app",
+        "Can you create an e-commerce site",
+        "Can you work on a React project",
+        "Can you help with full-stack development"
+      );
+    } else if (text.startsWith("i want")) {
+      completions.push(
+        "I want to hire a developer",
+        "I want to build a website",
+        "I want to create a mobile app",
+        "I want to discuss a project",
+        "I want to collaborate on something"
+      );
+    } else if (text.startsWith("i have")) {
+      completions.push(
+        "I have a project that needs development",
+        "I have an idea for a web application",
+        "I have a startup that needs technical help",
+        "I have a website that needs improvement",
+        "I have a mobile app concept"
+      );
+    } else {
+      // Partial word matching for any position
+      if (text.includes("web")) {
+        completions.push(
+          currentText + " development project",
+          currentText + " application for my business",
+          currentText + " platform with modern features"
+        );
+      }
+      if (text.includes("app")) {
+        completions.push(
+          currentText + " for iOS and Android",
+          currentText + " with great user experience",
+          currentText + " that integrates with my website"
+        );
+      }
+      if (text.includes("project")) {
+        completions.push(
+          currentText + " that requires React expertise",
+          currentText + " with tight deadline",
+          currentText + " for my startup"
+        );
+      }
+    }
+
+    return completions;
+  };
 
   // Validation functions
   const validateEmail = (email: string): string => {
@@ -193,13 +538,21 @@ const ContactSection: React.FC = () => {
         serviceId: serviceId ? "✓ Available" : "✗ Missing",
         templateId: templateId ? "✓ Available" : "✗ Missing",
         publicKey: publicKey ? "✓ Available" : "✗ Missing",
+        actualValues: {
+          serviceId: serviceId,
+          templateId: templateId,
+          publicKey: publicKey,
+        },
       });
 
       // Check if EmailJS is configured
       if (!serviceId || !templateId || !publicKey) {
-        console.warn("EmailJS not fully configured, using alternative method");
+        console.warn("EmailJS not fully configured, using fallback method");
         throw new Error("EmailJS service not available");
       }
+
+      // Initialize EmailJS with public key
+      emailjs.init(publicKey);
 
       // Prepare template parameters with better formatting
       const templateParams = {
@@ -211,17 +564,13 @@ const ContactSection: React.FC = () => {
         // Additional fields for better email formatting
         reply_to: formData.email,
         timestamp: new Date().toLocaleString(),
+        to_name: "Akshay Juluri",
       };
 
-      console.log("Attempting to send email via EmailJS...");
+      console.log("Attempting to send email via EmailJS...", templateParams);
 
       // Send email using EmailJS with better error handling
-      const result = await emailjs.send(
-        serviceId,
-        templateId,
-        templateParams,
-        publicKey
-      );
+      const result = await emailjs.send(serviceId, templateId, templateParams);
 
       console.log("EmailJS Response:", result);
 
@@ -243,13 +592,63 @@ const ContactSection: React.FC = () => {
           message: false,
         });
         showToastMessage(
-          "✅ Message sent successfully! I'll get back to you soon."
+          "✅ Message sent successfully via EmailJS! I'll get back to you soon."
         );
       } else {
-        throw new Error("EmailJS failed");
+        throw new Error(`EmailJS failed with status: ${result.status}`);
       }
     } catch (error) {
       console.error("EmailJS failed:", error);
+      console.log("Trying alternative email methods...");
+
+      // Try backend email service as first fallback
+      try {
+        const backendResponse = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || "Contact from Portfolio",
+            message: formData.message,
+          }),
+        });
+
+        if (backendResponse.ok) {
+          const result = await backendResponse.json();
+          console.log("Backend email sent successfully:", result);
+
+          // Reset form
+          setFormData({
+            name: "",
+            email: "",
+            subject: "",
+            message: "",
+          });
+          localStorage.removeItem("portfolio-contact-form");
+          setFieldTouched({
+            name: false,
+            email: false,
+            subject: false,
+            message: false,
+          });
+
+          showToastMessage(
+            "✅ Message sent successfully via backup service! I'll get back to you soon."
+          );
+          return; // Exit early on success
+        } else {
+          console.warn(
+            "Backend email service failed:",
+            await backendResponse.text()
+          );
+        }
+      } catch (backendError) {
+        console.warn("Backend email service unavailable:", backendError);
+      }
+
       console.log("Using enhanced fallback options");
 
       // Enhanced fallback with better user experience
@@ -265,8 +664,24 @@ Sent from: ${window.location.origin}
 Time: ${new Date().toLocaleString()}`;
 
       try {
-        // Always try to copy to clipboard first
-        await navigator.clipboard.writeText(messageText);
+        // Try multiple fallback methods
+        let fallbackSuccess = false;
+
+        // Method 1: Try to copy to clipboard first
+        try {
+          await navigator.clipboard.writeText(messageText);
+          fallbackSuccess = true;
+          console.log("✅ Message copied to clipboard");
+        } catch (clipboardError) {
+          console.warn("Clipboard not available:", clipboardError);
+        }
+
+        // Method 2: Create a downloadable text file as backup
+        const blob = new Blob([messageText], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = `contact-message-${Date.now()}.txt`;
 
         // Check if user is on mobile or desktop for better UX
         const isMobile =
@@ -274,50 +689,89 @@ Time: ${new Date().toLocaleString()}`;
             navigator.userAgent
           );
 
+        // Method 3: Always try mailto as primary fallback
+        const subject = encodeURIComponent(
+          formData.subject || "Contact from Portfolio"
+        );
+        const body = encodeURIComponent(messageText);
+        const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
+
         if (isMobile) {
           // On mobile, email apps work better
-          const subject = encodeURIComponent(
-            formData.subject || "Contact from Portfolio"
-          );
-          const body = encodeURIComponent(messageText);
-          const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
-
-          // Use window.open for better compatibility on mobile
-          const emailWindow = window.open(mailtoLink, "_blank");
-          if (!emailWindow) {
-            window.location.href = mailtoLink;
+          try {
+            const emailWindow = window.open(mailtoLink, "_blank");
+            if (!emailWindow) {
+              window.location.href = mailtoLink;
+            }
+            showToastMessage(
+              fallbackSuccess
+                ? "📱 Email app opened! Message also copied to clipboard as backup."
+                : "📱 Email app opened with your message!"
+            );
+          } catch (emailError) {
+            console.error("Email app failed:", emailError);
+            // Trigger download as last resort
+            downloadLink.click();
+            showToastMessage(
+              "📄 Message downloaded as text file. Please email it to akshayjuluri6704@gmail.com"
+            );
           }
-
-          showToastMessage(
-            "📱 Email app opened with your message! Message also copied to clipboard."
-          );
         } else {
-          // On desktop, give users more options
-          showToastMessage(
-            "📋 Message copied to clipboard! You can now paste it in Gmail, Outlook, or any email service. Or click below to open your default email app.",
-            "success"
-          );
-
-          // Add a secondary action button for email client
-          setTimeout(() => {
-            const shouldOpenEmail = confirm(
-              "Would you like to open your default email app with the message pre-filled?\n\n" +
-                "Click 'OK' to open email app, or 'Cancel' to use the copied message in your preferred email service."
+          // On desktop, give users multiple options
+          if (fallbackSuccess) {
+            showToastMessage(
+              "📋 Message copied to clipboard! Opening email options...",
+              "success"
             );
 
-            if (shouldOpenEmail) {
-              const subject = encodeURIComponent(
-                formData.subject || "Contact from Portfolio"
+            // Show user-friendly options
+            setTimeout(() => {
+              const userChoice = confirm(
+                "Your message has been copied to clipboard!\n\n" +
+                  "Choose your preferred method:\n" +
+                  "• Click 'OK' to open your default email app\n" +
+                  "• Click 'Cancel' to paste the message in Gmail/Outlook manually\n\n" +
+                  "Email: akshayjuluri6704@gmail.com"
               );
-              const body = encodeURIComponent(messageText);
-              const mailtoLink = `mailto:akshayjuluri6704@gmail.com?subject=${subject}&body=${body}`;
+
+              if (userChoice) {
+                try {
+                  window.open(mailtoLink, "_blank") ||
+                    (window.location.href = mailtoLink);
+                } catch (emailError) {
+                  console.error("Email client failed:", emailError);
+                  downloadLink.click();
+                  showToastMessage(
+                    "📄 Email client unavailable. Message downloaded as backup."
+                  );
+                }
+              } else {
+                showToastMessage(
+                  "📋 Message is in your clipboard. Paste it in your email app!"
+                );
+              }
+            }, 1500);
+          } else {
+            // Clipboard failed, try email client directly
+            try {
               window.open(mailtoLink, "_blank") ||
                 (window.location.href = mailtoLink);
+              showToastMessage("📧 Email client opened with your message!");
+            } catch (emailError) {
+              console.error("Email client failed:", emailError);
+              downloadLink.click();
+              showToastMessage(
+                "📄 Message downloaded as text file. Please email it to akshayjuluri6704@gmail.com",
+                "error"
+              );
             }
-          }, 2000);
+          }
         }
 
-        // Reset form
+        // Clean up the blob URL
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        // Reset form on any successful fallback
         setFormData({
           name: "",
           email: "",
@@ -331,17 +785,21 @@ Time: ${new Date().toLocaleString()}`;
           subject: false,
           message: false,
         });
-      } catch (clipboardError) {
-        console.warn("Clipboard not available:", clipboardError);
+      } catch (fallbackError) {
+        console.error("All fallback methods failed:", fallbackError);
 
-        // If clipboard fails, show alternative instructions
+        // Last resort: show contact information
         showToastMessage(
-          "📧 Alternative: Send your message directly to akshayjuluri6704@gmail.com or connect via LinkedIn!",
+          "⚠️ Please contact me directly at akshayjuluri6704@gmail.com or via LinkedIn. Your message: " +
+            formData.message.substring(0, 50) +
+            "...",
           "error"
         );
 
-        // Show the message in console for easy copying
-        console.log("Message to send:", messageText);
+        // Log the full message for user to copy manually
+        console.log("=== CONTACT MESSAGE (copy manually) ===");
+        console.log(messageText);
+        console.log("=== END MESSAGE ===");
       }
     } finally {
       setIsSubmitting(false);
@@ -536,10 +994,43 @@ Time: ${new Date().toLocaleString()}`;
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
+    // Character limit enforcement
+    const limits = charLimits as Record<string, number>;
+    if (limits[name] && value.length > limits[name]) {
+      return; // Don't update if exceeding limit
+    }
+
     setFormData({
       ...formData,
       [name]: value,
     });
+
+    // Handle suggestions for message field
+    if (name === "message") {
+      // YouTube behavior: Show suggestions as you type
+      setShowSuggestions(true);
+      setSelectedSuggestionIndex(-1);
+
+      // Trigger AI suggestions if enabled and message is long enough
+      if (useAI && value.length > 15) {
+        // Debounce AI calls - trigger on word boundaries or every 15 characters
+        const shouldTrigger =
+          value.endsWith(" ") ||
+          value.endsWith(".") ||
+          value.endsWith(",") ||
+          value.length % 15 === 0;
+
+        if (shouldTrigger) {
+          console.log("🤖 Auto-triggering AI for:", value.slice(-20));
+          generateAISuggestions(value);
+        }
+      }
+    }
+
+    // Auto-save to localStorage
+    const updatedData = { ...formData, [name]: value };
+    localStorage.setItem("portfolio-contact-form", JSON.stringify(updatedData));
   };
 
   const handleBlur = (
@@ -551,25 +1042,58 @@ Time: ${new Date().toLocaleString()}`;
       [name]: true,
     });
 
-    // Hide suggestions when textarea loses focus (with delay for clicks)
+    // YouTube behavior: Hide suggestions when focus is lost
     if (name === "message") {
-      setTimeout(() => setShowSuggestions(false), 150);
+      // Short delay to allow for suggestion clicks
+      setTimeout(() => {
+        // Only hide if not clicking on a suggestion button
+        const activeElement = document.activeElement;
+        const isClickingOnSuggestion = activeElement?.closest(
+          "[data-suggestion-button]"
+        );
+        if (!isClickingOnSuggestion) {
+          setShowSuggestions(false);
+        }
+      }, 150);
     }
   };
 
   const handleMessageFocus = () => {
-    if (formData.message.length === 0) {
-      setShowSuggestions(true);
-    }
+    // YouTube behavior: Always show suggestions when focused
+    setShowSuggestions(true);
+    setSelectedSuggestionIndex(-1);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    console.log("YouTube-style suggestion clicked:", suggestion);
+
+    // YouTube behavior: Replace the entire message with the suggestion
+    const newMessage = suggestion;
+
     setFormData({
       ...formData,
-      message: suggestion,
+      message: newMessage,
     });
+
+    // Hide suggestions after selection (like YouTube)
     setShowSuggestions(false);
     setSelectedSuggestionIndex(-1);
+
+    // Focus back on the textarea after selection
+    setTimeout(() => {
+      const textarea = document.querySelector(
+        'textarea[name="message"]'
+      ) as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.focus();
+        // Move cursor to end of text
+        textarea.setSelectionRange(newMessage.length, newMessage.length);
+      }
+    }, 10);
+
+    // Auto-save the updated message
+    const updatedData = { ...formData, message: newMessage };
+    localStorage.setItem("portfolio-contact-form", JSON.stringify(updatedData));
   };
 
   const handleMessageKeyDown = (
@@ -577,23 +1101,28 @@ Time: ${new Date().toLocaleString()}`;
   ) => {
     if (!showSuggestions) return;
 
+    const filteredSuggestions = getYouTubeLikeSuggestions();
+
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
         setSelectedSuggestionIndex((prev) =>
-          prev < messageSuggestions.length - 1 ? prev + 1 : 0
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
         );
         break;
       case "ArrowUp":
         e.preventDefault();
         setSelectedSuggestionIndex((prev) =>
-          prev > 0 ? prev - 1 : messageSuggestions.length - 1
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
         );
         break;
       case "Enter":
-        if (selectedSuggestionIndex >= 0) {
+        if (
+          selectedSuggestionIndex >= 0 &&
+          filteredSuggestions[selectedSuggestionIndex]
+        ) {
           e.preventDefault();
-          handleSuggestionClick(messageSuggestions[selectedSuggestionIndex]);
+          handleSuggestionClick(filteredSuggestions[selectedSuggestionIndex]);
         }
         break;
       case "Escape":
@@ -942,13 +1471,60 @@ Time: ${new Date().toLocaleString()}`;
               </div>
 
               <div>
-                <label className="block text-white/70 text-sm font-mono mb-2">
-                  <FileText size={16} className="inline mr-2" />
-                  Message *
-                  <span className="text-xs text-white/50 ml-2">
-                    ({formData.message.length}/{charLimits.message})
-                  </span>
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-white/70 text-sm font-mono">
+                    <FileText size={16} className="inline mr-2" />
+                    Message *
+                    <span className="text-xs text-white/50 ml-2">
+                      ({formData.message.length}/{charLimits.message})
+                    </span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUseAI(!useAI);
+                        if (!useAI && formData.message.length > 10) {
+                          console.log(
+                            "🤖 AI toggled ON, generating suggestions..."
+                          );
+                          generateAISuggestions(formData.message);
+                        }
+                      }}
+                      className={`text-xs font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded ${
+                        useAI
+                          ? "bg-orange-400/20 text-orange-400 border border-orange-400/30"
+                          : "text-white/60 hover:text-orange-300 border border-white/20"
+                      }`}
+                    >
+                      🤖 AI {useAI ? "ON" : "OFF"}
+                    </button>
+                    {useAI && formData.message.length > 10 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log("🔄 Manual AI trigger");
+                          generateAISuggestions(formData.message);
+                        }}
+                        className="text-xs text-blue-400 hover:text-blue-300 font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded border border-blue-400/30"
+                        disabled={isLoadingAI}
+                      >
+                        {isLoadingAI ? "⏳" : "🔄"} Generate
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowSuggestions(!showSuggestions);
+                        setSelectedSuggestionIndex(-1);
+                      }}
+                      className="text-xs text-orange-400 hover:text-orange-300 font-mono transition-colors flex items-center gap-1"
+                    >
+                      <MessageSquare size={12} />
+                      {showSuggestions ? "Hide" : "Add"} suggestions
+                    </button>
+                  </div>
+                </div>
                 <div className="relative">
                   <textarea
                     name="message"
@@ -963,42 +1539,76 @@ Time: ${new Date().toLocaleString()}`;
                         ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
                         : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
                     }`}
-                    placeholder="Tell me about your project or how we can work together..."
+                    placeholder="Tell me about your project or how we can work together... (click 'Add suggestions' for quick phrases)"
                     maxLength={charLimits.message}
                   />
 
                   {/* Autocomplete Suggestions Dropdown */}
-                  {showSuggestions && (
-                    <motion.div
-                      className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10 max-h-48 overflow-y-auto"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className="p-2">
-                        <div className="text-xs text-orange-400 font-mono mb-2 px-2">
-                          💡 Quick suggestions:
-                        </div>
-                        {messageSuggestions.map((suggestion, index) => (
-                          <motion.button
-                            key={suggestion}
-                            type="button"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                            className={`w-full text-left px-3 py-2 rounded-md font-mono text-sm transition-colors ${
-                              index === selectedSuggestionIndex
-                                ? "bg-orange-400/20 text-orange-400"
-                                : "text-white/80 hover:bg-white/10 hover:text-white"
-                            }`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            {suggestion}
-                          </motion.button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
+                  {showSuggestions &&
+                    (() => {
+                      const filteredSuggestions = getYouTubeLikeSuggestions();
+                      return filteredSuggestions.length > 0 ? (
+                        <motion.div
+                          className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-xl z-10 max-h-64 overflow-y-auto"
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -5 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          {filteredSuggestions.map(
+                            (suggestion: string, index: number) => (
+                              <motion.button
+                                key={suggestion}
+                                type="button"
+                                data-suggestion-button="true"
+                                onMouseDown={(e) => {
+                                  e.preventDefault(); // Prevent blur
+                                  handleSuggestionClick(suggestion);
+                                }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleSuggestionClick(suggestion);
+                                }}
+                                className={`w-full text-left px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors flex items-center gap-3 ${
+                                  index === selectedSuggestionIndex
+                                    ? "bg-gray-100"
+                                    : ""
+                                }`}
+                                whileHover={{
+                                  backgroundColor: "rgba(0,0,0,0.05)",
+                                }}
+                              >
+                                <div className="text-gray-400">🔍</div>
+                                <div className="flex-1 text-sm">
+                                  {suggestion}
+                                </div>
+                              </motion.button>
+                            )
+                          )}
+                          {isLoadingAI && (
+                            <div className="px-4 py-3 text-gray-500 text-sm flex items-center gap-3">
+                              <div className="animate-spin w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full"></div>
+                              <span>AI generating suggestions...</span>
+                            </div>
+                          )}
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div className="p-3 text-center">
+                            <div className="text-xs text-white/60 font-mono">
+                              No more suggestions for this context
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })()}
                   {fieldTouched.message &&
                     !fieldErrors.message &&
                     formData.message && (

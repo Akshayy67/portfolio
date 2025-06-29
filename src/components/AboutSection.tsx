@@ -2,8 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Code2, Rocket, Globe, Database } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const AboutSection: React.FC = () => {
+  const { isDarkMode } = useTheme();
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -33,7 +35,7 @@ const AboutSection: React.FC = () => {
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
         <div className="absolute top-40 right-20 w-1 h-1 bg-white rounded-full animate-pulse" />
-        <div className="absolute bottom-20 left-1/4 w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse" />
+        <div className="absolute bottom-20 left-1/4 w-1.5 h-1.5 bg-orange-300 rounded-full animate-pulse" />
       </div>
 
       <div ref={ref} className="max-w-6xl mx-auto px-4">
@@ -43,10 +45,18 @@ const AboutSection: React.FC = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
+          <h2
+            className={`text-4xl md:text-6xl font-display font-bold ${
+              isDarkMode ? "text-white" : "text-gray-900"
+            } mb-4 text-shadow-soft`}
+          >
             About <span className="interstellar-text">Developer</span>
           </h2>
-          <p className="text-xl text-white/70 max-w-3xl mx-auto">
+          <p
+            className={`text-xl ${
+              isDarkMode ? "text-white/70" : "text-gray-700"
+            } max-w-3xl mx-auto`}
+          >
             Personal Profile: Full Stack Developer & Problem Solver
           </p>
         </motion.div>
@@ -123,7 +133,11 @@ const AboutSection: React.FC = () => {
               <h3 className="text-2xl font-mono text-orange-400 mb-4 glow-accretion">
                 Developer Profile
               </h3>
-              <p className="text-white/80 leading-relaxed mb-4">
+              <p
+                className={`${
+                  isDarkMode ? "text-white/80" : "text-gray-700"
+                } leading-relaxed mb-4`}
+              >
                 I’m a Computer Science Engineering student at Sreenidhi
                 Institute of Science and Technology (SNIST) with a strong
                 command of Data Structures and Algorithms (DSA)—the core of my
@@ -134,7 +148,11 @@ const AboutSection: React.FC = () => {
                 coding contests, I’m deeply invested in algorithmic thinking and
                 performance optimization.
               </p>
-              <p className="text-white/80 leading-relaxed">
+              <p
+                className={`${
+                  isDarkMode ? "text-white/80" : "text-gray-700"
+                } leading-relaxed`}
+              >
                 Currently maintaining a CGPA of 8.1, I’ve worked on impactful
                 projects like a Taxi Fare Predictor using Random Forests, an
                 interactive LRU Cache simulator, an AI-powered farming assistant
@@ -162,7 +180,13 @@ const AboutSection: React.FC = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <skill.icon className="text-orange-400" size={20} />
-                      <span className="font-mono text-white">{skill.name}</span>
+                      <span
+                        className={`font-mono ${
+                          isDarkMode ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {skill.name}
+                      </span>
                     </div>
                     <span className="font-mono text-orange-400 text-sm">
                       {skill.level}%

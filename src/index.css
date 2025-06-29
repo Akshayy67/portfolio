@@ -7,9 +7,21 @@ body {
   font-family: "JetBrains Mono", monospace;
 }
 
-/* Smooth scrolling */
+/* Optimized scrolling - disable CSS smooth scroll to prevent conflicts */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+  /* Enable hardware acceleration for smoother scrolling */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimize scroll performance */
+* {
+  /* Enable hardware acceleration for better scroll performance */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -339,8 +351,8 @@ button,
   background: linear-gradient(
     45deg,
     rgba(251, 146, 60, 0.5),
-    rgba(147, 51, 234, 0.5),
-    rgba(59, 130, 246, 0.5),
+    rgba(255, 165, 0, 0.4),
+    rgba(255, 140, 0, 0.4),
     rgba(251, 146, 60, 0.5)
   );
   background-size: 300% 300%;
@@ -356,7 +368,7 @@ button,
   background: linear-gradient(
     135deg,
     rgba(251, 146, 60, 0.1),
-    rgba(147, 51, 234, 0.1)
+    rgba(255, 165, 0, 0.08)
   );
   border: 1px solid rgba(251, 146, 60, 0.3);
   backdrop-filter: blur(10px);
@@ -367,7 +379,7 @@ button,
   background: linear-gradient(
     135deg,
     rgba(251, 146, 60, 0.2),
-    rgba(147, 51, 234, 0.2)
+    rgba(255, 165, 0, 0.15)
   );
   border-color: rgba(251, 146, 60, 0.6);
   transform: translateY(-2px);
@@ -392,9 +404,9 @@ button,
       rgba(251, 146, 60, 0.3),
       transparent
     ),
-    radial-gradient(2px 2px at 40px 70px, rgba(147, 51, 234, 0.3), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(59, 130, 246, 0.3), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(16, 185, 129, 0.3), transparent);
+    radial-gradient(2px 2px at 40px 70px, rgba(251, 146, 60, 0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255, 165, 0, 0.2), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 140, 0, 0.2), transparent);
   background-repeat: repeat;
   background-size: 150px 150px;
   animation: float 20s linear infinite;
@@ -573,6 +585,58 @@ button,
   color: var(--light-accent) !important;
 }
 
+/* Light theme social links and scroll indicator */
+.light .text-orange-400\/70 {
+  color: var(--light-accent) !important;
+  opacity: 0.8;
+}
+
+/* Light theme glass morphism for social links */
+.light .glass-morphism-subtle {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Light theme project cards */
+.light .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.light .border-white\/20 {
+  border-color: rgba(217, 119, 6, 0.2) !important;
+}
+
+/* Light theme text colors */
+.light .text-white\/60 {
+  color: var(--light-text-secondary) !important;
+}
+
+/* Enhanced scroll performance optimizations */
+.scroll-smooth {
+  scroll-behavior: auto; /* Override any smooth scroll to prevent conflicts */
+}
+
+/* Navigation transition optimizations */
+nav a {
+  will-change: transform, color;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Section scroll optimization */
+section {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Smooth transition for all interactive elements */
+button,
+a,
+.cursor-pointer {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Light theme skill bars */
 .light .bg-gradient-to-r {
   background: linear-gradient(
@@ -582,54 +646,199 @@ button,
   ) !important;
 }
 
-/* Mobile optimizations */
-@media (max-width: 640px) {
+/* Enhanced 3D Space Effects */
+.bg-gradient-radial {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 165, 0, 0.15) 0%,
+    rgba(0, 0, 0, 1) 70%
+  );
+}
+
+/* Perspective container for 3D effects */
+.perspective-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Enhanced glow effects for space theme */
+.glow-orbital {
+  filter: drop-shadow(0 0 15px rgba(255, 165, 0, 0.4))
+    drop-shadow(0 0 30px rgba(255, 165, 0, 0.2))
+    drop-shadow(0 0 45px rgba(255, 140, 0, 0.1));
+}
+
+.glow-nebula {
+  filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.5))
+    drop-shadow(0 0 40px rgba(147, 51, 234, 0.3))
+    drop-shadow(0 0 60px rgba(147, 51, 234, 0.1));
+}
+
+/* Wormhole animation */
+@keyframes wormhole {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1) rotate(180deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+.wormhole-effect {
+  animation: wormhole 20s linear infinite;
+}
+
+/* Enhanced orbital motion */
+@keyframes orbital-motion {
+  0% {
+    transform: rotate(0deg) translateX(100px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(100px) rotate(-360deg);
+  }
+}
+
+.orbital-motion {
+  animation: orbital-motion 30s linear infinite;
+}
+
+/* Enhanced Mobile optimizations */
+@media (max-width: 768px) {
   /* Prevent horizontal scroll */
   body {
     overflow-x: hidden;
   }
 
+  /* Optimize 3D transforms for mobile */
+  .perspective-container {
+    perspective: 500px;
+  }
+
+  /* Reduce motion for better mobile performance */
+  .motion-reduce {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Reduce particle count on mobile */
+  .mobile-optimized {
+    display: none;
+  }
+
   /* Better touch targets */
   button,
   a {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 48px;
+    min-width: 48px;
   }
 
   /* Improved text readability */
   .font-mono {
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
-  /* Better spacing for mobile */
+  /* Enhanced mobile spacing */
   .glass-morphism-dark {
-    margin: 0.5rem;
+    margin: 0.75rem;
+    padding: 1.5rem !important;
   }
 
-  /* Prevent text overflow */
+  /* Prevent text overflow with better wrapping */
   h1,
   h2,
   h3 {
     word-wrap: break-word;
     hyphens: auto;
+    line-height: 1.2;
   }
 
   /* Better form inputs on mobile */
   input,
   textarea {
     font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem;
   }
 
-  /* Improved button spacing */
+  /* Improved button spacing and sizing */
   .space-y-6 > * + * {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
   }
 
-  /* Better container padding */
+  /* Enhanced container padding */
   .max-w-4xl,
+  .max-w-5xl,
   .max-w-6xl {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  /* Mobile-specific hero adjustments */
+  #hero {
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  /* Reduce glow effects on mobile for performance */
+  .glow-accretion,
+  .glow-orbital,
+  .glow-nebula {
+    filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.3));
+  }
+
+  /* Optimize animations for mobile */
+  @keyframes mobile-float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .mobile-float {
+    animation: mobile-float 3s ease-in-out infinite;
+  }
+
+  /* Enhanced mobile typography */
+  .text-4xl {
+    font-size: 2.5rem !important;
+  }
+
+  .text-5xl {
+    font-size: 3rem !important;
+  }
+
+  .text-6xl {
+    font-size: 3.5rem !important;
+  }
+
+  .text-8xl {
+    font-size: 4rem !important;
+  }
+
+  /* Mobile-specific spacing improvements */
+  .mb-6 {
+    margin-bottom: 2rem !important;
+  }
+
+  .mb-8 {
+    margin-bottom: 2.5rem !important;
+  }
+
+  .mb-12 {
+    margin-bottom: 3rem !important;
+  }
+
+  .mb-16 {
+    margin-bottom: 3.5rem !important;
   }
 }

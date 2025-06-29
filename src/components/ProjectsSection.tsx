@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ExternalLink, Github, Rocket } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const ProjectsSection: React.FC = () => {
+  const { isDarkMode } = useTheme();
   const { ref, inView } = useInView({
     threshold: 0.01,
     triggerOnce: true,
@@ -143,10 +145,18 @@ const ProjectsSection: React.FC = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
+          <h2
+            className={`text-4xl md:text-6xl font-display font-bold ${
+              isDarkMode ? "text-white" : "text-gray-900"
+            } mb-4 text-shadow-soft`}
+          >
             Featured <span className="interstellar-text">Projects</span>
           </h2>
-          <p className="text-xl text-white/70 max-w-3xl mx-auto">
+          <p
+            className={`text-xl ${
+              isDarkMode ? "text-white/70" : "text-gray-700"
+            } max-w-3xl mx-auto`}
+          >
             A showcase of my development journey - from concept to deployment,
             each project represents a unique challenge and learning experience
           </p>
@@ -214,11 +224,19 @@ const ProjectsSection: React.FC = () => {
 
               {/* Project Content */}
               <div className="p-6">
-                <h3 className="text-xl font-mono font-bold text-white mb-3 group-hover:text-orange-400 transition-colors">
+                <h3
+                  className={`text-xl font-mono font-bold ${
+                    isDarkMode ? "text-white" : "text-gray-900"
+                  } mb-3 group-hover:text-orange-400 transition-colors`}
+                >
                   {project.title}
                 </h3>
 
-                <p className="text-white/70 text-sm leading-relaxed mb-4">
+                <p
+                  className={`${
+                    isDarkMode ? "text-white/70" : "text-gray-700"
+                  } text-sm leading-relaxed mb-4`}
+                >
                   {project.description}
                 </p>
 
@@ -227,7 +245,11 @@ const ProjectsSection: React.FC = () => {
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="px-2 py-1 bg-white/10 text-white/80 rounded text-xs font-mono"
+                      className={`px-2 py-1 ${
+                        isDarkMode
+                          ? "bg-white/10 text-white/80"
+                          : "bg-gray-200 text-gray-700"
+                      } rounded text-xs font-mono`}
                     >
                       {tech}
                     </span>

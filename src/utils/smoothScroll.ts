@@ -12,18 +12,20 @@ export const easingFunctions = {
   linear: (t: number) => t,
   easeInQuad: (t: number) => t * t,
   easeOutQuad: (t: number) => t * (2 - t),
-  easeInOutQuad: (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+  easeInOutQuad: (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
   easeInCubic: (t: number) => t * t * t,
-  easeOutCubic: (t: number) => (--t) * t * t + 1,
-  easeInOutCubic: (t: number) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+  easeOutCubic: (t: number) => --t * t * t + 1,
+  easeInOutCubic: (t: number) =>
+    t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
   easeInQuart: (t: number) => t * t * t * t,
-  easeOutQuart: (t: number) => 1 - (--t) * t * t * t,
-  easeInOutQuart: (t: number) => t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
+  easeOutQuart: (t: number) => 1 - --t * t * t * t,
+  easeInOutQuart: (t: number) =>
+    t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t,
 };
 
 // Check if user prefers reduced motion
 const prefersReducedMotion = () => {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 };
 
 // Get optimal duration based on distance and device
@@ -67,63 +69,62 @@ export const smoothScrollTo = (
 
     const isMobile = window.innerWidth < 768;
     const scrollDuration = duration || getOptimalDuration(distance, isMobile);
-    
+
     let startTime: number | null = null;
     let animationId: number;
+    let userScrolled = false;
+
+    // Cancel animation if user manually scrolls
+    const handleUserScroll = () => {
+      userScrolled = true;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        (window as any).scrollingAnimationId = null;
+        window.removeEventListener("wheel", handleUserScroll);
+        window.removeEventListener("touchmove", handleUserScroll);
+        resolve();
+      }
+    };
+
+    window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchmove", handleUserScroll, { passive: true });
 
     const animateScroll = (currentTime: number) => {
+      if (userScrolled) return;
       if (startTime === null) startTime = currentTime;
-      
+
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / scrollDuration, 1);
       const easedProgress = easing(progress);
-      
-      const currentPosition = startPosition + (distance * easedProgress);
+
+      const currentPosition = startPosition + distance * easedProgress;
       window.scrollTo(0, currentPosition);
 
       if (progress < 1) {
         animationId = requestAnimationFrame(animateScroll);
+        // Store animation ID globally for cancellation
+        (window as any).scrollingAnimationId = animationId;
       } else {
+        // Clear the global animation ID and event listeners
+        (window as any).scrollingAnimationId = null;
+        window.removeEventListener("wheel", handleUserScroll);
+        window.removeEventListener("touchmove", handleUserScroll);
         callback?.();
         resolve();
       }
     };
 
     animationId = requestAnimationFrame(animateScroll);
-
-    // Cleanup function to cancel animation if needed
-    const cleanup = () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-
-    // Cancel on user scroll
-    const handleUserScroll = () => {
-      cleanup();
-      window.removeEventListener('wheel', handleUserScroll);
-      window.removeEventListener('touchstart', handleUserScroll);
-      resolve();
-    };
-
-    window.addEventListener('wheel', handleUserScroll, { passive: true });
-    window.addEventListener('touchstart', handleUserScroll, { passive: true });
-
-    // Auto cleanup after duration
-    setTimeout(() => {
-      window.removeEventListener('wheel', handleUserScroll);
-      window.removeEventListener('touchstart', handleUserScroll);
-    }, scrollDuration + 100);
   });
 };
 
 // Get target position from various input types
 const getTargetPosition = (target: number | string | Element): number => {
-  if (typeof target === 'number') {
+  if (typeof target === "number") {
     return target;
   }
 
-  if (typeof target === 'string') {
+  if (typeof target === "string") {
     const element = document.querySelector(target);
     if (!element) {
       console.warn(`Smooth scroll target not found: ${target}`);
@@ -142,13 +143,13 @@ const getTargetPosition = (target: number | string | Element): number => {
 // Smooth scroll to element with enhanced options
 export const scrollToElement = (
   selector: string,
-  options: SmoothScrollOptions & { 
-    behavior?: 'smooth' | 'instant' | 'auto';
-    block?: 'start' | 'center' | 'end' | 'nearest';
+  options: SmoothScrollOptions & {
+    behavior?: "smooth" | "instant" | "auto";
+    block?: "start" | "center" | "end" | "nearest";
   } = {}
 ): Promise<void> => {
   const element = document.querySelector(selector);
-  
+
   if (!element) {
     console.warn(`Element not found: ${selector}`);
     return Promise.resolve();
@@ -156,15 +157,15 @@ export const scrollToElement = (
 
   // Use native smooth scrolling if supported and no custom options
   if (
-    !options.duration && 
-    !options.easing && 
-    !options.callback && 
-    'scrollIntoView' in element &&
+    !options.duration &&
+    !options.easing &&
+    !options.callback &&
+    "scrollIntoView" in element &&
     !prefersReducedMotion()
   ) {
     element.scrollIntoView({
-      behavior: options.behavior || 'smooth',
-      block: options.block || 'start',
+      behavior: options.behavior || "smooth",
+      block: options.block || "start",
     });
     return Promise.resolve();
   }
@@ -173,7 +174,9 @@ export const scrollToElement = (
 };
 
 // Smooth scroll to top
-export const scrollToTop = (options: SmoothScrollOptions = {}): Promise<void> => {
+export const scrollToTop = (
+  options: SmoothScrollOptions = {}
+): Promise<void> => {
   return smoothScrollTo(0, {
     duration: 800,
     easing: easingFunctions.easeOutQuart,
@@ -182,8 +185,11 @@ export const scrollToTop = (options: SmoothScrollOptions = {}): Promise<void> =>
 };
 
 // Smooth scroll to bottom
-export const scrollToBottom = (options: SmoothScrollOptions = {}): Promise<void> => {
-  const targetPosition = document.documentElement.scrollHeight - window.innerHeight;
+export const scrollToBottom = (
+  options: SmoothScrollOptions = {}
+): Promise<void> => {
+  const targetPosition =
+    document.documentElement.scrollHeight - window.innerHeight;
   return smoothScrollTo(targetPosition, {
     duration: 1000,
     easing: easingFunctions.easeInOutCubic,
@@ -197,16 +203,22 @@ export const scrollToSection = (
   headerOffset: number = 80
 ): Promise<void> => {
   const section = document.getElementById(sectionId);
-  
+
   if (!section) {
     console.warn(`Section not found: ${sectionId}`);
     return Promise.resolve();
   }
 
+  // Cancel any ongoing scroll animations
+  if (typeof window !== "undefined" && window.scrollingAnimationId) {
+    cancelAnimationFrame(window.scrollingAnimationId);
+  }
+
+  // Use optimized smooth scrolling with better easing
   return smoothScrollTo(section, {
     offset: -headerOffset,
-    duration: 1000,
-    easing: easingFunctions.easeInOutCubic,
+    duration: 1200, // Slightly longer for smoother feel
+    easing: easingFunctions.easeInOutQuart, // Smoother easing
   });
 };
 
@@ -237,11 +249,11 @@ export const createParallaxEffect = (
     }
   };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener("scroll", handleScroll, { passive: true });
 
   // Return cleanup function
   return () => {
-    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener("scroll", handleScroll);
   };
 };
 
@@ -253,7 +265,7 @@ export const createScrollTrigger = (
 ): IntersectionObserver => {
   const defaultOptions: IntersectionObserverInit = {
     threshold: 0.1,
-    rootMargin: '50px',
+    rootMargin: "50px",
     ...options,
   };
 
@@ -280,12 +292,12 @@ export const smoothHorizontalScroll = (
 
     const animateScroll = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
-      
+
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
       const easedProgress = easingFunctions.easeInOutCubic(progress);
-      
-      container.scrollLeft = startX + (distance * easedProgress);
+
+      container.scrollLeft = startX + distance * easedProgress;
 
       if (progress < 1) {
         requestAnimationFrame(animateScroll);

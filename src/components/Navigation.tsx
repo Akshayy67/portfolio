@@ -44,13 +44,30 @@ const Navigation: React.FC = () => {
     { name: "Contact", href: "#contact", id: "contact" },
   ];
 
-  const handleNavClick = (
+  const handleNavClick = async (
     e: React.MouseEvent<HTMLAnchorElement>,
     id: string
   ) => {
     e.preventDefault();
-    scrollToSection(id, 80); // 80px offset for fixed header
-    setIsOpen(false); // Close mobile menu
+
+    // Add visual feedback
+    const target = e.currentTarget;
+    target.style.transform = "scale(0.95)";
+
+    // Close mobile menu immediately for better UX
+    setIsOpen(false);
+
+    // Perform smooth scroll with optimized settings
+    try {
+      await scrollToSection(id, 80); // 80px offset for fixed header
+    } catch (error) {
+      console.warn("Scroll animation interrupted:", error);
+    }
+
+    // Reset visual feedback
+    setTimeout(() => {
+      target.style.transform = "";
+    }, 150);
   };
 
   return (
@@ -98,12 +115,13 @@ const Navigation: React.FC = () => {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.id)}
-                  className="font-mono text-white/80 hover:text-orange-400 transition-all duration-300 text-sm event-horizon-hover relative group cursor-pointer"
+                  className="font-mono text-white/80 hover:text-orange-400 transition-all duration-200 ease-out text-sm event-horizon-hover relative group cursor-pointer"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-purple-500 transition-all duration-300 group-hover:w-full"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-300 group-hover:w-full"></span>
                 </motion.a>
               ))}
             </div>
