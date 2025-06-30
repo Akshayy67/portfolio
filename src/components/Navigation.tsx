@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Rocket, Github, Linkedin } from "lucide-react";
 import { scrollToSection } from "../utils/smoothScroll";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Navigation: React.FC = () => {
+  const { isDarkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -143,7 +145,9 @@ const Navigation: React.FC = () => {
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-t border-orange-400/20"
+                className={`md:hidden absolute top-full left-0 right-0 backdrop-blur-md border-t border-orange-400/20 ${
+                  isDarkMode ? "bg-black/95" : "bg-white/95"
+                }`}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}

@@ -37,7 +37,9 @@ const AboutSection: React.FC = () => {
     <section
       id="about"
       data-section="about"
-      className="min-h-screen py-20 relative bg-black text-white"
+      className={`min-h-screen py-20 relative ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      }`}
     >
       <AboutBackground />
 
@@ -131,12 +133,20 @@ const AboutSection: React.FC = () => {
                     }}
                   >
                     <div
-                      className="absolute w-6 h-6 bg-white/80 rounded-full flex items-center justify-center text-xs font-mono font-bold text-black"
+                      className={`absolute w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold ${
+                        isDarkMode
+                          ? "bg-white/80 text-black"
+                          : "bg-gray-800/80 text-white"
+                      }`}
                       style={{
                         transform: `translateX(${radius}px)`,
                       }}
                     >
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono whitespace-nowrap">
+                      <div
+                        className={`absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-mono whitespace-nowrap ${
+                          isDarkMode ? "text-white" : "text-gray-800"
+                        }`}
+                      >
                         {skill}
                       </div>
                     </div>
@@ -153,7 +163,9 @@ const AboutSection: React.FC = () => {
                 return (
                   <div
                     key={i}
-                    className="absolute rounded-full border border-white/10"
+                    className={`absolute rounded-full border ${
+                      isDarkMode ? "border-white/10" : "border-gray-800/20"
+                    }`}
                     style={{
                       width: `${size}px`,
                       height: `${size}px`,

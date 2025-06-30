@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
+import { useTheme } from "../contexts/ThemeContext";
 import { Code2, Rocket, Star, Award, Mail, Zap } from "lucide-react";
 
 interface BackgroundProps {
@@ -12,6 +13,7 @@ export const AboutBackground: React.FC<BackgroundProps> = ({
   className = "",
 }) => {
   const deviceInfo = useDeviceDetection();
+  const { isDarkMode } = useTheme();
   const shouldAnimate = !deviceInfo.prefersReducedMotion; // Enable on all devices
 
   return (
@@ -98,7 +100,13 @@ export const AboutBackground: React.FC<BackgroundProps> = ({
 
       {/* Enhanced static elements - always visible */}
       <div className="absolute top-20 left-10 w-3 h-3 bg-orange-400/60 rounded-full animate-pulse shadow-lg shadow-orange-400/50" />
-      <div className="absolute top-40 right-20 w-2 h-2 bg-white/60 rounded-full animate-pulse shadow-lg shadow-white/50" />
+      <div
+        className={`absolute top-40 right-20 w-2 h-2 rounded-full animate-pulse shadow-lg ${
+          isDarkMode
+            ? "bg-white/60 shadow-white/50"
+            : "bg-gray-800/60 shadow-gray-800/50"
+        }`}
+      />
       <div className="absolute bottom-20 left-1/4 w-2.5 h-2.5 bg-orange-300/60 rounded-full animate-pulse shadow-lg shadow-orange-300/50" />
 
       {/* Additional always-visible effects */}
@@ -127,18 +135,29 @@ export const ProjectsBackground: React.FC<BackgroundProps> = ({
   className = "",
 }) => {
   const deviceInfo = useDeviceDetection();
+  const { isDarkMode } = useTheme();
   const shouldAnimate = !deviceInfo.prefersReducedMotion; // Enable on all devices
 
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
       {/* Base space gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black" />
+      <div
+        className={`absolute inset-0 ${
+          isDarkMode
+            ? "bg-gradient-to-br from-black via-slate-900 to-black"
+            : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
+        }`}
+      />
 
       {/* Enhanced Star Field - Always visible */}
       {[...Array(100)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute bg-white rounded-full shadow-lg shadow-white/50"
+          className={`absolute rounded-full shadow-lg ${
+            isDarkMode
+              ? "bg-white shadow-white/50"
+              : "bg-gray-800 shadow-gray-800/50"
+          }`}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -223,6 +242,7 @@ export const AchievementsBackground: React.FC<BackgroundProps> = ({
   className = "",
 }) => {
   const deviceInfo = useDeviceDetection();
+  const { isDarkMode } = useTheme();
   const shouldAnimate = !deviceInfo.prefersReducedMotion; // Enable on all devices
 
   return (
@@ -317,6 +337,7 @@ export const ContactBackground: React.FC<BackgroundProps> = ({
   className = "",
 }) => {
   const deviceInfo = useDeviceDetection();
+  const { isDarkMode } = useTheme();
   const shouldAnimate = !deviceInfo.prefersReducedMotion; // Enable on all devices
 
   return (

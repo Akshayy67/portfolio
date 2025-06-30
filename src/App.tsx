@@ -150,12 +150,20 @@ const MainContent: React.FC = () => {
         {currentScene === "main" && (
           <div
             key="main"
-            className="min-h-screen relative overflow-x-hidden transition-all duration-1000 bg-transparent text-white"
+            className={`min-h-screen relative overflow-x-hidden transition-all duration-1000 bg-transparent ${
+              isDarkMode ? "text-white" : "text-gray-900"
+            }`}
           >
-            {/* Enhanced Background with Particles - Always Dark for Better Effects */}
+            {/* Enhanced Background with Particles */}
             <div className="fixed inset-0 z-0">
-              <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black" />
-              <ParticleBackground isDarkMode={true} />
+              <div
+                className={`absolute inset-0 ${
+                  isDarkMode
+                    ? "bg-gradient-to-br from-black via-slate-900 to-black"
+                    : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
+                }`}
+              />
+              <ParticleBackground isDarkMode={isDarkMode} />
             </div>
 
             {/* Navigation and Content */}
