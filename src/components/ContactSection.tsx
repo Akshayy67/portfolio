@@ -14,6 +14,12 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import {
+  getEmailJSConfig,
+  validateEmailJSConfig,
+  createTemplateParams,
+  sendEmailWithRetry,
+} from "../config/emailjs";
 
 const ContactSection: React.FC = () => {
   const { ref, inView } = useInView({
@@ -577,7 +583,8 @@ const ContactSection: React.FC = () => {
     setToastMessage(message);
     setToastType(type);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 5000);
+    // Longer display time for success messages since they're more prominent now
+    setTimeout(() => setShowToast(false), type === "success" ? 8000 : 6000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -603,48 +610,45 @@ const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // EmailJS configuration from environment variables
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+      // Get EmailJS configuration with production fallbacks
+      const config = getEmailJSConfig();
 
-      console.log("EmailJS Config Check:", {
-        serviceId: serviceId ? "✓ Available" : "✗ Missing",
-        templateId: templateId ? "✓ Available" : "✗ Missing",
-        publicKey: publicKey ? "✓ Available" : "✗ Missing",
-        actualValues: {
-          serviceId: serviceId,
-          templateId: templateId,
-          publicKey: publicKey,
-        },
-      });
-
-      // Check if EmailJS is configured
-      if (!serviceId || !templateId || !publicKey) {
+      // Validate configuration
+      if (!validateEmailJSConfig(config)) {
         console.warn("EmailJS not fully configured, using fallback method");
         throw new Error("EmailJS service not available");
       }
 
       // Initialize EmailJS with public key
-      emailjs.init(publicKey);
+      emailjs.init(config.publicKey);
 
-      // Prepare template parameters with better formatting
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        to_email: "akshayjuluri6704@gmail.com", // Your email
-        subject: formData.subject || "New Portfolio Contact",
-        message: formData.message,
-        // Additional fields for better email formatting
-        reply_to: formData.email,
-        timestamp: new Date().toLocaleString(),
-        to_name: "Akshay Juluri",
-      };
+      // Prepare template parameters
+      const templateParams = createTemplateParams(formData);
 
-      console.log("Attempting to send email via EmailJS...", templateParams);
+      console.log("Attempting to send email via EmailJS...", {
+        serviceId: config.serviceId,
+        templateId: config.templateId,
+        environment: import.meta.env.MODE,
+        timestamp: templateParams.timestamp,
+      });
 
-      // Send email using EmailJS with better error handling
-      const result = await emailjs.send(serviceId, templateId, templateParams);
+      console.log("🔍 DEBUG: Form data being sent:", formData);
+      console.log("🔍 DEBUG: Template parameters:", templateParams);
+      console.log("🔍 DEBUG: Parameter check:", {
+        "from_name exists": !!templateParams.from_name,
+        "from_name value": templateParams.from_name,
+        "from_email exists": !!templateParams.from_email,
+        "from_email value": templateParams.from_email,
+        "message length": templateParams.message.length,
+        "all parameters": Object.keys(templateParams),
+      });
+
+      // Send email using EmailJS with retry logic
+      const result = await sendEmailWithRetry(
+        config.serviceId,
+        config.templateId,
+        templateParams
+      );
 
       console.log("EmailJS Response:", result);
 
@@ -666,7 +670,7 @@ const ContactSection: React.FC = () => {
           message: false,
         });
         showToastMessage(
-          "✅ Message sent successfully via EmailJS! I'll get back to you soon."
+          "Thank you for reaching out! Your message has been delivered successfully. I'll review it and get back to you within 24 hours. 🚀"
         );
       } else {
         throw new Error(`EmailJS failed with status: ${result.status}`);
@@ -710,7 +714,7 @@ const ContactSection: React.FC = () => {
           });
 
           showToastMessage(
-            "✅ Message sent successfully via backup service! I'll get back to you soon."
+            "Perfect! Your message has been sent successfully. I'll review it and respond within 24 hours. Thanks for connecting! 🎉"
           );
           return; // Exit early on success
         } else {
@@ -1798,27 +1802,133 @@ Time: ${new Date().toLocaleString()}`;
         </div>
       </div>
 
-      {/* Toast Notification */}
+      {/* Success/Error Modal - Prominent and Centered */}
       {showToast && (
         <motion.div
-          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg font-mono text-sm max-w-md ${
-            toastType === "success"
-              ? "bg-green-500 text-white"
-              : "bg-red-500 text-white"
-          }`}
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 100 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex items-center gap-3">
-            {toastType === "success" ? (
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-            ) : (
-              <div className="w-2 h-2 bg-white rounded-full" />
-            )}
-            <span>{toastMessage}</span>
-          </div>
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowToast(false)}
+          />
+
+          {/* Modal Content */}
+          <motion.div
+            className={`relative max-w-md w-full mx-4 rounded-2xl shadow-2xl overflow-hidden ${
+              toastType === "success"
+                ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                : "bg-gradient-to-br from-red-500 to-rose-600"
+            }`}
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 50 }}
+            transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
+          >
+            {/* Success/Error Content */}
+            <div className="p-8 text-center text-white">
+              {toastType === "success" ? (
+                <>
+                  {/* Success Icon */}
+                  <motion.div
+                    className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+                  >
+                    <motion.svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ delay: 0.4, duration: 0.6 }}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </motion.svg>
+                  </motion.div>
+
+                  <motion.h3
+                    className="text-2xl font-bold mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    Message Sent! 🎉
+                  </motion.h3>
+                </>
+              ) : (
+                <>
+                  {/* Error Icon */}
+                  <motion.div
+                    className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+                  >
+                    <motion.svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </motion.svg>
+                  </motion.div>
+
+                  <motion.h3
+                    className="text-2xl font-bold mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    Oops! Something went wrong
+                  </motion.h3>
+                </>
+              )}
+
+              <motion.p
+                className="text-white/90 mb-6 leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                {toastMessage}
+              </motion.p>
+
+              <motion.button
+                onClick={() => setShowToast(false)}
+                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {toastType === "success" ? "Awesome!" : "Got it"}
+              </motion.button>
+            </div>
+
+            {/* Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white/30 to-transparent" />
+            <div className="absolute -top-2 -right-2 w-20 h-20 bg-white/10 rounded-full blur-xl" />
+            <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-white/10 rounded-full blur-xl" />
+          </motion.div>
         </motion.div>
       )}
     </section>

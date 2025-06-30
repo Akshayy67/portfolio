@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Production Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #005a8b;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .config {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EmailJS Production Test</h1>
+        <p>This test simulates the production environment where environment variables are not available.</p>
+        
+        <div class="config">
+            <h3>Configuration Status:</h3>
+            <div>Service ID: <span id="serviceId"></span></div>
+            <div>Template ID: <span id="templateId"></span></div>
+            <div>Public Key: <span id="publicKey"></span></div>
+            <div>Environment: Production (no env vars)</div>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" value="Test User" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" value="EmailJS Production Test">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" rows="4" required>This is a test message to verify EmailJS works in production without environment variables.</textarea>
+            </div>
+            
+            <button type="submit" id="submitBtn">Send Test Email</button>
+        </form>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // Simulate production environment (no environment variables)
+        // Use the same fallback values as in your production code
+        const config = {
+            serviceId: 'service_mshm1ku',
+            templateId: 'template_gjtmaxv',
+            publicKey: 'e8z9fkbuNRmd04-70'
+        };
+
+        // Display configuration
+        document.getElementById('serviceId').textContent = config.serviceId || 'Not set';
+        document.getElementById('templateId').textContent = config.templateId || 'Not set';
+        document.getElementById('publicKey').textContent = config.publicKey || 'Not set';
+
+        // Initialize EmailJS
+        if (config.publicKey) {
+            emailjs.init(config.publicKey);
+        }
+
+        // Send email with retry logic (same as production)
+        async function sendEmailWithRetry(serviceId, templateId, templateParams, maxRetries = 3) {
+            let lastError;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    console.log(`EmailJS attempt ${attempt}/${maxRetries}`);
+                    
+                    if (attempt > 1) {
+                        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                    }
+                    
+                    const result = await emailjs.send(serviceId, templateId, templateParams);
+                    console.log(`EmailJS success on attempt ${attempt}:`, result);
+                    return result;
+                    
+                } catch (error) {
+                    console.warn(`EmailJS attempt ${attempt} failed:`, error);
+                    lastError = error;
+                    
+                    if (error && typeof error === 'object' && error.status) {
+                        const status = error.status;
+                        if (status === 400 || status === 401 || status === 403) {
+                            console.error('EmailJS configuration error, not retrying:', error);
+                            throw error;
+                        }
+                    }
+                }
+            }
+            
+            throw lastError;
+        }
+
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('status');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            statusDiv.innerHTML = '<div class="status info">Sending test email...</div>';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            try {
+                // Check configuration
+                if (!config.serviceId || !config.templateId || !config.publicKey) {
+                    throw new Error('EmailJS configuration incomplete');
+                }
+
+                // Prepare template parameters (same as production)
+                const templateParams = {
+                    from_name: document.getElementById('name').value,
+                    from_email: document.getElementById('email').value,
+                    to_email: 'akshayjuluri6704@gmail.com',
+                    to_name: 'Akshay Juluri',
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value,
+                    reply_to: document.getElementById('email').value,
+                    timestamp: new Date().toLocaleString(),
+                    contact_type: 'Production Test'
+                };
+
+                console.log('Sending with params:', templateParams);
+
+                // Send email with retry logic
+                const result = await sendEmailWithRetry(
+                    config.serviceId,
+                    config.templateId,
+                    templateParams
+                );
+
+                console.log('EmailJS Response:', result);
+
+                if (result.status === 200) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Email sent successfully! Check akshayjuluri6704@gmail.com</div>';
+                } else {
+                    throw new Error(`Unexpected status: ${result.status}`);
+                }
+
+            } catch (error) {
+                console.error('EmailJS failed:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Failed to send email: ${error.message}</div>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Test Email';
+            }
+        });
+    </script>
+</body>
+</html>

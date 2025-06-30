@@ -118,6 +118,18 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
     };
   }, []);
 
+  // Separate useEffect for auto-completion to ensure onSkip is properly captured
+  useEffect(() => {
+    const autoCompleteTimer = setTimeout(() => {
+      console.log("🚀 Launch sequence completed, transitioning to main");
+      onSkip(); // This will trigger the transition to main
+    }, 6000); // 6 seconds total
+
+    return () => {
+      clearTimeout(autoCompleteTimer);
+    };
+  }, [onSkip]);
+
   // Keyboard event handling
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {

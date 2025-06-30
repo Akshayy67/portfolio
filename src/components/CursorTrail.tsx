@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 interface Particle {
   id: number;
@@ -14,9 +15,15 @@ interface Particle {
 
 const CursorTrail: React.FC = () => {
   const { isDarkMode } = useTheme();
+  const deviceInfo = useDeviceDetection();
   const [particles, setParticles] = useState<Particle[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isOnPlainBackground, setIsOnPlainBackground] = useState(true);
+
+  // Don't render cursor trail on mobile devices or touch devices
+  if (deviceInfo.isMobile || deviceInfo.isTouchDevice) {
+    return null;
+  }
 
   // Check if cursor is over text or interactive elements
   const checkIfOnPlainBackground = useCallback((e: MouseEvent) => {

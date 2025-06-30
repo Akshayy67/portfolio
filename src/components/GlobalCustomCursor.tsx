@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 const GlobalCustomCursor: React.FC = () => {
   const { isDarkMode } = useTheme();
+  const deviceInfo = useDeviceDetection();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [cursorType, setCursorType] = useState<string>("default");
+
+  // Don't render custom cursor on mobile devices or touch devices
+  if (deviceInfo.isMobile || deviceInfo.isTouchDevice) {
+    console.log("GlobalCustomCursor: Disabled on mobile/touch device", {
+      isMobile: deviceInfo.isMobile,
+      isTouchDevice: deviceInfo.isTouchDevice,
+      screenWidth: deviceInfo.screenWidth,
+    });
+    return null;
+  }
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
       setIsVisible(true);
-      
+
       // Detect cursor type based on element
       const target = e.target as HTMLElement;
-      
+
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
@@ -52,10 +64,16 @@ const GlobalCustomCursor: React.FC = () => {
 
   const getCursorColors = () => {
     const baseColor = isDarkMode ? "#f97316" : "#4f46e5"; // Orange for dark, purple for light
-    const glowColor = isDarkMode ? "rgba(249, 115, 22, 0.3)" : "rgba(79, 70, 229, 0.3)";
-    const trailColor = isDarkMode ? "rgba(249, 115, 22, 0.1)" : "rgba(79, 70, 229, 0.1)";
-    const borderColor = isDarkMode ? "rgba(249, 115, 22, 0.2)" : "rgba(79, 70, 229, 0.2)";
-    
+    const glowColor = isDarkMode
+      ? "rgba(249, 115, 22, 0.3)"
+      : "rgba(79, 70, 229, 0.3)";
+    const trailColor = isDarkMode
+      ? "rgba(249, 115, 22, 0.1)"
+      : "rgba(79, 70, 229, 0.1)";
+    const borderColor = isDarkMode
+      ? "rgba(249, 115, 22, 0.2)"
+      : "rgba(79, 70, 229, 0.2)";
+
     return { baseColor, glowColor, trailColor, borderColor };
   };
 
@@ -89,7 +107,9 @@ const GlobalCustomCursor: React.FC = () => {
           style={{
             borderColor: baseColor,
             background: `radial-gradient(circle, ${glowColor}, transparent)`,
-            boxShadow: `0 0 ${cursorType === "pointer" ? "25px" : "20px"} ${baseColor}`,
+            boxShadow: `0 0 ${
+              cursorType === "pointer" ? "25px" : "20px"
+            } ${baseColor}`,
           }}
         />
       </motion.div>
@@ -123,7 +143,10 @@ const GlobalCustomCursor: React.FC = () => {
       </motion.div>
 
       {/* Section-specific accent cursor */}
-      {(cursorType === "hero" || cursorType === "about" || cursorType === "projects" || cursorType === "contact") && (
+      {(cursorType === "hero" ||
+        cursorType === "about" ||
+        cursorType === "projects" ||
+        cursorType === "contact") && (
         <motion.div
           className="fixed pointer-events-none z-[9997]"
           animate={{

@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 const CustomCursor: React.FC = () => {
   const { isDarkMode } = useTheme();
+  const deviceInfo = useDeviceDetection();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorType, setCursorType] = useState<string>("default");
   const [isVisible, setIsVisible] = useState(true);
+
+  // Don't render custom cursor on mobile devices or touch devices
+  if (deviceInfo.isMobile || deviceInfo.isTouchDevice) {
+    return null;
+  }
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {

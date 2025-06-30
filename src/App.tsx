@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import LaunchSequence from "./components/LaunchSequence";
-import BlackHoleScene from "./components/BlackHoleScene";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
 import ProjectsSection from "./components/ProjectsSection";
@@ -19,6 +18,7 @@ import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
+import { audioManager } from "./utils/audioManager";
 import {
   registerSW,
   measurePerformance,
@@ -35,9 +35,7 @@ const MainContent: React.FC = () => {
   const timer1Ref = useRef<NodeJS.Timeout | null>(null);
   const timer2Ref = useRef<NodeJS.Timeout | null>(null);
 
-  const [currentScene, setCurrentScene] = useState<
-    "launch" | "blackhole" | "main"
-  >("launch"); // Always start with launch sequence
+  const [currentScene, setCurrentScene] = useState<"launch" | "main">("launch"); // Always start with launch sequence
   const [showNavigation, setShowNavigation] = useState(false);
 
   // Debug logging for scene changes
@@ -68,6 +66,25 @@ const MainContent: React.FC = () => {
     };
   }, []); // Run only once on mount
 
+  // Global click handler for audio initialization
+  useEffect(() => {
+    const handleGlobalClick = async () => {
+      try {
+        await audioManager.initialize();
+        console.log("🎵 Audio initialized via global click");
+      } catch (error) {
+        console.warn("Audio initialization failed:", error);
+      }
+    };
+
+    // Add global click listener
+    document.addEventListener("click", handleGlobalClick, { once: true });
+
+    return () => {
+      document.removeEventListener("click", handleGlobalClick);
+    };
+  }, []);
+
   // Handle animation sequence based on device preferences
   useEffect(() => {
     console.log("Device info:", deviceInfo);
@@ -82,27 +99,14 @@ const MainContent: React.FC = () => {
     //   return;
     // }
 
-    // Only start timer if we're in launch scene
-    if (currentScene === "launch") {
-      console.log("Starting launch sequence timer");
-      timer1Ref.current = setTimeout(() => {
-        console.log("🌌 Timer 1 fired: Transitioning to blackhole");
-        setCurrentScene("blackhole");
-      }, 6000); // 6 seconds total for launch sequence
-    }
+    // Let the LaunchSequence component handle its own timing
+    // No need for App-level timer since LaunchSequence will call onSkip when done
 
     return () => {
       if (timer1Ref.current) clearTimeout(timer1Ref.current);
       if (timer2Ref.current) clearTimeout(timer2Ref.current);
     };
   }, [deviceInfo.prefersReducedMotion, currentScene]);
-
-  // Handle black hole sequence completion
-  const handleBlackHoleComplete = () => {
-    console.log("🏠 Black hole sequence completed: Transitioning to main");
-    setCurrentScene("main");
-    setShowNavigation(true);
-  };
 
   // Separate useEffect for keyboard events
   useEffect(() => {
@@ -144,11 +148,14 @@ const MainContent: React.FC = () => {
     setCurrentScene("main");
     setShowNavigation(true);
 
-    // Scroll to about section after a brief delay to ensure content is loaded
+    // Scroll to hero section after a brief delay to ensure content is loaded
     setTimeout(() => {
-      const aboutSection = document.getElementById("about");
-      if (aboutSection) {
-        aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      const heroSection = document.getElementById("hero");
+      if (heroSection) {
+        heroSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        // Fallback: scroll to top if hero section not found
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }, 500);
   };
@@ -169,13 +176,6 @@ const MainContent: React.FC = () => {
       <AnimatePresence mode="wait">
         {currentScene === "launch" && (
           <LaunchSequence key="launch" onSkip={skipToMain} />
-        )}
-        {currentScene === "blackhole" && (
-          <BlackHoleScene
-            key="blackhole"
-            onSkip={skipToMain}
-            onComplete={handleBlackHoleComplete}
-          />
         )}
         {currentScene === "main" && (
           <div

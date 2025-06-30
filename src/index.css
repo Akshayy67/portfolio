@@ -184,30 +184,6 @@ html {
   animation: event-horizon 0.8s ease-in-out;
 }
 
-/* Interstellar Glow Effects */
-.glow-accretion {
-  filter: drop-shadow(0 0 20px rgba(255, 165, 0, 0.6))
-    drop-shadow(0 0 40px rgba(255, 165, 0, 0.3))
-    drop-shadow(0 0 60px rgba(255, 140, 0, 0.1));
-}
-
-.glow-event-horizon {
-  filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.9))
-    drop-shadow(0 0 50px rgba(0, 0, 0, 0.7))
-    drop-shadow(0 0 100px rgba(0, 0, 0, 0.5));
-}
-
-.glow-starlight {
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8))
-    drop-shadow(0 0 20px rgba(255, 255, 255, 0.4))
-    drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
-}
-
-.glow-subtle {
-  filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.3))
-    drop-shadow(0 0 10px rgba(255, 165, 0, 0.15));
-}
-
 /* Terminal cursor blink effect */
 .terminal-cursor {
   animation: blink 1s infinite;
@@ -244,18 +220,6 @@ html {
     rgba(0, 0, 0, 0.95) 40%,
     rgba(0, 0, 0, 1) 70%
   );
-}
-
-.bg-gargantua {
-  background: radial-gradient(
-    circle at center,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(255, 165, 0, 0.03) 30%,
-    rgba(255, 255, 255, 0.01) 60%,
-    rgba(0, 0, 0, 1) 100%
-  );
-  background-size: 400% 400%;
-  animation: time-dilation 12s ease infinite;
 }
 
 .glass-morphism {
@@ -463,7 +427,7 @@ button,
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
 
-/* Light Theme Styles - Gargantua Black Hole Aesthetic */
+/* Light Theme Styles */
 .light {
   /* Light theme base colors */
   --light-bg: #fafafa;
@@ -842,71 +806,77 @@ a,
     cursor: not-allowed;
   }
 
-  /* Hide default cursor globally for custom cursor */
-  * {
-    cursor: none !important;
-  }
-
-  /* Keep text cursor for input elements */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="search"],
-  textarea,
-  [contenteditable="true"] {
-    cursor: text !important;
-  }
-
-  /* Cursor trail particle animations */
-  @keyframes particle-float {
-    0% {
-      transform: translateY(0) scale(0) rotate(0deg);
-      opacity: 0.8;
+  /* Hide default cursor globally for custom cursor - DESKTOP ONLY */
+  @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+    * {
+      cursor: none !important;
     }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-30px) scale(1.5) rotate(180deg);
-      opacity: 0;
+
+    /* Keep text cursor for input elements */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    textarea,
+    [contenteditable="true"] {
+      cursor: text !important;
     }
   }
 
-  @keyframes particle-twinkle {
-    0%,
-    100% {
-      opacity: 0.3;
-      transform: scale(0.8);
+  /* Cursor trail particle animations - DESKTOP ONLY */
+  @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+    @keyframes particle-float {
+      0% {
+        transform: translateY(0) scale(0) rotate(0deg);
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-30px) scale(1.5) rotate(180deg);
+        opacity: 0;
+      }
     }
-    50% {
-      opacity: 1;
-      transform: scale(1.2);
+
+    @keyframes particle-twinkle {
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    .cursor-particle {
+      animation: particle-float 1.5s ease-out forwards;
+    }
+
+    .cursor-particle.twinkle {
+      animation: particle-twinkle 0.8s ease-in-out infinite;
     }
   }
 
-  .cursor-particle {
-    animation: particle-float 1.5s ease-out forwards;
-  }
+  /* Glitter effect for different particle types - DESKTOP ONLY */
+  @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+    .particle-star {
+      filter: drop-shadow(0 0 4px currentColor);
+    }
 
-  .cursor-particle.twinkle {
-    animation: particle-twinkle 0.8s ease-in-out infinite;
-  }
+    .particle-diamond {
+      filter: drop-shadow(0 0 3px currentColor) brightness(1.2);
+    }
 
-  /* Glitter effect for different particle types */
-  .particle-star {
-    filter: drop-shadow(0 0 4px currentColor);
-  }
+    .particle-sparkle {
+      filter: drop-shadow(0 0 5px currentColor) saturate(1.3);
+    }
 
-  .particle-diamond {
-    filter: drop-shadow(0 0 3px currentColor) brightness(1.2);
-  }
-
-  .particle-sparkle {
-    filter: drop-shadow(0 0 5px currentColor) saturate(1.3);
-  }
-
-  .particle-circle {
-    filter: drop-shadow(0 0 2px currentColor);
+    .particle-circle {
+      filter: drop-shadow(0 0 2px currentColor);
+    }
   }
 
   /* Optimize animations for mobile */

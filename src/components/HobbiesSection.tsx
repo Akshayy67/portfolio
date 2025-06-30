@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Guitar, Trophy, Target, Plane } from "lucide-react";
+import { Guitar, Trophy, Crown, Plane } from "lucide-react";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 const HobbiesSection: React.FC = () => {
@@ -15,7 +15,7 @@ const HobbiesSection: React.FC = () => {
   const hobbies = [
     { text: "play guitar", icon: Guitar, color: "text-purple-400" },
     { text: "play cricket", icon: Trophy, color: "text-green-400" },
-    { text: "play chess", icon: Target, color: "text-blue-400" },
+    { text: "play chess", icon: Crown, color: "text-blue-400" },
     { text: "travel a lot", icon: Plane, color: "text-orange-400" },
   ];
 

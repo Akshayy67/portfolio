@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Code2, Rocket, Globe, Database } from "lucide-react";
+import { Code2, Rocket, Globe, Database, Network } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
@@ -14,7 +14,8 @@ const AboutSection: React.FC = () => {
   });
 
   const skills = [
-    { name: "Programming Languages", icon: Code2, level: 95 },
+    { name: "Programming Languages", icon: Code2, level: 90 },
+    { name: "Data structures & Algorithms", icon: Network, level: 85 },
     { name: "Machine Learning", icon: Database, level: 85 },
     { name: "Full Stack Development", icon: Globe, level: 88 },
     { name: "Mobile Development", icon: Rocket, level: 75 },

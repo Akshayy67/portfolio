@@ -25,6 +25,11 @@ export class AudioManager {
     return AudioManager.instance;
   }
 
+  // Get initialization status
+  public getIsInitialized(): boolean {
+    return this.isInitialized;
+  }
+
   // Initialize audio context (must be called after user interaction)
   public async initialize(): Promise<void> {
     if (this.isInitialized) return;
