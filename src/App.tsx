@@ -19,11 +19,6 @@ import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
 import { audioManager } from "./utils/audioManager";
-import {
-  registerSW,
-  measurePerformance,
-  preloadCriticalResources,
-} from "./utils/serviceWorker";
 import SmoothTransition from "./components/SmoothTransition";
 import LazySection from "./components/LazySection";
 
@@ -38,28 +33,10 @@ const MainContent: React.FC = () => {
   const [currentScene, setCurrentScene] = useState<"launch" | "main">("launch"); // Always start with launch sequence
   const [showNavigation, setShowNavigation] = useState(false);
 
-  // Debug logging for scene changes
-  useEffect(() => {
-    console.log("Current scene changed to:", currentScene);
-  }, [currentScene]);
-
   // Initialize app once on mount
   useEffect(() => {
-    console.log("App initialized, current scene:", currentScene);
-    // Initialize performance monitoring
-    measurePerformance();
-    preloadCriticalResources();
-
     // Default cursor behavior restored
-
-    // Register service worker only in production
-    if (import.meta.env.PROD) {
-      registerSW({
-        onSuccess: () => console.log("Service worker registered successfully"),
-        onUpdate: () => console.log("New content available"),
-        onOfflineReady: () => console.log("App ready for offline use"),
-      });
-    }
+    // Service worker registration disabled - no caching
 
     return () => {
       // Cleanup
@@ -71,7 +48,6 @@ const MainContent: React.FC = () => {
     const handleGlobalClick = async () => {
       try {
         await audioManager.initialize();
-        console.log("🎵 Audio initialized via global click");
       } catch (error) {
         console.warn("Audio initialization failed:", error);
       }
@@ -87,13 +63,9 @@ const MainContent: React.FC = () => {
 
   // Handle animation sequence based on device preferences
   useEffect(() => {
-    console.log("Device info:", deviceInfo);
-    console.log("Prefers reduced motion:", deviceInfo.prefersReducedMotion);
-
     // Auto-skip animations only if user explicitly prefers reduced motion
     // TEMPORARILY DISABLED FOR DEBUGGING
     // if (deviceInfo.prefersReducedMotion) {
-    //   console.log("Skipping animations due to reduced motion preference");
     //   setCurrentScene("main");
     //   setShowNavigation(true);
     //   return;
@@ -166,8 +138,6 @@ const MainContent: React.FC = () => {
     analytics.trackEvent("animations_restarted", { trigger: "manual" });
   };
 
-  console.log("App rendering, currentScene:", currentScene);
-
   return (
     <div className="relative">
       {/* Global custom cursor - works everywhere */}
@@ -180,19 +150,12 @@ const MainContent: React.FC = () => {
         {currentScene === "main" && (
           <div
             key="main"
-            className={`min-h-screen relative overflow-x-hidden transition-all duration-1000 ${
-              isDarkMode
-                ? "bg-black text-white"
-                : "bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900"
-            }`}
+            className="min-h-screen relative overflow-x-hidden transition-all duration-1000 bg-transparent text-white"
           >
-            {/* Simplified Background */}
+            {/* Enhanced Background with Particles - Always Dark for Better Effects */}
             <div className="fixed inset-0 z-0">
-              {isDarkMode ? (
-                <div className="absolute inset-0 bg-black" />
-              ) : (
-                <div className="absolute inset-0 bg-white" />
-              )}
+              <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black" />
+              <ParticleBackground isDarkMode={true} />
             </div>
 
             {/* Navigation and Content */}

@@ -10,12 +10,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          animations: ["framer-motion"],
-          ui: ["lucide-react"],
-          email: ["@emailjs/browser"],
-        },
+        // Disable manual chunks to prevent aggressive caching
+        manualChunks: undefined,
+        // Add timestamp to filenames for cache busting
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`,
       },
     },
     chunkSizeWarningLimit: 1000,
@@ -23,5 +23,10 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    headers: {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
   },
 });

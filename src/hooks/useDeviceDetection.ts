@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface DeviceInfo {
   isMobile: boolean;
@@ -14,7 +14,7 @@ interface DeviceInfo {
 export const useDeviceDetection = (): DeviceInfo => {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(() => {
     // Initial values for SSR compatibility
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {
         isMobile: false,
         isTablet: false,
@@ -29,16 +29,18 @@ export const useDeviceDetection = (): DeviceInfo => {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
+
     return {
       isMobile: width < 768,
       isTablet: width >= 768 && width < 1024,
       isDesktop: width >= 1024,
       screenWidth: width,
       screenHeight: height,
-      isTouchDevice: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+      isTouchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
       isLowEndDevice: detectLowEndDevice(),
-      prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      prefersReducedMotion: window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches,
     };
   });
 
@@ -46,31 +48,33 @@ export const useDeviceDetection = (): DeviceInfo => {
     const updateDeviceInfo = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       setDeviceInfo({
         isMobile: width < 768,
         isTablet: width >= 768 && width < 1024,
         isDesktop: width >= 1024,
         screenWidth: width,
         screenHeight: height,
-        isTouchDevice: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+        isTouchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
         isLowEndDevice: detectLowEndDevice(),
-        prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        prefersReducedMotion: window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches,
       });
     };
 
     // Listen for resize events
-    window.addEventListener('resize', updateDeviceInfo);
-    
+    window.addEventListener("resize", updateDeviceInfo);
+
     // Listen for orientation changes on mobile
-    window.addEventListener('orientationchange', updateDeviceInfo);
+    window.addEventListener("orientationchange", updateDeviceInfo);
 
     // Listen for reduced motion preference changes
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const handleMotionPreferenceChange = () => updateDeviceInfo();
-    
+
     if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleMotionPreferenceChange);
+      mediaQuery.addEventListener("change", handleMotionPreferenceChange);
     } else {
       // Fallback for older browsers
       mediaQuery.addListener(handleMotionPreferenceChange);
@@ -80,11 +84,11 @@ export const useDeviceDetection = (): DeviceInfo => {
     updateDeviceInfo();
 
     return () => {
-      window.removeEventListener('resize', updateDeviceInfo);
-      window.removeEventListener('orientationchange', updateDeviceInfo);
-      
+      window.removeEventListener("resize", updateDeviceInfo);
+      window.removeEventListener("orientationchange", updateDeviceInfo);
+
       if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleMotionPreferenceChange);
+        mediaQuery.removeEventListener("change", handleMotionPreferenceChange);
       } else {
         mediaQuery.removeListener(handleMotionPreferenceChange);
       }
@@ -96,21 +100,22 @@ export const useDeviceDetection = (): DeviceInfo => {
 
 // Helper function to detect low-end devices
 function detectLowEndDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === "undefined") return false;
+
   // Check for hardware concurrency (number of CPU cores)
   const cores = navigator.hardwareConcurrency || 4;
-  
+
   // Check for device memory (if available)
   const memory = (navigator as any).deviceMemory || 4;
-  
+
   // Check for connection type (if available)
   const connection = (navigator as any).connection;
-  const isSlowConnection = connection && 
-    (connection.effectiveType === 'slow-2g' || 
-     connection.effectiveType === '2g' || 
-     connection.effectiveType === '3g');
-  
+  const isSlowConnection =
+    connection &&
+    (connection.effectiveType === "slow-2g" ||
+      connection.effectiveType === "2g" ||
+      connection.effectiveType === "3g");
+
   // Consider it low-end if:
   // - Less than 4 CPU cores
   // - Less than 4GB RAM
@@ -119,3 +124,28 @@ function detectLowEndDevice(): boolean {
 }
 
 export default useDeviceDetection;
+
+// Enhanced parallax hook for mobile-first design
+export const useParallaxEffect = (
+  speed: number = 0.5,
+  enabled: boolean = true
+) => {
+  const [offset, setOffset] = useState(0);
+  const deviceInfo = useDeviceDetection();
+
+  useEffect(() => {
+    if (!enabled || deviceInfo.prefersReducedMotion) {
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrolled = window.pageYOffset;
+      setOffset(scrolled * speed);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [speed, enabled, deviceInfo.isMobile, deviceInfo.prefersReducedMotion]);
+
+  return !deviceInfo.prefersReducedMotion ? offset : 0;
+};

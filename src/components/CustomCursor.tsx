@@ -60,20 +60,6 @@ const CustomCursor: React.FC = () => {
         target.closest('[data-section="contact"]') ||
         target.closest("#contact");
 
-      // Debug logging for section detection
-      if (Math.random() < 0.02) {
-        // Log occasionally to avoid spam
-        console.log("Section detection:", {
-          hero: !!heroSection,
-          about: !!aboutSection,
-          projects: !!projectsSection,
-          skills: !!skillsSection,
-          contact: !!contactSection,
-          targetElement: target.tagName,
-          targetClasses: target.className,
-        });
-      }
-
       // Check for specific cursor classes first
       if (target.classList.contains("rocket-cursor")) {
         setCursorType("rocket");
@@ -125,9 +111,6 @@ const CustomCursor: React.FC = () => {
       document.removeEventListener("mouseenter", handleMouseEnter);
       document.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("mousemove", updateMousePosition);
-      console.log(
-        "CustomCursor component unmounted and event listeners removed"
-      );
     };
   }, []);
 

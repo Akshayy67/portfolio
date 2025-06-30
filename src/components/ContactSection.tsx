@@ -20,6 +20,8 @@ import {
   createTemplateParams,
   sendEmailWithRetry,
 } from "../config/emailjs";
+import EnhancedParallax from "./EnhancedParallax";
+import { ContactBackground } from "./SectionBackgrounds";
 
 const ContactSection: React.FC = () => {
   const { ref, inView } = useInView({
@@ -109,21 +111,14 @@ const ContactSection: React.FC = () => {
     setAiError(null);
 
     try {
-      console.log("🤖 Starting AI suggestion generation...");
       const aiSuggestions = await generateSmartSuggestions(currentMessage);
 
       if (aiSuggestions.length > 0) {
         setAiSuggestions(aiSuggestions);
         setAiStatus("success");
-        console.log(
-          "✅ AI suggestions successful:",
-          aiSuggestions.length,
-          "suggestions"
-        );
         return aiSuggestions;
       } else {
         setAiStatus("fallback");
-        console.log("⚠️ AI returned no suggestions, using fallback");
         return [];
       }
     } catch (error) {
@@ -1232,27 +1227,49 @@ Time: ${new Date().toLocaleString()}`;
   ];
 
   return (
-    <section
-      id="contact"
-      data-section="contact"
+    <EnhancedParallax
       className="min-h-screen py-20 relative overflow-hidden contact-section"
+      intensity="strong"
+      backgroundLayers={[
+        {
+          children: <ContactBackground />,
+          speed: 0.4,
+          direction: "up",
+          className: "z-0",
+        },
+        {
+          children: (
+            <div className="absolute inset-0">
+              {/* Enhanced communication signals for mobile */}
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-3 h-3 border-2 border-orange-400/30 rounded-full"
+                  style={{
+                    left: `${25 + i * 12}%`,
+                    top: `${35 + Math.sin(i) * 15}%`,
+                  }}
+                  animate={{
+                    scale: [1, 2.5, 1],
+                    opacity: [0.3, 0.8, 0.3],
+                    rotate: [0, 360],
+                  }}
+                  transition={{
+                    duration: 5 + i,
+                    repeat: Infinity,
+                    delay: i * 0.8,
+                  }}
+                />
+              ))}
+            </div>
+          ),
+          speed: 0.6,
+          direction: "down",
+          className: "z-1",
+        },
+      ]}
     >
-      {/* Background Signal Animation */}
-      <div className="absolute inset-0">
-        {/* Radar Sweep Effect */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <motion.div
-            className="w-96 h-96 border border-orange-400/20 rounded-full"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          />
-          <motion.div
-            className="absolute inset-0 w-96 h-96 border border-orange-400/10 rounded-full"
-            animate={{ scale: [1, 2, 1], opacity: [0.3, 0, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, delay: 1 }}
-          />
-        </div>
-
+      <section id="contact" data-section="contact" className="relative z-10">
         {/* Signal Lines */}
         {[...Array(8)].map((_, i) => (
           <motion.div
@@ -1274,664 +1291,667 @@ Time: ${new Date().toLocaleString()}`;
             }}
           />
         ))}
-      </div>
 
-      <div ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-12 sm:mb-16"
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
-            Get In <span className="interstellar-text">Touch</span>
-          </h2>
-          <p className="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto px-2 sm:px-0">
-            Ready to collaborate on your next project? Let's connect and build
-            something amazing together.
-          </p>
-          <div className="mt-4 p-3 bg-orange-400/10 border border-orange-400/20 rounded-lg max-w-2xl mx-auto">
-            <p className="text-sm text-orange-400/90 text-center">
-              💡 <strong>Multiple ways to reach me:</strong> Form submission,
-              direct email, or LinkedIn - choose what works best for you!
-            </p>
-          </div>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
-          {/* Contact Information */}
+        <div ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="space-y-6 sm:space-y-8"
-            initial={{ opacity: 0, x: -50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
           >
-            <div className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg">
-              <h3 className="text-xl sm:text-2xl font-mono text-orange-400 mb-4 sm:mb-6 glow-accretion">
-                Contact Information
-              </h3>
-
-              <div className="space-y-4 sm:space-y-6">
-                {contactInfo.map((info, index) => (
-                  <motion.div
-                    key={info.label}
-                    className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                  >
-                    <div className="p-1.5 sm:p-2 bg-orange-400/20 rounded-lg flex-shrink-0">
-                      <info.icon className="text-orange-400" size={18} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-mono text-white font-medium mb-1 text-sm sm:text-base">
-                        {info.label}
-                      </h4>
-                      <p className="text-orange-400 font-mono text-xs sm:text-sm mb-1 break-all">
-                        {info.value}
-                      </p>
-                      <p className="text-white/60 text-xs leading-relaxed">
-                        {info.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Resume Download */}
-            <motion.div
-              className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <h3 className="text-xl font-mono text-white mb-4">
-                Resume & Portfolio
-              </h3>
-              <p className="text-white/70 text-sm mb-4">
-                Download my complete resume including technical skills, project
-                experience, and educational background.
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
+              Get In <span className="interstellar-text">Touch</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto px-2 sm:px-0">
+              Ready to collaborate on your next project? Let's connect and build
+              something amazing together.
+            </p>
+            <div className="mt-4 p-3 bg-orange-400/10 border border-orange-400/20 rounded-lg max-w-2xl mx-auto">
+              <p className="text-sm text-orange-400/90 text-center">
+                💡 <strong>Multiple ways to reach me:</strong> Form submission,
+                direct email, or LinkedIn - choose what works best for you!
               </p>
-              <motion.button
-                onClick={handleDownloadResume}
-                className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover"
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                animate={{
-                  boxShadow: [
-                    "0 0 0 0 rgba(251, 146, 60, 0.4)",
-                    "0 0 0 10px rgba(251, 146, 60, 0)",
-                    "0 0 0 0 rgba(251, 146, 60, 0)",
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <FileText size={18} />
-                Download Resume
-              </motion.button>
-            </motion.div>
-
-            {/* Status Indicator */}
-            <motion.div
-              className="bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 1 }}
-            >
-              <div className="flex items-center gap-3">
-                <motion.div
-                  className="w-3 h-3 bg-green-400 rounded-full"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                <span className="font-mono text-green-400 text-sm">
-                  Available for new opportunities
-                </span>
-              </div>
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Contact Form */}
-          <motion.div
-            className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg"
-            initial={{ opacity: 0, x: 50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            <h3 className="text-xl sm:text-2xl font-mono text-white mb-4 sm:mb-6">
-              Send Message
-            </h3>
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
+            {/* Contact Information */}
+            <motion.div
+              className="space-y-6 sm:space-y-8"
+              initial={{ opacity: 0, x: -50 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <div className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg">
+                <h3 className="text-xl sm:text-2xl font-mono text-orange-400 mb-4 sm:mb-6 glow-accretion">
+                  Contact Information
+                </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-4 sm:space-y-6">
+                  {contactInfo.map((info, index) => (
+                    <motion.div
+                      key={info.label}
+                      className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={inView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+                    >
+                      <div className="p-1.5 sm:p-2 bg-orange-400/20 rounded-lg flex-shrink-0">
+                        <info.icon className="text-orange-400" size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-mono text-white font-medium mb-1 text-sm sm:text-base">
+                          {info.label}
+                        </h4>
+                        <p className="text-orange-400 font-mono text-xs sm:text-sm mb-1 break-all">
+                          {info.value}
+                        </p>
+                        <p className="text-white/60 text-xs leading-relaxed">
+                          {info.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Resume Download */}
+              <motion.div
+                className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.8 }}
+              >
+                <h3 className="text-xl font-mono text-white mb-4">
+                  Resume & Portfolio
+                </h3>
+                <p className="text-white/70 text-sm mb-4">
+                  Download my complete resume including technical skills,
+                  project experience, and educational background.
+                </p>
+                <motion.button
+                  onClick={handleDownloadResume}
+                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  animate={{
+                    boxShadow: [
+                      "0 0 0 0 rgba(251, 146, 60, 0.4)",
+                      "0 0 0 10px rgba(251, 146, 60, 0)",
+                      "0 0 0 0 rgba(251, 146, 60, 0)",
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <FileText size={18} />
+                  Download Resume
+                </motion.button>
+              </motion.div>
+
+              {/* Status Indicator */}
+              <motion.div
+                className="bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 1 }}
+              >
+                <div className="flex items-center gap-3">
+                  <motion.div
+                    className="w-3 h-3 bg-green-400 rounded-full"
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className="font-mono text-green-400 text-sm">
+                    Available for new opportunities
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Contact Form */}
+            <motion.div
+              className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg"
+              initial={{ opacity: 0, x: 50 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <h3 className="text-xl sm:text-2xl font-mono text-white mb-4 sm:mb-6">
+                Send Message
+              </h3>
+
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-white/70 text-sm font-mono mb-2">
+                      <User size={16} className="inline mr-2" />
+                      Your Name *
+                      <span className="text-xs text-white/50 ml-2">
+                        ({formData.name.length}/{charLimits.name})
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`w-full glass-morphism rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-all duration-300 event-horizon-hover ${
+                          fieldTouched.name && fieldErrors.name
+                            ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
+                            : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
+                        }`}
+                        placeholder="Enter your name"
+                        maxLength={charLimits.name}
+                      />
+                      {fieldTouched.name &&
+                        !fieldErrors.name &&
+                        formData.name && (
+                          <CheckCircle
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400"
+                            size={16}
+                          />
+                        )}
+                      {fieldTouched.name && fieldErrors.name && (
+                        <AlertCircle
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400"
+                          size={16}
+                        />
+                      )}
+                    </div>
+                    {fieldTouched.name && fieldErrors.name && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-red-400 text-xs font-mono mt-1"
+                      >
+                        {fieldErrors.name}
+                      </motion.p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-white/70 text-sm font-mono mb-2">
+                      <Mail size={16} className="inline mr-2" />
+                      Email Address *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`w-full bg-white/5 border border-white/20 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-colors ${
+                          fieldTouched.email && fieldErrors.email
+                            ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
+                            : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
+                        }`}
+                        placeholder="your.email@domain.com"
+                      />
+                      {fieldTouched.email &&
+                        !fieldErrors.email &&
+                        formData.email && (
+                          <CheckCircle
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400"
+                            size={16}
+                          />
+                        )}
+                      {fieldTouched.email && fieldErrors.email && (
+                        <AlertCircle
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400"
+                          size={16}
+                        />
+                      )}
+                    </div>
+                    {fieldTouched.email && fieldErrors.email && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-red-400 text-xs font-mono mt-1"
+                      >
+                        {fieldErrors.email}
+                      </motion.p>
+                    )}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-white/70 text-sm font-mono mb-2">
-                    <User size={16} className="inline mr-2" />
-                    Your Name *
+                    <MessageSquare size={16} className="inline mr-2" />
+                    Subject
                     <span className="text-xs text-white/50 ml-2">
-                      ({formData.name.length}/{charLimits.name})
+                      ({formData.subject.length}/{charLimits.subject})
                     </span>
                   </label>
                   <div className="relative">
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full glass-morphism rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-all duration-300 event-horizon-hover ${
-                        fieldTouched.name && fieldErrors.name
+                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors ${
+                        fieldTouched.subject && fieldErrors.subject
                           ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
                           : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
                       }`}
-                      placeholder="Enter your name"
-                      maxLength={charLimits.name}
+                      placeholder="Project inquiry, collaboration, etc."
+                      maxLength={charLimits.subject}
                     />
-                    {fieldTouched.name &&
-                      !fieldErrors.name &&
-                      formData.name && (
+                    {fieldTouched.subject &&
+                      !fieldErrors.subject &&
+                      formData.subject && (
                         <CheckCircle
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400"
                           size={16}
                         />
                       )}
-                    {fieldTouched.name && fieldErrors.name && (
+                    {fieldTouched.subject && fieldErrors.subject && (
                       <AlertCircle
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400"
                         size={16}
                       />
                     )}
                   </div>
-                  {fieldTouched.name && fieldErrors.name && (
+                  {fieldTouched.subject && fieldErrors.subject && (
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-400 text-xs font-mono mt-1"
                     >
-                      {fieldErrors.name}
+                      {fieldErrors.subject}
                     </motion.p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-white/70 text-sm font-mono mb-2">
-                    <Mail size={16} className="inline mr-2" />
-                    Email Address *
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-white/70 text-sm font-mono">
+                      <FileText size={16} className="inline mr-2" />
+                      Message *
+                      <span className="text-xs text-white/50 ml-2">
+                        ({formData.message.length}/{charLimits.message})
+                      </span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUseAI(!useAI);
+                          if (!useAI && formData.message.length > 10) {
+                            console.log(
+                              "🤖 AI toggled ON, generating suggestions..."
+                            );
+                            generateAISuggestions(formData.message);
+                          }
+                        }}
+                        className={`text-xs font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded ${
+                          useAI
+                            ? aiStatus === "success"
+                              ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                              : aiStatus === "error"
+                              ? "bg-red-400/20 text-red-400 border border-red-400/30"
+                              : aiStatus === "loading"
+                              ? "bg-blue-400/20 text-blue-400 border border-blue-400/30"
+                              : "bg-orange-400/20 text-orange-400 border border-orange-400/30"
+                            : "text-white/60 hover:text-orange-300 border border-white/20"
+                        }`}
+                      >
+                        🤖 AI{" "}
+                        {useAI
+                          ? aiStatus === "success"
+                            ? "✅"
+                            : aiStatus === "error"
+                            ? "❌"
+                            : aiStatus === "loading"
+                            ? "⏳"
+                            : "ON"
+                          : "OFF"}
+                      </button>
+                      {useAI && formData.message.length > 10 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            console.log("🔄 Manual AI trigger");
+                            generateAISuggestions(formData.message);
+                          }}
+                          className="text-xs text-blue-400 hover:text-blue-300 font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded border border-blue-400/30"
+                          disabled={isLoadingAI}
+                        >
+                          {isLoadingAI ? "⏳" : "🔄"} Generate
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowSuggestions(!showSuggestions);
+                          setSelectedSuggestionIndex(-1);
+                        }}
+                        className="text-xs text-orange-400 hover:text-orange-300 font-mono transition-colors flex items-center gap-1"
+                      >
+                        <MessageSquare size={12} />
+                        {showSuggestions ? "Hide" : "Add"} suggestions
+                      </button>
+                    </div>
+                  </div>
                   <div className="relative">
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                    <textarea
+                      name="message"
+                      value={formData.message}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-colors ${
-                        fieldTouched.email && fieldErrors.email
+                      onFocus={handleMessageFocus}
+                      onKeyDown={handleMessageKeyDown}
+                      rows={6}
+                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors resize-none ${
+                        fieldTouched.message && fieldErrors.message
                           ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
                           : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
                       }`}
-                      placeholder="your.email@domain.com"
+                      placeholder="Tell me about your project or how we can work together... (click 'Add suggestions' for quick phrases)"
+                      maxLength={charLimits.message}
                     />
-                    {fieldTouched.email &&
-                      !fieldErrors.email &&
-                      formData.email && (
+
+                    {/* Autocomplete Suggestions Dropdown */}
+                    {showSuggestions &&
+                      (() => {
+                        const filteredSuggestions = getYouTubeLikeSuggestions();
+                        return filteredSuggestions.length > 0 ? (
+                          <motion.div
+                            className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-xl z-10 max-h-64 overflow-y-auto"
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            transition={{ duration: 0.15 }}
+                          >
+                            {filteredSuggestions.map(
+                              (suggestion: string, index: number) => (
+                                <motion.button
+                                  key={suggestion}
+                                  type="button"
+                                  data-suggestion-button="true"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault(); // Prevent blur
+                                    handleSuggestionClick(suggestion);
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleSuggestionClick(suggestion);
+                                  }}
+                                  className={`w-full text-left px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors flex items-center gap-3 ${
+                                    index === selectedSuggestionIndex
+                                      ? "bg-gray-100"
+                                      : ""
+                                  }`}
+                                  whileHover={{
+                                    backgroundColor: "rgba(0,0,0,0.05)",
+                                  }}
+                                >
+                                  <div className="text-gray-400">🔍</div>
+                                  <div className="flex-1 text-sm">
+                                    {suggestion}
+                                  </div>
+                                </motion.button>
+                              )
+                            )}
+                            {isLoadingAI && (
+                              <div className="px-4 py-3 text-gray-500 text-sm flex items-center gap-3">
+                                <div className="animate-spin w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full"></div>
+                                <span>
+                                  🤖 AI generating smart suggestions...
+                                </span>
+                              </div>
+                            )}
+                            {aiStatus === "error" && aiError && (
+                              <div className="px-4 py-3 text-red-400 text-sm flex items-center gap-3">
+                                <span>⚠️</span>
+                                <span>
+                                  AI temporarily unavailable - using smart
+                                  fallbacks
+                                </span>
+                              </div>
+                            )}
+                            {aiStatus === "fallback" && (
+                              <div className="px-4 py-3 text-yellow-400 text-sm flex items-center gap-3">
+                                <span>💡</span>
+                                <span>Using contextual suggestions</span>
+                              </div>
+                            )}
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <div className="p-3 text-center">
+                              <div className="text-xs text-white/60 font-mono">
+                                No more suggestions for this context
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })()}
+                    {fieldTouched.message &&
+                      !fieldErrors.message &&
+                      formData.message && (
                         <CheckCircle
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400"
+                          className="absolute right-3 top-3 text-green-400"
                           size={16}
                         />
                       )}
-                    {fieldTouched.email && fieldErrors.email && (
+                    {fieldTouched.message && fieldErrors.message && (
                       <AlertCircle
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400"
+                        className="absolute right-3 top-3 text-red-400"
                         size={16}
                       />
                     )}
                   </div>
-                  {fieldTouched.email && fieldErrors.email && (
+                  {fieldTouched.message && fieldErrors.message && (
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-400 text-xs font-mono mt-1"
                     >
-                      {fieldErrors.email}
+                      {fieldErrors.message}
                     </motion.p>
                   )}
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-white/70 text-sm font-mono mb-2">
-                  <MessageSquare size={16} className="inline mr-2" />
-                  Subject
-                  <span className="text-xs text-white/50 ml-2">
-                    ({formData.subject.length}/{charLimits.subject})
-                  </span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors ${
-                      fieldTouched.subject && fieldErrors.subject
-                        ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                        : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                    }`}
-                    placeholder="Project inquiry, collaboration, etc."
-                    maxLength={charLimits.subject}
-                  />
-                  {fieldTouched.subject &&
-                    !fieldErrors.subject &&
-                    formData.subject && (
-                      <CheckCircle
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400"
-                        size={16}
-                      />
-                    )}
-                  {fieldTouched.subject && fieldErrors.subject && (
-                    <AlertCircle
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400"
-                      size={16}
-                    />
+                {/* Form Status Indicator */}
+                {!isFormValid &&
+                  (formData.name || formData.email || formData.message) && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
+                    >
+                      <p className="text-yellow-400 text-xs font-mono text-center">
+                        Please complete all required fields with valid
+                        information
+                      </p>
+                    </motion.div>
                   )}
-                </div>
-                {fieldTouched.subject && fieldErrors.subject && (
+
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting || !isFormValid}
+                  className={`w-full flex items-center justify-center gap-3 px-6 py-3 font-mono font-medium rounded-full transition-all duration-300 ${
+                    isSubmitting || !isFormValid
+                      ? "bg-gray-500/50 text-gray-300 cursor-not-allowed"
+                      : "bg-gradient-to-r from-orange-400 to-orange-500 text-black hover:from-orange-300 hover:to-orange-400 glow-accretion"
+                  }`}
+                  whileHover={
+                    !isSubmitting && isFormValid ? { scale: 1.02, y: -2 } : {}
+                  }
+                  whileTap={!isSubmitting && isFormValid ? { scale: 0.98 } : {}}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      Sending Message...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Send Message
+                    </>
+                  )}
+                </motion.button>
+
+                {/* Auto-save Indicator */}
+                {(formData.name ||
+                  formData.email ||
+                  formData.subject ||
+                  formData.message) && (
                   <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-xs font-mono mt-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-white/40 text-xs font-mono text-center"
                   >
-                    {fieldErrors.subject}
+                    💾 Form data auto-saved locally
                   </motion.p>
                 )}
-              </div>
+              </form>
+            </motion.div>
+          </div>
+        </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-white/70 text-sm font-mono">
-                    <FileText size={16} className="inline mr-2" />
-                    Message *
-                    <span className="text-xs text-white/50 ml-2">
-                      ({formData.message.length}/{charLimits.message})
-                    </span>
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setUseAI(!useAI);
-                        if (!useAI && formData.message.length > 10) {
-                          console.log(
-                            "🤖 AI toggled ON, generating suggestions..."
-                          );
-                          generateAISuggestions(formData.message);
-                        }
-                      }}
-                      className={`text-xs font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded ${
-                        useAI
-                          ? aiStatus === "success"
-                            ? "bg-green-400/20 text-green-400 border border-green-400/30"
-                            : aiStatus === "error"
-                            ? "bg-red-400/20 text-red-400 border border-red-400/30"
-                            : aiStatus === "loading"
-                            ? "bg-blue-400/20 text-blue-400 border border-blue-400/30"
-                            : "bg-orange-400/20 text-orange-400 border border-orange-400/30"
-                          : "text-white/60 hover:text-orange-300 border border-white/20"
-                      }`}
-                    >
-                      🤖 AI{" "}
-                      {useAI
-                        ? aiStatus === "success"
-                          ? "✅"
-                          : aiStatus === "error"
-                          ? "❌"
-                          : aiStatus === "loading"
-                          ? "⏳"
-                          : "ON"
-                        : "OFF"}
-                    </button>
-                    {useAI && formData.message.length > 10 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          console.log("🔄 Manual AI trigger");
-                          generateAISuggestions(formData.message);
-                        }}
-                        className="text-xs text-blue-400 hover:text-blue-300 font-mono transition-colors flex items-center gap-1 px-2 py-1 rounded border border-blue-400/30"
-                        disabled={isLoadingAI}
-                      >
-                        {isLoadingAI ? "⏳" : "🔄"} Generate
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowSuggestions(!showSuggestions);
-                        setSelectedSuggestionIndex(-1);
-                      }}
-                      className="text-xs text-orange-400 hover:text-orange-300 font-mono transition-colors flex items-center gap-1"
-                    >
-                      <MessageSquare size={12} />
-                      {showSuggestions ? "Hide" : "Add"} suggestions
-                    </button>
-                  </div>
-                </div>
-                <div className="relative">
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onFocus={handleMessageFocus}
-                    onKeyDown={handleMessageKeyDown}
-                    rows={6}
-                    className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors resize-none ${
-                      fieldTouched.message && fieldErrors.message
-                        ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                        : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                    }`}
-                    placeholder="Tell me about your project or how we can work together... (click 'Add suggestions' for quick phrases)"
-                    maxLength={charLimits.message}
-                  />
+        {/* Success/Error Modal - Prominent and Centered */}
+        {showToast && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowToast(false)}
+            />
 
-                  {/* Autocomplete Suggestions Dropdown */}
-                  {showSuggestions &&
-                    (() => {
-                      const filteredSuggestions = getYouTubeLikeSuggestions();
-                      return filteredSuggestions.length > 0 ? (
-                        <motion.div
-                          className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-xl z-10 max-h-64 overflow-y-auto"
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          transition={{ duration: 0.15 }}
-                        >
-                          {filteredSuggestions.map(
-                            (suggestion: string, index: number) => (
-                              <motion.button
-                                key={suggestion}
-                                type="button"
-                                data-suggestion-button="true"
-                                onMouseDown={(e) => {
-                                  e.preventDefault(); // Prevent blur
-                                  handleSuggestionClick(suggestion);
-                                }}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  handleSuggestionClick(suggestion);
-                                }}
-                                className={`w-full text-left px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors flex items-center gap-3 ${
-                                  index === selectedSuggestionIndex
-                                    ? "bg-gray-100"
-                                    : ""
-                                }`}
-                                whileHover={{
-                                  backgroundColor: "rgba(0,0,0,0.05)",
-                                }}
-                              >
-                                <div className="text-gray-400">🔍</div>
-                                <div className="flex-1 text-sm">
-                                  {suggestion}
-                                </div>
-                              </motion.button>
-                            )
-                          )}
-                          {isLoadingAI && (
-                            <div className="px-4 py-3 text-gray-500 text-sm flex items-center gap-3">
-                              <div className="animate-spin w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full"></div>
-                              <span>🤖 AI generating smart suggestions...</span>
-                            </div>
-                          )}
-                          {aiStatus === "error" && aiError && (
-                            <div className="px-4 py-3 text-red-400 text-sm flex items-center gap-3">
-                              <span>⚠️</span>
-                              <span>
-                                AI temporarily unavailable - using smart
-                                fallbacks
-                              </span>
-                            </div>
-                          )}
-                          {aiStatus === "fallback" && (
-                            <div className="px-4 py-3 text-yellow-400 text-sm flex items-center gap-3">
-                              <span>💡</span>
-                              <span>Using contextual suggestions</span>
-                            </div>
-                          )}
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10"
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <div className="p-3 text-center">
-                            <div className="text-xs text-white/60 font-mono">
-                              No more suggestions for this context
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })()}
-                  {fieldTouched.message &&
-                    !fieldErrors.message &&
-                    formData.message && (
-                      <CheckCircle
-                        className="absolute right-3 top-3 text-green-400"
-                        size={16}
-                      />
-                    )}
-                  {fieldTouched.message && fieldErrors.message && (
-                    <AlertCircle
-                      className="absolute right-3 top-3 text-red-400"
-                      size={16}
-                    />
-                  )}
-                </div>
-                {fieldTouched.message && fieldErrors.message && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-xs font-mono mt-1"
-                  >
-                    {fieldErrors.message}
-                  </motion.p>
-                )}
-              </div>
-
-              {/* Form Status Indicator */}
-              {!isFormValid &&
-                (formData.name || formData.email || formData.message) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
-                  >
-                    <p className="text-yellow-400 text-xs font-mono text-center">
-                      Please complete all required fields with valid information
-                    </p>
-                  </motion.div>
-                )}
-
-              <motion.button
-                type="submit"
-                disabled={isSubmitting || !isFormValid}
-                className={`w-full flex items-center justify-center gap-3 px-6 py-3 font-mono font-medium rounded-full transition-all duration-300 ${
-                  isSubmitting || !isFormValid
-                    ? "bg-gray-500/50 text-gray-300 cursor-not-allowed"
-                    : "bg-gradient-to-r from-orange-400 to-orange-500 text-black hover:from-orange-300 hover:to-orange-400 glow-accretion"
-                }`}
-                whileHover={
-                  !isSubmitting && isFormValid ? { scale: 1.02, y: -2 } : {}
-                }
-                whileTap={!isSubmitting && isFormValid ? { scale: 0.98 } : {}}
-              >
-                {isSubmitting ? (
+            {/* Modal Content */}
+            <motion.div
+              className={`relative max-w-md w-full mx-4 rounded-2xl shadow-2xl overflow-hidden ${
+                toastType === "success"
+                  ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                  : "bg-gradient-to-br from-red-500 to-rose-600"
+              }`}
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
+            >
+              {/* Success/Error Content */}
+              <div className="p-8 text-center text-white">
+                {toastType === "success" ? (
                   <>
-                    <Loader2 size={18} className="animate-spin" />
-                    Sending Message...
+                    {/* Success Icon */}
+                    <motion.div
+                      className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+                    >
+                      <motion.svg
+                        className="w-8 h-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </motion.svg>
+                    </motion.div>
+
+                    <motion.h3
+                      className="text-2xl font-bold mb-2"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      Message Sent! 🎉
+                    </motion.h3>
                   </>
                 ) : (
                   <>
-                    <Send size={18} />
-                    Send Message
+                    {/* Error Icon */}
+                    <motion.div
+                      className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+                    >
+                      <motion.svg
+                        className="w-8 h-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </motion.svg>
+                    </motion.div>
+
+                    <motion.h3
+                      className="text-2xl font-bold mb-2"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      Oops! Something went wrong
+                    </motion.h3>
                   </>
                 )}
-              </motion.button>
 
-              {/* Auto-save Indicator */}
-              {(formData.name ||
-                formData.email ||
-                formData.subject ||
-                formData.message) && (
                 <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-white/40 text-xs font-mono text-center"
+                  className="text-white/90 mb-6 leading-relaxed"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  💾 Form data auto-saved locally
+                  {toastMessage}
                 </motion.p>
-              )}
-            </form>
+
+                <motion.button
+                  onClick={() => setShowToast(false)}
+                  className="bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {toastType === "success" ? "Awesome!" : "Got it"}
+                </motion.button>
+              </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white/30 to-transparent" />
+              <div className="absolute -top-2 -right-2 w-20 h-20 bg-white/10 rounded-full blur-xl" />
+              <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-white/10 rounded-full blur-xl" />
+            </motion.div>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Success/Error Modal - Prominent and Centered */}
-      {showToast && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowToast(false)}
-          />
-
-          {/* Modal Content */}
-          <motion.div
-            className={`relative max-w-md w-full mx-4 rounded-2xl shadow-2xl overflow-hidden ${
-              toastType === "success"
-                ? "bg-gradient-to-br from-green-500 to-emerald-600"
-                : "bg-gradient-to-br from-red-500 to-rose-600"
-            }`}
-            initial={{ scale: 0.8, y: 50 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.8, y: 50 }}
-            transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-          >
-            {/* Success/Error Content */}
-            <div className="p-8 text-center text-white">
-              {toastType === "success" ? (
-                <>
-                  {/* Success Icon */}
-                  <motion.div
-                    className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
-                  >
-                    <motion.svg
-                      className="w-8 h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ delay: 0.4, duration: 0.6 }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </motion.svg>
-                  </motion.div>
-
-                  <motion.h3
-                    className="text-2xl font-bold mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    Message Sent! 🎉
-                  </motion.h3>
-                </>
-              ) : (
-                <>
-                  {/* Error Icon */}
-                  <motion.div
-                    className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
-                  >
-                    <motion.svg
-                      className="w-8 h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </motion.svg>
-                  </motion.div>
-
-                  <motion.h3
-                    className="text-2xl font-bold mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    Oops! Something went wrong
-                  </motion.h3>
-                </>
-              )}
-
-              <motion.p
-                className="text-white/90 mb-6 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                {toastMessage}
-              </motion.p>
-
-              <motion.button
-                onClick={() => setShowToast(false)}
-                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {toastType === "success" ? "Awesome!" : "Got it"}
-              </motion.button>
-            </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white/30 to-transparent" />
-            <div className="absolute -top-2 -right-2 w-20 h-20 bg-white/10 rounded-full blur-xl" />
-            <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-white/10 rounded-full blur-xl" />
-          </motion.div>
-        </motion.div>
-      )}
-    </section>
+        )}
+      </section>
+    </EnhancedParallax>
   );
 };
 

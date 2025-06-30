@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ExternalLink, Github, Rocket } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import EnhancedParallax from "./EnhancedParallax";
+import { ProjectsBackground } from "./SectionBackgrounds";
+import Enhanced3DBackground from "./Enhanced3DBackground";
 
 const ProjectsSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -112,208 +115,213 @@ const ProjectsSection: React.FC = () => {
     <section
       id="projects"
       data-section="projects"
-      className="min-h-screen py-20 relative overflow-hidden bg-black/20 projects-section"
+      className="min-h-screen py-20 relative bg-black text-white overflow-hidden"
     >
-      {/* Background Stars */}
+      {/* Background */}
+      <ProjectsBackground />
+
+      {/* Enhanced constellation effect */}
       <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-white rounded-full"
+            className="absolute w-2 h-2 bg-orange-400/30 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 2 + 1}px`,
-              height: `${Math.random() * 2 + 1}px`,
+              left: `${15 + i * 10}%`,
+              top: `${25 + Math.sin(i) * 20}%`,
             }}
             animate={{
-              opacity: [0.2, 0.8, 0.2],
-              scale: [1, 1.5, 1],
+              scale: [1, 2, 1],
+              opacity: [0.3, 0.8, 0.3],
+              rotate: [0, 180, 360],
             }}
             transition={{
-              duration: Math.random() * 4 + 2,
+              duration: 6 + i,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: i * 0.5,
             }}
           />
         ))}
       </div>
 
-      <div ref={ref} className="max-w-7xl mx-auto px-4">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          <h2
-            className={`text-4xl md:text-6xl font-display font-bold ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            } mb-4 text-shadow-soft`}
+      {/* Main content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4">
+        <div ref={ref} className="max-w-7xl mx-auto px-4">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
           >
-            Featured <span className="interstellar-text">Projects</span>
-          </h2>
-          <p
-            className={`text-xl ${
-              isDarkMode ? "text-white/70" : "text-gray-700"
-            } max-w-3xl mx-auto`}
-          >
-            A showcase of my development journey - from concept to deployment,
-            each project represents a unique challenge and learning experience
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer"
-              initial={{ opacity: 0, y: 50 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              whileHover={{ y: -10, scale: 1.02 }}
-              onClick={() => handleProjectClick(project.id, project.github)}
+            <h2
+              className={`text-4xl md:text-6xl font-display font-bold ${
+                isDarkMode ? "text-white" : "text-gray-900"
+              } mb-4 text-shadow-soft`}
             >
-              {/* Click Animation Overlay */}
-              <AnimatePresence>
-                {clickedProject === project.id && (
-                  <motion.div
-                    className="absolute inset-0 z-50 bg-orange-400/20 backdrop-blur-sm flex items-center justify-center"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.2 }}
-                    transition={{ duration: 0.3 }}
-                  >
+              Featured <span className="interstellar-text">Projects</span>
+            </h2>
+            <p
+              className={`text-xl ${
+                isDarkMode ? "text-white/70" : "text-gray-700"
+              } max-w-3xl mx-auto`}
+            >
+              A showcase of my development journey - from concept to deployment,
+              each project represents a unique challenge and learning experience
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer"
+                initial={{ opacity: 0, y: 50 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                onClick={() => handleProjectClick(project.id, project.github)}
+              >
+                {/* Click Animation Overlay */}
+                <AnimatePresence>
+                  {clickedProject === project.id && (
                     <motion.div
-                      className="text-orange-400 text-4xl"
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
+                      className="absolute inset-0 z-50 bg-orange-400/20 backdrop-blur-sm flex items-center justify-center"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.2 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      <Rocket size={48} />
+                      <motion.div
+                        className="text-orange-400 text-4xl"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      >
+                        <Rocket size={48} />
+                      </motion.div>
                     </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              {/* Project Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  )}
+                </AnimatePresence>
+                {/* Project Image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                {/* Status Badge */}
-                <div className="absolute top-4 right-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-mono ${
-                      project.status === "Completed"
-                        ? "bg-green-400/20 text-green-400"
-                        : project.status === "In Progress"
-                        ? "bg-orange-400/20 text-orange-400"
-                        : "bg-purple-400/20 text-purple-400"
-                    }`}
-                  >
-                    {project.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Project Content */}
-              <div className="p-6">
-                <h3
-                  className={`text-xl font-mono font-bold ${
-                    isDarkMode ? "text-white" : "text-gray-900"
-                  } mb-3 group-hover:text-orange-400 transition-colors`}
-                >
-                  {project.title}
-                </h3>
-
-                <p
-                  className={`${
-                    isDarkMode ? "text-white/70" : "text-gray-700"
-                  } text-sm leading-relaxed mb-4`}
-                >
-                  {project.description}
-                </p>
-
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.map((tech) => (
+                  {/* Status Badge */}
+                  <div className="absolute top-4 right-4">
                     <span
-                      key={tech}
-                      className={`px-2 py-1 ${
-                        isDarkMode
-                          ? "bg-white/10 text-white/80"
-                          : "bg-gray-200 text-gray-700"
-                      } rounded text-xs font-mono`}
+                      className={`px-3 py-1 rounded-full text-xs font-mono ${
+                        project.status === "Completed"
+                          ? "bg-green-400/20 text-green-400"
+                          : project.status === "In Progress"
+                          ? "bg-orange-400/20 text-orange-400"
+                          : "bg-purple-400/20 text-purple-400"
+                      }`}
                     >
-                      {tech}
+                      {project.status}
                     </span>
-                  ))}
+                  </div>
                 </div>
 
-                {/* Project Links */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <motion.a
-                      href={project.github}
-                      className="flex items-center gap-2 text-white/70 hover:text-orange-400 transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Github size={16} />
-                      <span className="text-sm font-mono">Code</span>
-                    </motion.a>
+                {/* Project Content */}
+                <div className="p-6">
+                  <h3
+                    className={`text-xl font-mono font-bold ${
+                      isDarkMode ? "text-white" : "text-gray-900"
+                    } mb-3 group-hover:text-orange-400 transition-colors`}
+                  >
+                    {project.title}
+                  </h3>
 
-                    <motion.a
-                      href={project.live}
-                      className="flex items-center gap-2 text-white/70 hover:text-orange-400 transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ExternalLink size={16} />
-                      <span className="text-sm font-mono">Live</span>
-                    </motion.a>
+                  <p
+                    className={`${
+                      isDarkMode ? "text-white/70" : "text-gray-700"
+                    } text-sm leading-relaxed mb-4`}
+                  >
+                    {project.description}
+                  </p>
+
+                  {/* Tech Stack */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((tech) => (
+                      <span
+                        key={tech}
+                        className={`px-2 py-1 ${
+                          isDarkMode
+                            ? "bg-white/10 text-white/80"
+                            : "bg-gray-200 text-gray-700"
+                        } rounded text-xs font-mono`}
+                      >
+                        {tech}
+                      </span>
+                    ))}
                   </div>
 
-                  <motion.button
-                    className="p-2 bg-orange-400/10 text-orange-400 rounded-full hover:bg-orange-400/20 transition-colors"
-                    whileHover={{ scale: 1.1, rotate: 15 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Rocket size={16} />
-                  </motion.button>
+                  {/* Project Links */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <motion.a
+                        href={project.github}
+                        className="flex items-center gap-2 text-white/70 hover:text-orange-400 transition-colors"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Github size={16} />
+                        <span className="text-sm font-mono">Code</span>
+                      </motion.a>
+
+                      <motion.a
+                        href={project.live}
+                        className="flex items-center gap-2 text-white/70 hover:text-orange-400 transition-colors"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <ExternalLink size={16} />
+                        <span className="text-sm font-mono">Live</span>
+                      </motion.a>
+                    </div>
+
+                    <motion.button
+                      className="p-2 bg-orange-400/10 text-orange-400 rounded-full hover:bg-orange-400/20 transition-colors"
+                      whileHover={{ scale: 1.1, rotate: 15 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Rocket size={16} />
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Hover Glow Effect */}
-              <div className="absolute inset-0 bg-orange-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-            </motion.div>
-          ))}
-        </div>
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 bg-orange-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </motion.div>
+            ))}
+          </div>
 
-        {/* View More Projects */}
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.8 }}
-        >
-          <motion.a
-            href="#"
-            className="inline-flex items-center gap-3 px-8 py-3 border border-orange-400 text-orange-400 font-mono font-medium rounded-full hover:bg-orange-400/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          {/* View More Projects */}
+          <motion.div
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.8 }}
           >
-            <Rocket size={20} />
-            View More Projects
-          </motion.a>
-        </motion.div>
+            <motion.a
+              href="#"
+              className="inline-flex items-center gap-3 px-8 py-3 border border-orange-400 text-orange-400 font-mono font-medium rounded-full hover:bg-orange-400/10 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Rocket size={20} />
+              View More Projects
+            </motion.a>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -50,6 +50,62 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Enhanced background visibility and effects */
+.enhanced-section-bg {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(15, 23, 42, 0.8) 50%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+.enhanced-section-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(251, 146, 60, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Glow effects for enhanced visibility */
+.glow-orange {
+  box-shadow: 0 0 20px rgba(251, 146, 60, 0.5), 0 0 40px rgba(251, 146, 60, 0.3),
+    0 0 60px rgba(251, 146, 60, 0.1);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3),
+    0 0 60px rgba(59, 130, 246, 0.1);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3),
+    0 0 60px rgba(168, 85, 247, 0.1);
+}
+
+/* Enhanced parallax container */
+.parallax-container {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+/* 3D transform optimizations */
+.transform-3d {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
 /* Line clamp utilities */
 .line-clamp-2 {
   display: -webkit-box;

@@ -12,11 +12,6 @@ const GlobalCustomCursor: React.FC = () => {
 
   // Don't render custom cursor on mobile devices or touch devices
   if (deviceInfo.isMobile || deviceInfo.isTouchDevice) {
-    console.log("GlobalCustomCursor: Disabled on mobile/touch device", {
-      isMobile: deviceInfo.isMobile,
-      isTouchDevice: deviceInfo.isTouchDevice,
-      screenWidth: deviceInfo.screenWidth,
-    });
     return null;
   }
 

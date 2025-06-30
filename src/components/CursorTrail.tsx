@@ -127,14 +127,10 @@ const CursorTrail: React.FC = () => {
 
     document.addEventListener("mousemove", handleMouseMove);
     animationFrame = requestAnimationFrame(cleanupParticles);
-    console.log("CursorTrail component mounted and event listeners added");
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrame);
-      console.log(
-        "CursorTrail component unmounted and event listeners removed"
-      );
     };
   }, [isOnPlainBackground, createParticle, checkIfOnPlainBackground]);
 
