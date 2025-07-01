@@ -54,12 +54,7 @@ html {
 .enhanced-section-bg {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(15, 23, 42, 0.8) 50%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
+  background: black;
 }
 
 .enhanced-section-bg::before {
@@ -270,12 +265,7 @@ html {
 
 /* Enhanced Background Gradients */
 .bg-space-gradient {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 165, 0, 0.08) 0%,
-    rgba(0, 0, 0, 0.95) 40%,
-    rgba(0, 0, 0, 1) 70%
-  );
+  background: black;
 }
 
 .glass-morphism {
@@ -486,7 +476,7 @@ button,
 /* Light Theme Styles */
 .light {
   /* Light theme base colors */
-  --light-bg: #fafafa;
+  --light-bg: #000000;
   --light-text: #1a1a1a;
   --light-text-secondary: #4a4a4a;
   --light-accent: #d97706;
@@ -494,14 +484,14 @@ button,
 }
 
 .light .glass-morphism-dark {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(217, 119, 6, 0.2);
   backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .light .glass-morphism {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(217, 119, 6, 0.15);
   backdrop-filter: blur(15px);
 }

@@ -19,7 +19,7 @@ export const AboutBackground: React.FC<BackgroundProps> = ({
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
       {/* Base gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900" />
+      <div className="absolute inset-0 bg-black" />
       {/* Animated Code Symbols */}
       {shouldAnimate && (
         <>
@@ -110,7 +110,7 @@ export const AboutBackground: React.FC<BackgroundProps> = ({
       <div className="absolute bottom-20 left-1/4 w-2.5 h-2.5 bg-orange-300/60 rounded-full animate-pulse shadow-lg shadow-orange-300/50" />
 
       {/* Additional always-visible effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
+      <div className="absolute inset-0 bg-black" />
 
       {/* Floating code symbols - always visible */}
       {[...Array(8)].map((_, i) => (
@@ -141,13 +141,7 @@ export const ProjectsBackground: React.FC<BackgroundProps> = ({
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
       {/* Base space gradient background */}
-      <div
-        className={`absolute inset-0 ${
-          isDarkMode
-            ? "bg-gradient-to-br from-black via-slate-900 to-black"
-            : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
-        }`}
-      />
+      <div className="absolute inset-0 bg-black" />
 
       {/* Enhanced Star Field - Always visible */}
       {[...Array(100)].map((_, i) => (

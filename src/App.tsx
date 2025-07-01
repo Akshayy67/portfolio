@@ -156,13 +156,7 @@ const MainContent: React.FC = () => {
           >
             {/* Enhanced Background with Particles */}
             <div className="fixed inset-0 z-0">
-              <div
-                className={`absolute inset-0 ${
-                  isDarkMode
-                    ? "bg-gradient-to-br from-black via-slate-900 to-black"
-                    : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
-                }`}
-              />
+              <div className="absolute inset-0 bg-black" />
               <ParticleBackground isDarkMode={isDarkMode} />
             </div>
 

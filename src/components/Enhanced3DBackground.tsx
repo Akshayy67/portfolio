@@ -139,11 +139,11 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
       );
 
       const gradients = {
-        space: ["rgba(0, 0, 0, 0.8)", "rgba(15, 23, 42, 0.4)"],
-        tech: ["rgba(15, 23, 42, 0.8)", "rgba(30, 58, 138, 0.4)"],
-        achievements: ["rgba(45, 21, 0, 0.8)", "rgba(180, 83, 9, 0.4)"],
-        contact: ["rgba(6, 78, 59, 0.8)", "rgba(16, 185, 129, 0.4)"],
-        hobbies: ["rgba(59, 7, 100, 0.8)", "rgba(168, 85, 247, 0.4)"],
+        space: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
+        tech: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
+        achievements: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
+        contact: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
+        hobbies: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
       };
 
       gradient.addColorStop(0, gradients[theme][0]);

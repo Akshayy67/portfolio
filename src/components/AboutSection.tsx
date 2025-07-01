@@ -37,8 +37,8 @@ const AboutSection: React.FC = () => {
     <section
       id="about"
       data-section="about"
-      className={`min-h-screen py-20 relative ${
-        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      className={`min-h-screen py-20 relative bg-black ${
+        isDarkMode ? "text-white" : "text-gray-900"
       }`}
     >
       <AboutBackground />

@@ -95,9 +95,7 @@ const HeroSection: React.FC = () => {
     >
       {/* Simplified Background */}
       <div className="absolute inset-0">
-        <div
-          className={`absolute inset-0 ${isDarkMode ? "bg-black" : "bg-white"}`}
-        />
+        <div className="absolute inset-0 bg-black" />
 
         {/* Simple Stars */}
         {isDarkMode &&

@@ -115,8 +115,8 @@ const ProjectsSection: React.FC = () => {
     <section
       id="projects"
       data-section="projects"
-      className={`min-h-screen py-20 relative overflow-hidden ${
-        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      className={`min-h-screen py-20 relative overflow-hidden bg-black ${
+        isDarkMode ? "text-white" : "text-gray-900"
       }`}
     >
       {/* Background */}
