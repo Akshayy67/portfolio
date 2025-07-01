@@ -23,14 +23,16 @@ const AboutSection: React.FC = () => {
   ];
 
   const orbitingSkills = [
-    "C",
-    "Java",
-    "Python",
-    "Dart",
-    "JavaScript",
-    "Flutter",
-    "TensorFlow",
-    "Git",
+    { name: "C", color: "#A8B9CC", size: "large" },
+    { name: "Java", color: "#ED8B00", size: "medium" },
+    { name: "Python", color: "#3776AB", size: "large" },
+    { name: "Dart", color: "#0175C2", size: "small" },
+    { name: "JavaScript", color: "#F7DF1E", size: "large" },
+    { name: "Flutter", color: "#02569B", size: "medium" },
+    { name: "TensorFlow", color: "#FF6F00", size: "medium" },
+    { name: "Git", color: "#F05032", size: "small" },
+    { name: "React", color: "#61DAFB", size: "medium" },
+    { name: "Node.js", color: "#339933", size: "small" },
   ];
 
   return (
@@ -92,7 +94,7 @@ const AboutSection: React.FC = () => {
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Personal Planet Visualization */}
+            {/* Enhanced Solar System Visualization */}
             <motion.div
               className={`relative ${
                 deviceInfo.isMobile ? "h-80" : "h-96"
@@ -101,81 +103,298 @@ const AboutSection: React.FC = () => {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              {/* Central Planet */}
-              <div className="relative w-32 h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full shadow-2xl">
-                <div className="absolute inset-2 bg-gradient-to-br from-orange-300 to-orange-500 rounded-full" />
+              {/* Central Star (Developer Core) */}
+              <motion.div
+                className="relative w-32 h-32 rounded-full shadow-2xl"
+                animate={{
+                  boxShadow: [
+                    "0 0 20px rgba(255, 165, 0, 0.5)",
+                    "0 0 40px rgba(255, 165, 0, 0.8)",
+                    "0 0 20px rgba(255, 165, 0, 0.5)",
+                  ],
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+                style={{
+                  background:
+                    "radial-gradient(circle at 30% 30%, #FFD700, #FF8C00, #FF4500)",
+                }}
+              >
+                <motion.div
+                  className="absolute inset-2 rounded-full overflow-hidden"
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  style={{
+                    background:
+                      "radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3), transparent 60%)",
+                  }}
+                >
+                  {/* Solar Surface Patterns */}
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(30deg, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 60%)",
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(-60deg, transparent 30%, rgba(255, 200, 0, 0.2) 50%, transparent 70%)",
+                    }}
+                  />
+                </motion.div>
                 <div className="absolute inset-4 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
-              </div>
 
-              {/* Orbiting Satellites (Skills) */}
+                {/* Core Label */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-white drop-shadow-lg">
+                    DEV
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Orbiting Planets (Skills) */}
               {orbitingSkills.map((skill, index) => {
-                const baseRadius = deviceInfo.isMobile ? 60 : 80; // Smaller radius on mobile
-                const radiusIncrement = deviceInfo.isMobile ? 8 : 10; // Smaller increments on mobile
+                const baseRadius = deviceInfo.isMobile ? 70 : 90;
+                const radiusIncrement = deviceInfo.isMobile ? 12 : 15;
                 const radius = baseRadius + index * radiusIncrement;
+                const orbitSpeed = deviceInfo.isMobile
+                  ? 20 + index * 4 // Slower, smoother motion
+                  : 15 + index * 3;
+                const planetSize =
+                  skill.size === "large" ? 10 : skill.size === "medium" ? 8 : 6;
 
                 return (
                   <motion.div
-                    key={skill}
+                    key={skill.name}
                     className="absolute inset-0 flex items-center justify-center"
-                    animate={
-                      deviceInfo.prefersReducedMotion
-                        ? {}
-                        : {
-                            rotate: 360,
-                          }
-                    }
+                    animate={{
+                      rotate: 360, // Orbital motion around the star
+                    }}
                     transition={{
-                      duration: deviceInfo.isMobile
-                        ? 15 + index * 3
-                        : 10 + index * 2, // Slower on mobile for better performance
+                      duration: orbitSpeed,
                       repeat: Infinity,
                       ease: "linear",
+                      repeatType: "loop",
                     }}
                   >
-                    <div
-                      className={`absolute w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold ${
-                        isDarkMode
-                          ? "bg-white/80 text-black"
-                          : "bg-gray-800/80 text-white"
-                      }`}
+                    <motion.div
+                      className="absolute rounded-full shadow-lg"
                       style={{
-                        transform: `translateX(${radius}px)`,
+                        width: `${planetSize + 4}px`,
+                        height: `${planetSize + 4}px`,
+                        backgroundColor: skill.color,
+                        boxShadow: `0 0 ${planetSize}px ${skill.color}40`,
+                      }}
+                      animate={{
+                        x: radius, // Position planet at radius from center
+                        scale: [1, 1.1, 1], // Gentle pulsing
+                        boxShadow: [
+                          `0 0 ${planetSize}px ${skill.color}40`,
+                          `0 0 ${planetSize * 1.5}px ${skill.color}60`,
+                          `0 0 ${planetSize}px ${skill.color}40`,
+                        ],
+                      }}
+                      transition={{
+                        x: { duration: 0 }, // Instant positioning
+                        scale: {
+                          duration: 3 + Math.random() * 2,
+                          repeat: Infinity,
+                          delay: Math.random() * 2,
+                        },
+                        boxShadow: {
+                          duration: 3 + Math.random() * 2,
+                          repeat: Infinity,
+                          delay: Math.random() * 2,
+                        },
+                      }}
+                      whileHover={{
+                        scale: 1.5,
+                        boxShadow: `0 0 ${planetSize * 3}px ${skill.color}80`,
                       }}
                     >
+                      {/* Planet Core - Static Surface */}
                       <div
-                        className={`absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-mono whitespace-nowrap ${
-                          isDarkMode ? "text-white" : "text-gray-800"
-                        }`}
+                        className="absolute inset-1 rounded-full"
+                        style={{
+                          background: `radial-gradient(circle at 30% 30%, ${skill.color}CC, ${skill.color}80)`,
+                        }}
                       >
-                        {skill}
+                        {/* Static Surface Pattern */}
+                        <div
+                          className="absolute inset-0 rounded-full"
+                          style={{
+                            background: `linear-gradient(45deg, transparent 30%, ${skill.color}40 50%, transparent 70%)`,
+                          }}
+                        />
+                        <div
+                          className="absolute inset-0 rounded-full"
+                          style={{
+                            background: `linear-gradient(-45deg, transparent 40%, ${skill.color}20 60%, transparent 80%)`,
+                          }}
+                        />
                       </div>
-                    </div>
+
+                      {/* Skill Label - Always Visible */}
+                      <motion.div
+                        className="absolute -top-12 left-1/2 transform -translate-x-1/2 text-xs font-mono font-bold whitespace-nowrap text-white bg-black/90 px-3 py-1.5 rounded-lg backdrop-blur-sm border shadow-lg"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        style={{
+                          color: skill.color,
+                          borderColor: `${skill.color}60`,
+                          textShadow: `0 0 8px ${skill.color}`,
+                          boxShadow: `0 0 10px ${skill.color}40, 0 4px 8px rgba(0,0,0,0.3)`,
+                        }}
+                      >
+                        {skill.name}
+                      </motion.div>
+                    </motion.div>
                   </motion.div>
                 );
               })}
 
-              {/* Orbital Paths */}
-              {[...Array(3)].map((_, i) => {
-                const baseSize = deviceInfo.isMobile ? 240 : 320; // Much smaller on mobile to fit
-                const increment = deviceInfo.isMobile ? 24 : 40; // Smaller increments on mobile
+              {/* Enhanced Orbital Paths with Motion Indicators */}
+              {[...Array(5)].map((_, i) => {
+                const baseSize = deviceInfo.isMobile ? 220 : 300;
+                const increment = deviceInfo.isMobile ? 24 : 30;
                 const size = baseSize + i * increment;
 
                 return (
-                  <div
-                    key={i}
-                    className={`absolute rounded-full border ${
-                      isDarkMode ? "border-white/10" : "border-gray-800/20"
-                    }`}
-                    style={{
-                      width: `${size}px`,
-                      height: `${size}px`,
-                      left: "50%",
-                      top: "50%",
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  />
+                  <div key={i}>
+                    <motion.div
+                      className="absolute rounded-full border border-orange-400/30"
+                      style={{
+                        width: `${size}px`,
+                        height: `${size}px`,
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                      animate={{
+                        borderColor: [
+                          "rgba(255, 165, 0, 0.2)",
+                          "rgba(255, 165, 0, 0.5)",
+                          "rgba(255, 165, 0, 0.2)",
+                        ],
+                      }}
+                      transition={{
+                        duration: 4 + i * 2,
+                        repeat: Infinity,
+                        delay: i * 0.5,
+                      }}
+                    />
+                    {/* Orbital Direction Indicator */}
+                    <motion.div
+                      className="absolute w-2 h-2 bg-orange-400 rounded-full"
+                      style={{
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                      animate={{
+                        rotate: 360,
+                        x: size / 2,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 8 + i * 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+                  </div>
                 );
               })}
+
+              {/* Asteroid Belt Effect */}
+              {[...Array(12)].map((_, i) => (
+                <motion.div
+                  key={`asteroid-${i}`}
+                  className="absolute w-1 h-1 bg-gray-400 rounded-full"
+                  style={{
+                    left: "50%",
+                    top: "50%",
+                  }}
+                  animate={{
+                    rotate: 360,
+                    x:
+                      Math.cos((i * 30 * Math.PI) / 180) *
+                      (deviceInfo.isMobile ? 140 : 180),
+                    y:
+                      Math.sin((i * 30 * Math.PI) / 180) *
+                      (deviceInfo.isMobile ? 140 : 180),
+                    opacity: [0.3, 0.8, 0.3],
+                  }}
+                  transition={{
+                    rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+                    opacity: { duration: 3, repeat: Infinity, delay: i * 0.2 },
+                  }}
+                />
+              ))}
+
+              {/* Shooting Stars/Comets */}
+              {!deviceInfo.isMobile &&
+                [...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={`comet-${i}`}
+                    className="absolute w-1 h-1 bg-orange-300 rounded-full"
+                    style={{
+                      left: "10%",
+                      top: "10%",
+                      boxShadow:
+                        "0 0 6px rgba(255, 165, 0, 0.8), 0 0 12px rgba(255, 165, 0, 0.4)",
+                    }}
+                    animate={{
+                      x: [0, 300, 0],
+                      y: [0, 200, 0],
+                      opacity: [0, 1, 0],
+                      scale: [0, 1.5, 0],
+                    }}
+                    transition={{
+                      duration: 4 + i * 2,
+                      repeat: Infinity,
+                      delay: i * 3,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+
+              {/* Pulsing Energy Rings */}
+              {[...Array(2)].map((_, i) => (
+                <motion.div
+                  key={`energy-ring-${i}`}
+                  className="absolute rounded-full border border-orange-400/30"
+                  style={{
+                    width: `${200 + i * 100}px`,
+                    height: `${200 + i * 100}px`,
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.6, 0.3],
+                    borderColor: [
+                      "rgba(255, 165, 0, 0.3)",
+                      "rgba(255, 165, 0, 0.6)",
+                      "rgba(255, 165, 0, 0.3)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 6 + i * 2,
+                    repeat: Infinity,
+                    delay: i * 1.5,
+                  }}
+                />
+              ))}
             </motion.div>
 
             {/* About Content */}
@@ -185,10 +404,24 @@ const AboutSection: React.FC = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <div className="glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg">
-                <h3 className="text-2xl font-mono text-orange-400 mb-4 glow-accretion">
-                  Developer Profile
-                </h3>
+              <motion.div
+                className="glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg"
+                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                <motion.h3
+                  className="text-2xl font-mono text-orange-400 mb-6 glow-accretion"
+                  animate={{
+                    textShadow: [
+                      "0 0 10px rgba(255, 165, 0, 0.5)",
+                      "0 0 20px rgba(255, 165, 0, 0.8)",
+                      "0 0 10px rgba(255, 165, 0, 0.5)",
+                    ],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  🚀 Developer Profile
+                </motion.h3>
                 <p
                   className={`${
                     isDarkMode ? "text-white/80" : "text-gray-700"
@@ -221,7 +454,7 @@ const AboutSection: React.FC = () => {
                   continuous learning, and a passion for building tech that
                   matters.
                 </p>
-              </div>
+              </motion.div>
 
               {/* Skill Levels */}
               <div className="space-y-4">
