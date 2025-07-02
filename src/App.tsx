@@ -85,6 +85,12 @@ const MainContent: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!showWarpIntro) {
+      setShowNavigation(true);
+    }
+  }, [showWarpIntro]);
+
   const skipToMain = () => {
     // Clear any pending timers to prevent automatic transitions
     if (timer1Ref.current) {
