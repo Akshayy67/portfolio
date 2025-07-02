@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Code2, Rocket, Globe, Database, Network } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
 import { AboutBackground } from "./SectionBackgrounds";
+import { trackSectionView } from "../services/analytics";
 
 const AboutSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -34,6 +35,23 @@ const AboutSection: React.FC = () => {
     { name: "React", color: "#61DAFB", size: "medium" },
     { name: "Node.js", color: "#339933", size: "small" },
   ];
+
+  const aboutRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          trackSectionView("About");
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (aboutRef.current) observer.observe(aboutRef.current);
+    return () => {
+      if (aboutRef.current) observer.unobserve(aboutRef.current);
+    };
+  }, []);
 
   return (
     <section
@@ -431,32 +449,14 @@ const AboutSection: React.FC = () => {
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  I'm a Computer Science Engineering student at Sreenidhi
-                  Institute of Science and Technology (SNIST) with a strong
-                  command of Data Structures and Algorithms (DSA)—the core of my
-                  problem-solving mindset. Proficient in C, Java, Python, Dart,
-                  and JavaScript, I specialize in full-stack web development,
-                  Flutter-based mobile apps, and machine learning. With 500+
-                  problems solved on LeetCode and consistent participation in
-                  coding contests, I'm deeply invested in algorithmic thinking
-                  and performance optimization.
+                  I'm a Computer Science Engineering student at SNIST with a strong foundation in Data Structures and Algorithms. Skilled in C, Java, Python, Dart, and JavaScript, I build full-stack web apps, Flutter mobile apps, and machine learning projects. With 500+ LeetCode problems solved and active participation in coding contests, I thrive on algorithmic challenges.
                 </p>
                 <p
                   className={`leading-relaxed ${
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  Currently maintaining a CGPA of 8.1, I've worked on impactful
-                  projects like a Taxi Fare Predictor using Random Forests, an
-                  interactive LRU Cache simulator, an AI-powered farming
-                  assistant (FarmSmartAI), and a Contact Manager featuring
-                  efficient search using Trie (prefix tree) for real-time
-                  auto-completion and querying. As an active member of the
-                  National Cadet Corps (NCC), I've developed leadership,
-                  discipline, and a team-first attitude that I bring into both
-                  technical and collaborative settings. I'm driven by curiosity,
-                  continuous learning, and a passion for building tech that
-                  matters.
+                  Currently holding a CGPA of 8.1, I've developed projects like a Taxi Fare Predictor, LRU Cache simulator, FarmSmartAI, and a Trie-based Contact Manager. As an NCC member, I value leadership, discipline, and teamwork. I'm passionate about learning and creating impactful technology.
                 </p>
               </motion.div>
 

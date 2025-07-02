@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import emailjs from "@emailjs/browser";
@@ -23,6 +23,7 @@ import {
 import EnhancedParallax from "./EnhancedParallax";
 import { ContactBackground } from "./SectionBackgrounds";
 import { useTheme } from "../contexts/ThemeContext";
+import { trackSectionView } from "../services/analytics";
 
 const ContactSection: React.FC = () => {
   const { ref, inView } = useInView({
@@ -1228,6 +1229,23 @@ Time: ${new Date().toLocaleString()}`;
     },
   ];
 
+  const contactRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          trackSectionView("Contact");
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (contactRef.current) observer.observe(contactRef.current);
+    return () => {
+      if (contactRef.current) observer.unobserve(contactRef.current);
+    };
+  }, []);
+
   return (
     <EnhancedParallax
       className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
@@ -1294,11 +1312,11 @@ Time: ${new Date().toLocaleString()}`;
           />
         ))}
 
-        <div ref={ref} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={contactRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-12 sm:mb-16"
             initial={{ opacity: 0, y: 50 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <h2 className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -1320,7 +1338,7 @@ Time: ${new Date().toLocaleString()}`;
             <motion.div
               className="space-y-6 sm:space-y-8"
               initial={{ opacity: 0, x: -50 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <div className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}>
@@ -1334,7 +1352,7 @@ Time: ${new Date().toLocaleString()}`;
                       key={info.label}
                       className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
                       initial={{ opacity: 0, y: 20 }}
-                      animate={inView ? { opacity: 1, y: 0 } : {}}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
                     >
                       <div className="p-1.5 sm:p-2 bg-orange-400/20 rounded-lg flex-shrink-0">
@@ -1360,7 +1378,7 @@ Time: ${new Date().toLocaleString()}`;
               <motion.div
                 className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
                 initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
                 <h3 className="text-xl font-mono text-white mb-4">
@@ -1393,7 +1411,7 @@ Time: ${new Date().toLocaleString()}`;
               <motion.div
                 className={`bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
                 initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
                 <div className="flex items-center gap-3">
@@ -1413,7 +1431,7 @@ Time: ${new Date().toLocaleString()}`;
             <motion.div
               className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
               initial={{ opacity: 0, x: 50 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
               <h3 className="text-xl sm:text-2xl font-mono text-white mb-4 sm:mb-6">

@@ -10,6 +10,8 @@ const GlobalCustomCursor: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [cursorType, setCursorType] = useState<string>("default");
 
+  // All hooks are called before any early return
+
   // Don't render custom cursor on mobile devices or touch devices
   if (deviceInfo.isMobile || deviceInfo.isTouchDevice) {
     return null;

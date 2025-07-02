@@ -13,6 +13,7 @@ import VoiceNavigation from "./components/VoiceNavigation";
 import HobbiesSection from "./components/HobbiesSection";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { WarpSpeedEffect } from "./components/LaunchSequence";
+import FeedbackWidget from "./components/FeedbackWidget";
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
@@ -148,6 +149,7 @@ const MainContent: React.FC = () => {
             <ProjectsSection />
             <AchievementsSection />
             <ContactSection />
+            <FeedbackWidget />
           </>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ExternalLink, Github, Rocket } from "lucide-react";
@@ -6,6 +6,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import EnhancedParallax from "./EnhancedParallax";
 import { ProjectsBackground } from "./SectionBackgrounds";
 import Enhanced3DBackground from "./Enhanced3DBackground";
+import { trackSectionView } from "../services/analytics";
 
 const ProjectsSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -111,6 +112,23 @@ const ProjectsSection: React.FC = () => {
     },
   ];
 
+  const refProjects = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          trackSectionView("Projects");
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (refProjects.current) observer.observe(refProjects.current);
+    return () => {
+      if (refProjects.current) observer.unobserve(refProjects.current);
+    };
+  }, []);
+
   return (
     <section
       id="projects"
@@ -146,11 +164,11 @@ const ProjectsSection: React.FC = () => {
 
       {/* Main content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4">
-        <div ref={ref} className="max-w-7xl mx-auto px-4">
+        <div ref={refProjects} className="max-w-7xl mx-auto px-4">
           <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: 50 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <h2
@@ -172,7 +190,7 @@ const ProjectsSection: React.FC = () => {
                 key={project.id}
                 className={`group relative backdrop-blur-sm border rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-white/90 border-orange-100 text-gray-900 shadow-glow-md'}`}
                 initial={{ opacity: 0, y: 50 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 whileHover={{ y: -10, scale: 1.02 }}
                 onClick={() => handleProjectClick(project.id, project.github)}
@@ -308,7 +326,7 @@ const ProjectsSection: React.FC = () => {
           <motion.div
             className="text-center mt-12"
             initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             <motion.a
