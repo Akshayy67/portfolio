@@ -21,12 +21,20 @@ export const useAnalytics = () => {
       return;
     }
 
-    initGA();
-    startSession();
+    console.log("Initializing analytics hook");
+    
+    try {
+      initGA();
+      startSession();
 
-    // Track initial page view
-    trackPageView(window.location.pathname);
-    trackLocalPageView(window.location.pathname);
+      // Track initial page view
+      trackPageView(window.location.pathname);
+      trackLocalPageView(window.location.pathname);
+      
+      console.log("Analytics hook initialized successfully");
+    } catch (error) {
+      console.error("Failed to initialize analytics hook:", error);
+    }
 
     // End session on page unload
     const handleBeforeUnload = () => {
@@ -44,38 +52,47 @@ export const useAnalytics = () => {
   // Analytics functions
   const analytics = {
     trackClick: useCallback((element: string) => {
+      console.log("Tracking click on:", element);
       trackUserInteraction(element, "click");
     }, []),
 
     trackHover: useCallback((element: string) => {
+      console.log("Tracking hover on:", element);
       trackUserInteraction(element, "hover");
     }, []),
 
     trackSectionView: useCallback((section: string) => {
+      console.log("Tracking section view:", section);
       trackSectionView(section);
     }, []),
 
     trackVoiceCommand: useCallback((command: string) => {
+      console.log("Tracking voice command:", command);
       trackVoiceCommand(command);
     }, []),
 
     trackThemeChange: useCallback((theme: string) => {
+      console.log("Tracking theme change:", theme);
       trackThemeChange(theme);
     }, []),
 
     trackProjectClick: useCallback((projectName: string) => {
+      console.log("Tracking project click:", projectName);
       trackProjectClick(projectName);
     }, []),
 
     trackContactForm: useCallback((method: string) => {
+      console.log("Tracking contact form:", method);
       trackContactForm(method);
     }, []),
 
     trackDownload: useCallback((fileName: string) => {
+      console.log("Tracking download:", fileName);
       trackUserInteraction(fileName, "download");
     }, []),
 
     trackExternalLink: useCallback((url: string) => {
+      console.log("Tracking external link:", url);
       trackUserInteraction(url, "external_link");
     }, []),
   };

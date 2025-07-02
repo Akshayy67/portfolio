@@ -1,26 +1,90 @@
 import ReactGA from "react-ga4";
 
 // Analytics configuration
-const TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID || "G-XXXXXXXXXX"; // Replace with your Google Analytics 4 tracking ID
+const TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID || "G-5FRYGYCJ20";
 const DEBUG = import.meta.env.DEV;
+
+// Debug function to check GA setup
+const debugAnalytics = () => {
+  console.log("=== Analytics Debug Info ===");
+  console.log("Environment:", import.meta.env.MODE);
+  console.log("Tracking ID:", TRACKING_ID);
+  console.log("Debug Mode:", DEBUG);
+  console.log("Window Location:", typeof window !== "undefined" ? window.location.href : "SSR");
+  console.log("User Agent:", typeof navigator !== "undefined" ? navigator.userAgent : "SSR");
+  console.log("Gtag Available:", typeof window !== "undefined" && typeof (window as any).gtag !== "undefined");
+  console.log("===========================");
+};
 
 // Initialize Google Analytics
 export const initGA = () => {
-  ReactGA.initialize(TRACKING_ID, {
-    testMode: DEBUG,
-    gtagOptions: {
-      debug_mode: DEBUG,
-    },
-  });
+  try {
+    debugAnalytics();
+    
+    // Only initialize if we have a valid tracking ID
+    if (!TRACKING_ID || TRACKING_ID === "G-XXXXXXXXXX") {
+      console.warn("Invalid or missing Google Analytics tracking ID");
+      return;
+    }
+
+    console.log("Initializing Google Analytics with ID:", TRACKING_ID);
+    
+    // Initialize React GA4
+    ReactGA.initialize(TRACKING_ID, {
+      testMode: DEBUG,
+      gtagOptions: {
+        debug_mode: DEBUG,
+      },
+    });
+    
+    console.log("Google Analytics initialized successfully");
+    
+    // Send a test pageview to verify tracking
+    if (typeof window !== "undefined") {
+      // Use both React GA4 and gtag for maximum compatibility
+      ReactGA.send({
+        hitType: "pageview",
+        page: window.location.pathname,
+        title: document.title,
+      });
+      
+      // Also send via gtag if available
+      if (typeof (window as any).gtag !== "undefined") {
+        (window as any).gtag('config', TRACKING_ID, {
+          page_path: window.location.pathname,
+          page_title: document.title,
+        });
+      }
+      
+      console.log("Test pageview sent to GA");
+    }
+  } catch (error) {
+    console.error("Failed to initialize Google Analytics:", error);
+  }
 };
 
 // Track page views
 export const trackPageView = (path: string, title?: string) => {
-  ReactGA.send({
-    hitType: "pageview",
-    page: path,
-    title: title || document.title,
-  });
+  try {
+    console.log("Tracking page view:", path);
+    
+    // Use React GA4
+    ReactGA.send({
+      hitType: "pageview",
+      page: path,
+      title: title || document.title,
+    });
+    
+    // Also use gtag if available
+    if (typeof window !== "undefined" && typeof (window as any).gtag !== "undefined") {
+      (window as any).gtag('config', TRACKING_ID, {
+        page_path: path,
+        page_title: title || document.title,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to track page view:", error);
+  }
 };
 
 // Track custom events
@@ -30,12 +94,28 @@ export const trackEvent = (
   label?: string,
   value?: number
 ) => {
-  ReactGA.event({
-    action,
-    category,
-    label,
-    value,
-  });
+  try {
+    console.log("Tracking event:", { action, category, label, value });
+    
+    // Use React GA4
+    ReactGA.event({
+      action,
+      category,
+      label,
+      value,
+    });
+    
+    // Also use gtag if available
+    if (typeof window !== "undefined" && typeof (window as any).gtag !== "undefined") {
+      (window as any).gtag('event', action, {
+        event_category: category,
+        event_label: label,
+        value: value,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to track event:", error);
+  }
 };
 
 // Track user interactions
@@ -126,37 +206,55 @@ export const updateLocalAnalytics = (update: Partial<LocalAnalytics>) => {
 
 // Track page view locally
 export const trackLocalPageView = (path: string) => {
-  const analytics = getLocalAnalytics();
-  analytics.pageViews[path] = (analytics.pageViews[path] || 0) + 1;
-  analytics.events.push({
-    timestamp: Date.now(),
-    type: "pageview",
-    data: { path },
-  });
-  updateLocalAnalytics(analytics);
+  try {
+    console.log("Tracking local page view:", path);
+    const analytics = getLocalAnalytics();
+    analytics.pageViews[path] = (analytics.pageViews[path] || 0) + 1;
+    analytics.events.push({
+      timestamp: Date.now(),
+      type: "pageview",
+      data: { path },
+    });
+    updateLocalAnalytics(analytics);
+    console.log("Local page view tracked successfully");
+  } catch (error) {
+    console.error("Failed to track local page view:", error);
+  }
 };
 
 // Start a new session
 export const startSession = () => {
-  if (typeof window === "undefined") {
-    return;
+  try {
+    if (typeof window === "undefined") {
+      return;
+    }
+    console.log("Starting new analytics session");
+    const analytics = getLocalAnalytics();
+    const newSession = {
+      start: Date.now(),
+      pages: [window.location.pathname],
+    };
+    analytics.sessions.push(newSession);
+    updateLocalAnalytics(analytics);
+    console.log("Session started successfully");
+  } catch (error) {
+    console.error("Failed to start session:", error);
   }
-  const analytics = getLocalAnalytics();
-  const newSession = {
-    start: Date.now(),
-    pages: [window.location.pathname],
-  };
-  analytics.sessions.push(newSession);
-  updateLocalAnalytics(analytics);
 };
 
 // End current session
 export const endSession = () => {
-  const analytics = getLocalAnalytics();
-  const currentSession = analytics.sessions[analytics.sessions.length - 1];
-  if (currentSession && !currentSession.end) {
-    currentSession.end = Date.now();
-    updateLocalAnalytics(analytics);
+  try {
+    console.log("Ending analytics session");
+    const analytics = getLocalAnalytics();
+    const currentSession = analytics.sessions[analytics.sessions.length - 1];
+    if (currentSession && !currentSession.end) {
+      currentSession.end = Date.now();
+      updateLocalAnalytics(analytics);
+      console.log("Session ended successfully");
+    }
+  } catch (error) {
+    console.error("Failed to end session:", error);
   }
 };
 

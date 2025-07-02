@@ -10,8 +10,9 @@ import {
   TrendingUp,
   Activity,
   Globe,
+  Play,
 } from "lucide-react";
-import { getAnalyticsSummary } from "../services/analytics";
+import { getAnalyticsSummary, trackEvent, trackLocalPageView } from "../services/analytics";
 
 interface AnalyticsData {
   totalVisitors: number;
@@ -84,6 +85,30 @@ const AnalyticsDashboard: React.FC = () => {
     }
   };
 
+  // Test functions for debugging
+  const testAnalytics = () => {
+    console.log("Testing analytics tracking...");
+    
+    // Test various tracking functions
+    trackEvent("test", "Debug", "dashboard_test");
+    trackLocalPageView("/test");
+    
+    // Reload analytics data
+    const realData = getAnalyticsSummary();
+    setAnalytics(realData);
+    
+    alert("Test events sent! Check console for details.");
+  };
+
+  const clearAnalytics = () => {
+    if (confirm("Are you sure you want to clear all analytics data?")) {
+      localStorage.removeItem("portfolio_analytics");
+      const realData = getAnalyticsSummary();
+      setAnalytics(realData);
+      alert("Analytics data cleared!");
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -108,12 +133,29 @@ const AnalyticsDashboard: React.FC = () => {
               <BarChart3 className="text-orange-400" />
               Analytics Dashboard
             </h2>
-            <button
-              onClick={() => setIsVisible(false)}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={testAnalytics}
+                className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors flex items-center gap-1"
+                title="Test analytics tracking"
+              >
+                <Play size={14} />
+                Test
+              </button>
+              <button
+                onClick={clearAnalytics}
+                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
+                title="Clear analytics data"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => setIsVisible(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
 
           {!isAuthenticated ? (

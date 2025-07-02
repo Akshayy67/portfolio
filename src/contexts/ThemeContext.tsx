@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { trackThemeChange } from "../services/analytics";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -49,8 +50,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   }, [isDarkMode]);
 
   const toggleTheme = () => {
-    console.log("Theme toggled, current:", isDarkMode, "new:", !isDarkMode);
-    setIsDarkMode((prev) => !prev);
+    const newTheme = !isDarkMode;
+    console.log("Theme toggled, current:", isDarkMode, "new:", newTheme);
+    
+    // Track theme change in analytics
+    try {
+      trackThemeChange(newTheme ? "dark" : "light");
+    } catch (error) {
+      console.error("Failed to track theme change:", error);
+    }
+    
+    setIsDarkMode(newTheme);
   };
 
   return (
