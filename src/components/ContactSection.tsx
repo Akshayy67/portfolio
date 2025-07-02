@@ -1390,7 +1390,7 @@ Time: ${new Date().toLocaleString()}`;
                 </p>
                 <motion.button
                   onClick={handleDownloadResume}
-                  className={`flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover`}
+                  className={`flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-gray-900 font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover border border-gray-300`}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   animate={{
@@ -1429,12 +1429,12 @@ Time: ${new Date().toLocaleString()}`;
 
             {/* Contact Form */}
             <motion.div
-              className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
+              className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-gray-300'}`}
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <h3 className="text-xl sm:text-2xl font-mono text-white mb-4 sm:mb-6">
+              <h3 className={`text-xl sm:text-2xl font-mono mb-4 sm:mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Send Message
               </h3>
 

@@ -77,7 +77,7 @@ const FeedbackWidget = () => {
         >
           <form
             onSubmit={handleSubmit}
-            className={`w-full max-w-md m-4 p-6 rounded-2xl shadow-2xl border ${isDarkMode ? "bg-gray-900 border-white/10 text-white" : "bg-white border-gray-200 text-gray-900"} flex flex-col gap-4`}
+            className={`w-full max-w-md m-4 p-6 rounded-2xl shadow-2xl border ${isDarkMode ? "bg-gray-900 border-white/10 text-white" : "bg-white border-gray-400 text-gray-900"} flex flex-col gap-4`}
           >
             <div className="flex justify-between items-center mb-2">
               <span className="text-xl font-bold">Feedback</span>
@@ -147,7 +147,7 @@ const FeedbackWidget = () => {
 
                 <button
                   type="submit"
-                  className={`mt-2 w-full py-2 rounded font-semibold transition-colors duration-300 ${isDarkMode ? "bg-orange-500 text-white hover:bg-orange-400" : "bg-gray-900 text-white hover:bg-orange-500"}`}
+                  className={`mt-2 w-full py-2 rounded font-semibold transition-colors duration-300 ${isDarkMode ? "bg-orange-500 text-white hover:bg-orange-400" : "bg-orange-500 text-white hover:bg-orange-600"}`}
                   disabled={rating === 0 || !section || sending}
                 >
                   {sending ? "Sending..." : "Submit"}

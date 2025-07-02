@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Volume2 } from "lucide-react";
+import { Mic, MicOff, Volume2, HelpCircle } from "lucide-react";
 import {
   trackVoiceCommand,
   updateLocalAnalytics,
@@ -15,6 +15,7 @@ interface VoiceCommand {
 
 const VoiceNavigation: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
+  const [showCommands, setShowCommands] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -88,9 +89,11 @@ const VoiceNavigation: React.FC = () => {
     },
     {
       command: "help",
-      action: () => {},
-      response:
-        "Available commands: go to home, show about, view projects, contact me, show achievements, scroll to top",
+      action: () => {
+        setShowCommands(true);
+        setTimeout(() => setShowCommands(false), 5000);
+      },
+      response: "Showing available voice commands",
     },
   ];
 
@@ -117,13 +120,13 @@ const VoiceNavigation: React.FC = () => {
         setFeedback("Listening...");
       };
 
-      recognition.onresult = (event) => {
+      recognition.onresult = (event: any) => {
         const result = event.results[0][0].transcript.toLowerCase();
         setTranscript(result);
         processCommand(result);
       };
 
-      recognition.onerror = (event) => {
+      recognition.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
         setIsListening(false);
         setFeedback("Error occurred. Please try again.");
@@ -182,21 +185,35 @@ const VoiceNavigation: React.FC = () => {
   const startListening = () => {
     if (recognitionRef.current && !isListening) {
       recognitionRef.current.start();
+      setShowCommands(true); // Show commands when starting to listen
     }
   };
 
   const stopListening = () => {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
+      setShowCommands(false); // Hide commands when stopping
     }
   };
 
-  if (!isSupported) {
-    return null; // Don't render if not supported
-  }
+  const toggleCommands = () => {
+    setShowCommands(!showCommands);
+  };
 
+  // Add debugging
+  useEffect(() => {
+    console.log("VoiceNavigation: Speech recognition supported:", isSupported);
+    console.log("VoiceNavigation: Window object available:", typeof window !== "undefined");
+    if (typeof window !== "undefined") {
+      console.log("VoiceNavigation: webkitSpeechRecognition available:", "webkitSpeechRecognition" in window);
+      console.log("VoiceNavigation: SpeechRecognition available:", "SpeechRecognition" in window);
+    }
+  }, [isSupported]);
+
+  // Always render the component, but show different content based on support
   return (
     <>
+
       {/* Voice Control Button */}
       <motion.button
         onClick={isListening ? stopListening : startListening}
@@ -205,17 +222,43 @@ const VoiceNavigation: React.FC = () => {
           ${
             isListening
               ? "bg-red-500 hover:bg-red-600 animate-pulse"
-              : "bg-orange-500 hover:bg-orange-600"
+              : isSupported 
+                ? "bg-orange-500 hover:bg-orange-600"
+                : "bg-gray-500 cursor-not-allowed"
           }
           text-white shadow-glow-lg transition-all duration-300
         `}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: isSupported ? 1.1 : 1 }}
+        whileTap={{ scale: isSupported ? 0.95 : 1 }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5 }}
+        title={isSupported 
+          ? (isListening ? "Stop listening" : "Start voice commands")
+          : "Voice commands not supported in this browser"
+        }
+        disabled={!isSupported}
       >
         {isListening ? <MicOff size={24} /> : <Mic size={24} />}
+      </motion.button>
+
+      {/* Help Button */}
+      <motion.button
+        onClick={toggleCommands}
+        className={`fixed bottom-6 right-20 z-50 p-4 rounded-full ${
+          isSupported 
+            ? "bg-blue-500 hover:bg-blue-600" 
+            : "bg-gray-500 cursor-not-allowed"
+        } text-white shadow-glow-lg transition-all duration-300`}
+        whileHover={{ scale: isSupported ? 1.1 : 1 }}
+        whileTap={{ scale: isSupported ? 0.95 : 1 }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.7 }}
+        title={isSupported ? "Show voice commands" : "Voice commands not supported"}
+        disabled={!isSupported}
+      >
+        <HelpCircle size={24} />
       </motion.button>
 
       {/* Voice Feedback */}
@@ -248,29 +291,47 @@ const VoiceNavigation: React.FC = () => {
 
       {/* Voice Commands Help */}
       <AnimatePresence>
-        {isListening && (
+        {showCommands && (
           <motion.div
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-black/90 backdrop-blur-md text-white p-6 rounded-xl max-w-md"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed bottom-20 right-6 z-50 bg-black/90 backdrop-blur-md text-white p-4 rounded-xl max-w-sm border border-orange-500/30"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
           >
             <div className="text-center">
-              <div className="text-lg font-semibold mb-4 text-orange-400">
-                🎤 Voice Commands
+              <div className="text-lg font-semibold mb-4 text-orange-400 flex items-center justify-center gap-2">
+                <Mic size={20} />
+                Voice Commands
               </div>
-              <div className="text-sm space-y-1 text-left">
-                <div>• "Go to home"</div>
-                <div>• "Show about"</div>
-                <div>• "View projects"</div>
-                <div>• "Contact me"</div>
-                <div>• "Show achievements"</div>
-                <div>• "Scroll to top"</div>
-                <div>• "Help"</div>
-              </div>
-              <div className="mt-4 text-xs text-gray-400">
-                Speak clearly and wait for response
-              </div>
+              {!isSupported ? (
+                <div className="text-red-400 mb-4">
+                  Voice commands are not supported in this browser. 
+                  Please use Chrome, Edge, or Safari for voice functionality.
+                </div>
+              ) : (
+                <>
+                  <div className="text-sm space-y-2 text-left max-h-60 overflow-y-auto">
+                    {commands.map((cmd, index) => (
+                      <div key={index} className="flex items-start gap-2 p-2 rounded bg-gray-800/50">
+                        <span className="text-orange-400 font-mono text-xs">•</span>
+                        <div>
+                          <div className="font-medium text-orange-300">"{cmd.command}"</div>
+                          <div className="text-xs text-gray-400 mt-1">{cmd.response}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-xs text-gray-400">
+                    {isListening ? "🎤 Listening... Speak clearly" : "Click the mic button to start listening"}
+                  </div>
+                </>
+              )}
+              <button
+                onClick={() => setShowCommands(false)}
+                className="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition-colors"
+              >
+                Close
+              </button>
             </div>
           </motion.div>
         )}
