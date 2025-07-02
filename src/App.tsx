@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import LaunchSequence from "./components/LaunchSequence";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
 import ProjectsSection from "./components/ProjectsSection";
@@ -12,13 +11,12 @@ import ThemeToggle from "./components/ThemeToggle";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import VoiceNavigation from "./components/VoiceNavigation";
 import HobbiesSection from "./components/HobbiesSection";
-import AudioControls from "./components/AudioControls";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
+import { WarpSpeedEffect } from "./components/LaunchSequence";
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
-import { audioManager } from "./utils/audioManager";
 import SmoothTransition from "./components/SmoothTransition";
 import LazySection from "./components/LazySection";
 
@@ -32,6 +30,7 @@ const MainContent: React.FC = () => {
 
   const [currentScene, setCurrentScene] = useState<"launch" | "main">("launch"); // Always start with launch sequence
   const [showNavigation, setShowNavigation] = useState(false);
+  const [showWarpIntro, setShowWarpIntro] = useState(true);
 
   // Initialize app once on mount
   useEffect(() => {
@@ -42,24 +41,6 @@ const MainContent: React.FC = () => {
       // Cleanup
     };
   }, []); // Run only once on mount
-
-  // Global click handler for audio initialization
-  useEffect(() => {
-    const handleGlobalClick = async () => {
-      try {
-        await audioManager.initialize();
-      } catch (error) {
-        console.warn("Audio initialization failed:", error);
-      }
-    };
-
-    // Add global click listener
-    document.addEventListener("click", handleGlobalClick, { once: true });
-
-    return () => {
-      document.removeEventListener("click", handleGlobalClick);
-    };
-  }, []);
 
   // Handle animation sequence based on device preferences
   useEffect(() => {
@@ -90,12 +71,6 @@ const MainContent: React.FC = () => {
         e.preventDefault();
         skipToMain();
       }
-
-      // Press 'R' to restart animations when on main page
-      if (e.code === "KeyR" && currentScene === "main") {
-        e.preventDefault();
-        restartAnimations();
-      }
     };
 
     window.addEventListener("keydown", handleKeyPress);
@@ -104,6 +79,11 @@ const MainContent: React.FC = () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [currentScene]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowWarpIntro(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const skipToMain = () => {
     // Clear any pending timers to prevent automatic transitions
@@ -132,52 +112,39 @@ const MainContent: React.FC = () => {
     }, 500);
   };
 
-  const restartAnimations = () => {
-    setCurrentScene("launch");
-    setShowNavigation(false);
-    analytics.trackEvent("animations_restarted", { trigger: "manual" });
-  };
-
   return (
     <div className="relative">
       {/* Global custom cursor - works everywhere */}
       <GlobalCustomCursor />
 
-      <AnimatePresence mode="wait">
-        {currentScene === "launch" && (
-          <LaunchSequence key="launch" onSkip={skipToMain} />
-        )}
-        {currentScene === "main" && (
-          <div
-            key="main"
-            className={`min-h-screen relative overflow-x-hidden transition-all duration-1000 bg-transparent ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {/* Enhanced Background with Particles */}
-            <div className="fixed inset-0 z-0">
-              <div className="absolute inset-0 bg-black" />
-              <ParticleBackground isDarkMode={isDarkMode} />
-            </div>
+      <div
+        key="main"
+        className={`min-h-screen relative overflow-x-hidden transition-all duration-1000 bg-transparent ${
+          isDarkMode ? "text-white" : "text-gray-900"
+        }`}
+      >
+        {/* Navigation and Content */}
+        {showNavigation && <Navigation />}
+        <ThemeToggle />
 
-            {/* Navigation and Content */}
-            {showNavigation && <Navigation />}
-            <ThemeToggle />
-            <AudioControls />
+        <VoiceNavigation />
+        <AnalyticsDashboard />
 
-            <VoiceNavigation />
-            <AnalyticsDashboard />
-
+        {showWarpIntro ? (
+          <div className="fixed inset-0 z-[9999] bg-black">
+            <WarpSpeedEffect />
+          </div>
+        ) : (
+          <>
             <HeroSection />
-
             <AboutSection />
             <HobbiesSection />
             <ProjectsSection />
             <AchievementsSection />
             <ContactSection />
-          </div>
+          </>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 };

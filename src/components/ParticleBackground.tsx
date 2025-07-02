@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from "react";
-import Particles from "@tsparticles/react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { Engine } from "@tsparticles/engine";
 
@@ -10,15 +10,21 @@ interface ParticleBackgroundProps {
 const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   isDarkMode = true,
 }) => {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadSlim(engine);
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    initParticlesEngine(async (engine: Engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
   }, []);
 
   const options = useMemo(
     () => ({
       background: {
         color: {
-          value: "transparent",
+          value: isDarkMode ? "black" : "white",
         },
       },
       fpsLimit: 120,
@@ -32,7 +38,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
             enable: true,
             mode: "repulse",
           },
-          resize: true,
+          resize: { enable: true },
         },
         modes: {
           push: {
@@ -87,12 +93,12 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     [isDarkMode]
   );
 
+  if (!init) return null;
   return (
     <Particles
       id="tsparticles"
-      init={particlesInit}
       options={options}
-      className="absolute inset-0 z-0"
+      className="absolute inset-0 z-20"
     />
   );
 };

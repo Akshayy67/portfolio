@@ -115,9 +115,7 @@ const ProjectsSection: React.FC = () => {
     <section
       id="projects"
       data-section="projects"
-      className={`min-h-screen py-20 relative overflow-hidden bg-black ${
-        isDarkMode ? "text-white" : "text-gray-900"
-      }`}
+      className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
     >
       {/* Background */}
       <ProjectsBackground />
@@ -156,16 +154,12 @@ const ProjectsSection: React.FC = () => {
             transition={{ duration: 0.8 }}
           >
             <h2
-              className={`text-4xl md:text-6xl font-display font-bold ${
-                isDarkMode ? "text-white" : "text-gray-900"
-              } mb-4 text-shadow-soft`}
+              className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
             >
               Featured <span className="interstellar-text">Projects</span>
             </h2>
             <p
-              className={`text-xl ${
-                isDarkMode ? "text-white/70" : "text-gray-700"
-              } max-w-3xl mx-auto`}
+              className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}
             >
               A showcase of my development journey - from concept to deployment,
               each project represents a unique challenge and learning experience
@@ -176,7 +170,7 @@ const ProjectsSection: React.FC = () => {
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
-                className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer"
+                className={`group relative backdrop-blur-sm border rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-white/90 border-orange-100 text-gray-900 shadow-glow-md'}`}
                 initial={{ opacity: 0, y: 50 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
@@ -239,7 +233,9 @@ const ProjectsSection: React.FC = () => {
                       isDarkMode ? "text-white" : "text-gray-900"
                     } mb-3 group-hover:text-orange-400 transition-colors`}
                   >
-                    {project.title}
+                    <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                      {project.title}
+                    </span>
                   </h3>
 
                   <p
@@ -247,7 +243,9 @@ const ProjectsSection: React.FC = () => {
                       isDarkMode ? "text-white/70" : "text-gray-700"
                     } text-sm leading-relaxed mb-4`}
                   >
-                    {project.description}
+                    <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                      {project.description}
+                    </span>
                   </p>
 
                   {/* Tech Stack */}

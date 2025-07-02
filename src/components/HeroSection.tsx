@@ -5,6 +5,8 @@ import { Github, Linkedin } from "lucide-react";
 import Typed from "typed.js";
 import DynamicGreeting from "./DynamicGreeting";
 import { useTheme } from "../contexts/ThemeContext";
+import Enhanced3DBackground from "./Enhanced3DBackground";
+import ParticleBackground from "./ParticleBackground";
 
 const HeroSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -90,200 +92,19 @@ const HeroSection: React.FC = () => {
       ref={containerRef}
       id="hero"
       data-section="hero"
-      className="min-h-screen relative flex items-center justify-center overflow-hidden hero-section"
+      className={`min-h-screen relative flex items-center justify-center overflow-hidden hero-section ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Enhanced Interactive Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black" />
-
-        {/* Enhanced Interactive Stars */}
-        {[...Array(100)].map((_, i) => {
-          const baseX = Math.random() * 100;
-          const baseY = Math.random() * 100;
-          const size = Math.random() * 3 + 1;
-          const intensity = Math.random() * 0.8 + 0.2;
-
-          return (
-            <motion.div
-              key={i}
-              className="absolute bg-white rounded-full"
-              style={{
-                left: `${baseX}%`,
-                top: `${baseY}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-              }}
-              animate={{
-                x: isHovered ? mousePosition.x * (intensity * 2) : 0,
-                y: isHovered ? mousePosition.y * (intensity * 2) : 0,
-                opacity: isHovered ? [0.3, 0.9, 0.3] : [0.2, 0.6, 0.2],
-                scale: isHovered ? [1, 1.5, 1] : [1, 1.2, 1],
-              }}
-              transition={{
-                x: { type: "spring", stiffness: 100, damping: 20 },
-                y: { type: "spring", stiffness: 100, damping: 20 },
-                opacity: { duration: 2 + Math.random() * 2, repeat: Infinity },
-                scale: { duration: 3 + Math.random() * 2, repeat: Infinity },
-              }}
-            />
-          );
-        })}
-
-        {/* Cursor-following Glow Effect */}
-        {!isMobile && isHovered && (
-          <motion.div
-            className="absolute pointer-events-none"
-            style={{
-              left: "50%",
-              top: "50%",
-              width: "400px",
-              height: "400px",
-              background:
-                "radial-gradient(circle, rgba(255, 165, 0, 0.15) 0%, rgba(255, 165, 0, 0.05) 30%, transparent 70%)",
-              borderRadius: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-            animate={{
-              x: mousePosition.x * 3,
-              y: mousePosition.y * 3,
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              x: { type: "spring", stiffness: 150, damping: 25 },
-              y: { type: "spring", stiffness: 150, damping: 25 },
-              scale: { duration: 4, repeat: Infinity },
-            }}
-          />
-        )}
-
-        {/* Floating Particles */}
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={`particle-${i}`}
-            className="absolute w-1 h-1 bg-orange-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: isHovered
-                ? mousePosition.x * (Math.random() * 4 + 1)
-                : [0, Math.random() * 20 - 10, 0],
-              y: isHovered
-                ? mousePosition.y * (Math.random() * 4 + 1)
-                : [0, Math.random() * 20 - 10, 0],
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              x: isHovered
-                ? { type: "spring", stiffness: 80, damping: 15 }
-                : { duration: 8 + Math.random() * 4, repeat: Infinity },
-              y: isHovered
-                ? { type: "spring", stiffness: 80, damping: 15 }
-                : { duration: 8 + Math.random() * 4, repeat: Infinity },
-              opacity: { duration: 3 + Math.random() * 2, repeat: Infinity },
-              scale: { duration: 3 + Math.random() * 2, repeat: Infinity },
-            }}
-          />
-        ))}
-
-        {/* Interactive Grid Lines */}
-        {!isMobile && (
-          <>
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={`grid-v-${i}`}
-                className="absolute w-px bg-gradient-to-b from-transparent via-orange-400/20 to-transparent"
-                style={{
-                  left: `${(i + 1) * 12.5}%`,
-                  height: "100%",
-                }}
-                animate={{
-                  opacity: isHovered ? 0.4 : 0.1,
-                  scaleY: isHovered ? 1.2 : 1,
-                  x: isHovered ? mousePosition.x * 0.5 : 0,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 20,
-                }}
-              />
-            ))}
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={`grid-h-${i}`}
-                className="absolute h-px bg-gradient-to-r from-transparent via-orange-400/20 to-transparent"
-                style={{
-                  top: `${(i + 1) * 16.66}%`,
-                  width: "100%",
-                }}
-                animate={{
-                  opacity: isHovered ? 0.4 : 0.1,
-                  scaleX: isHovered ? 1.2 : 1,
-                  y: isHovered ? mousePosition.y * 0.5 : 0,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 20,
-                }}
-              />
-            ))}
-          </>
-        )}
-
-        {/* Dynamic Background Pulse */}
-        {!isMobile && (
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle at center, transparent 0%, rgba(255, 165, 0, 0.02) 50%, transparent 100%)",
-            }}
-            animate={{
-              scale: isHovered ? [1, 1.1, 1] : [1, 1.05, 1],
-              opacity: isHovered ? [0.3, 0.6, 0.3] : [0.1, 0.3, 0.1],
-            }}
-            transition={{
-              scale: { duration: 4, repeat: Infinity },
-              opacity: { duration: 3, repeat: Infinity },
-            }}
-          />
-        )}
-
-        {/* Cursor Trail Effect */}
-        {!isMobile && isHovered && (
-          <motion.div
-            className="absolute pointer-events-none"
-            style={{
-              left: "50%",
-              top: "50%",
-              width: "200px",
-              height: "200px",
-              background:
-                "radial-gradient(circle, rgba(255, 165, 0, 0.1) 0%, transparent 70%)",
-              borderRadius: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-            animate={{
-              x: mousePosition.x * 1.5,
-              y: mousePosition.y * 1.5,
-              scale: [0.8, 1.2, 0.8],
-            }}
-            transition={{
-              x: { type: "spring", stiffness: 200, damping: 30 },
-              y: { type: "spring", stiffness: 200, damping: 30 },
-              scale: { duration: 2, repeat: Infinity },
-            }}
-          />
+      {/* Premium 3D Parallax Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {isDarkMode ? (
+          <ParticleBackground isDarkMode={true} />
+        ) : (
+          <Enhanced3DBackground theme="space" />
         )}
       </div>
-
-      {/* Enhanced Content Container */}
+      {/* Main Content */}
       <motion.div
         ref={ref}
         className={`relative z-10 text-center mx-auto px-4 sm:px-6 lg:px-8 ${

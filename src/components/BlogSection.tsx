@@ -4,12 +4,14 @@ import { useInView } from "react-intersection-observer";
 import { Award, Trophy, Star } from "lucide-react";
 import EnhancedParallax from "./EnhancedParallax";
 import { AchievementsBackground } from "./SectionBackgrounds";
+import { useTheme } from "../contexts/ThemeContext";
 
 const AchievementsSection: React.FC = () => {
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+  const { isDarkMode } = useTheme();
 
   const certifications = [
     {
@@ -74,7 +76,7 @@ const AchievementsSection: React.FC = () => {
 
   return (
     <EnhancedParallax
-      className="min-h-screen py-20 relative overflow-hidden"
+      className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
       intensity="medium"
       backgroundLayers={[
         {
@@ -129,11 +131,11 @@ const AchievementsSection: React.FC = () => {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
+            <h2 className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Achievements &{" "}
               <span className="interstellar-text">Certifications</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-3xl mx-auto">
+            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}>
               Recognition, certifications, and milestones achieved throughout my
               journey in computer science and software development
             </p>
@@ -142,12 +144,12 @@ const AchievementsSection: React.FC = () => {
           {/* Certifications Section */}
           <div className="mb-16">
             <motion.h3
-              className="text-3xl font-mono font-bold text-white mb-8 text-center"
+              className={`text-3xl font-mono font-bold mb-8 text-center`}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <Award className="inline mr-3 text-orange-400" size={32} />
+              <Award className={`text-orange-400`} size={32} />
               Certifications
             </motion.h3>
 
@@ -155,7 +157,7 @@ const AchievementsSection: React.FC = () => {
               {certifications.map((cert, index) => (
                 <motion.div
                   key={cert.id}
-                  className="glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover"
+                  className={`glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover ${isDarkMode ? '' : 'bg-white/90 border-orange-200 text-gray-900 shadow-glow-md'}`}
                   initial={{ opacity: 0, y: 50 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
@@ -166,20 +168,20 @@ const AchievementsSection: React.FC = () => {
                       <cert.icon className="text-orange-400" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-mono font-bold text-white mb-2 text-sm">
+                      <h4 className={`font-mono font-bold mb-2 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {cert.title}
                       </h4>
-                      <p className="text-orange-400 text-xs font-mono mb-2">
+                      <p className={isDarkMode ? 'text-orange-400 text-xs font-mono mb-2' : 'text-amber-600 text-xs font-mono mb-2'}>
                         {cert.provider}
                       </p>
-                      <p className="text-white/70 text-xs mb-3">
+                      <p className={`text-xs mb-3 ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}>
                         {cert.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-1 bg-white/10 text-white/80 rounded text-xs font-mono">
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${isDarkMode ? 'bg-white/10 text-white/80' : 'bg-orange-100 text-gray-900'}`}>
                           {cert.category}
                         </span>
-                        <span className="text-white/50 text-xs font-mono">
+                        <span className={`text-xs font-mono ${isDarkMode ? 'text-white/50' : 'text-gray-400'}`}>
                           {cert.date}
                         </span>
                       </div>
@@ -193,12 +195,12 @@ const AchievementsSection: React.FC = () => {
           {/* Achievements Section */}
           <div>
             <motion.h3
-              className="text-3xl font-mono font-bold text-white mb-8 text-center"
+              className={`text-3xl font-mono font-bold mb-8 text-center`}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Trophy className="inline mr-3 text-orange-400" size={32} />
+              <Trophy className={`text-orange-400`} size={32} />
               Honors & Awards
             </motion.h3>
 
@@ -206,7 +208,7 @@ const AchievementsSection: React.FC = () => {
               {achievements.map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
-                  className="glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover"
+                  className={`glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover`}
                   initial={{ opacity: 0, y: 50 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, delay: 0.7 + index * 0.1 }}
@@ -217,17 +219,17 @@ const AchievementsSection: React.FC = () => {
                       <achievement.icon className="text-orange-400" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-mono font-bold text-white mb-2 text-sm">
+                      <h4 className={`font-mono font-bold mb-2 text-sm`}>
                         {achievement.title}
                       </h4>
-                      <p className="text-white/70 text-xs mb-3">
+                      <p className={`text-xs mb-3`}>
                         {achievement.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-1 bg-white/10 text-white/80 rounded text-xs font-mono">
+                        <span className={`px-2 py-1 rounded text-xs font-mono`}>
                           {achievement.category}
                         </span>
-                        <span className="text-white/50 text-xs font-mono">
+                        <span className={`text-xs font-mono`}>
                           {achievement.year}
                         </span>
                       </div>

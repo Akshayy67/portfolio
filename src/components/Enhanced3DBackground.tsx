@@ -89,6 +89,9 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
         const y2d = centerY + this.y * scale;
         const size2d = this.size * scale;
 
+        // Prevent drawing with non-positive radius
+        if (size2d <= 0) return;
+
         if (x2d < 0 || x2d > canvas.width || y2d < 0 || y2d > canvas.height)
           return;
 
@@ -204,21 +207,14 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
   }, [theme, shouldAnimate, deviceInfo]);
 
   return (
-    <div className={`absolute inset-0 ${className}`}>
-      {/* Debug indicator */}
-      <div className="absolute top-2 left-2 z-50 bg-red-500/80 text-white text-xs px-2 py-1 rounded">
-        3D BG: {theme}
-      </div>
-
+    <div className={className} style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
         style={{ pointerEvents: "none" }}
       />
-
       {/* Additional CSS-based 3D effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating geometric shapes */}
         {shouldAnimate &&
           [...Array(6)].map((_, i) => (
             <motion.div

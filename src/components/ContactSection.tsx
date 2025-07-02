@@ -22,12 +22,14 @@ import {
 } from "../config/emailjs";
 import EnhancedParallax from "./EnhancedParallax";
 import { ContactBackground } from "./SectionBackgrounds";
+import { useTheme } from "../contexts/ThemeContext";
 
 const ContactSection: React.FC = () => {
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+  const { isDarkMode } = useTheme();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -1228,8 +1230,8 @@ Time: ${new Date().toLocaleString()}`;
 
   return (
     <EnhancedParallax
-      className="min-h-screen py-20 relative overflow-hidden contact-section"
-      intensity="strong"
+      className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      intensity="medium"
       backgroundLayers={[
         {
           children: <ContactBackground />,
@@ -1299,12 +1301,11 @@ Time: ${new Date().toLocaleString()}`;
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 text-shadow-soft">
-              Get In <span className="interstellar-text">Touch</span>
+            <h2 className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Contact <span className="interstellar-text">Me</span>
             </h2>
-            <p className="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto px-2 sm:px-0">
-              Ready to collaborate on your next project? Let's connect and build
-              something amazing together.
+            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}>
+              Let's connect! Whether you have a question, want to collaborate, or just want to say hi, my inbox is always open.
             </p>
             <div className="mt-4 p-3 bg-orange-400/10 border border-orange-400/20 rounded-lg max-w-2xl mx-auto">
               <p className="text-sm text-orange-400/90 text-center">
@@ -1322,7 +1323,7 @@ Time: ${new Date().toLocaleString()}`;
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg">
+              <div className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}>
                 <h3 className="text-xl sm:text-2xl font-mono text-orange-400 mb-4 sm:mb-6 glow-accretion">
                   Contact Information
                 </h3>
@@ -1357,7 +1358,7 @@ Time: ${new Date().toLocaleString()}`;
 
               {/* Resume Download */}
               <motion.div
-                className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6"
+                className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -1371,7 +1372,7 @@ Time: ${new Date().toLocaleString()}`;
                 </p>
                 <motion.button
                   onClick={handleDownloadResume}
-                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover"
+                  className={`flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-black font-mono font-medium rounded-full hover:from-orange-300 hover:to-orange-400 transition-all duration-300 w-full justify-center glow-accretion event-horizon-hover`}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   animate={{
@@ -1390,7 +1391,7 @@ Time: ${new Date().toLocaleString()}`;
 
               {/* Status Indicator */}
               <motion.div
-                className="bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4"
+                className={`bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 1 }}
@@ -1410,7 +1411,7 @@ Time: ${new Date().toLocaleString()}`;
 
             {/* Contact Form */}
             <motion.div
-              className="glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg"
+              className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
               initial={{ opacity: 0, x: 50 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
@@ -1422,13 +1423,7 @@ Time: ${new Date().toLocaleString()}`;
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white/70 text-sm font-mono mb-2">
-                      <User size={16} className="inline mr-2" />
-                      Your Name *
-                      <span className="text-xs text-white/50 ml-2">
-                        ({formData.name.length}/{charLimits.name})
-                      </span>
-                    </label>
+                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Name</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -1436,11 +1431,7 @@ Time: ${new Date().toLocaleString()}`;
                         value={formData.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`w-full glass-morphism rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-all duration-300 event-horizon-hover ${
-                          fieldTouched.name && fieldErrors.name
-                            ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                            : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                        }`}
+                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
                         placeholder="Enter your name"
                         maxLength={charLimits.name}
                       />
@@ -1471,10 +1462,7 @@ Time: ${new Date().toLocaleString()}`;
                   </div>
 
                   <div>
-                    <label className="block text-white/70 text-sm font-mono mb-2">
-                      <Mail size={16} className="inline mr-2" />
-                      Email Address *
-                    </label>
+                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Email</label>
                     <div className="relative">
                       <input
                         type="email"
@@ -1482,11 +1470,7 @@ Time: ${new Date().toLocaleString()}`;
                         value={formData.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`w-full bg-white/5 border border-white/20 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm sm:text-base transition-colors ${
-                          fieldTouched.email && fieldErrors.email
-                            ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                            : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                        }`}
+                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
                         placeholder="your.email@domain.com"
                       />
                       {fieldTouched.email &&
@@ -1517,13 +1501,7 @@ Time: ${new Date().toLocaleString()}`;
                 </div>
 
                 <div>
-                  <label className="block text-white/70 text-sm font-mono mb-2">
-                    <MessageSquare size={16} className="inline mr-2" />
-                    Subject
-                    <span className="text-xs text-white/50 ml-2">
-                      ({formData.subject.length}/{charLimits.subject})
-                    </span>
-                  </label>
+                  <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Subject</label>
                   <div className="relative">
                     <input
                       type="text"
@@ -1531,11 +1509,7 @@ Time: ${new Date().toLocaleString()}`;
                       value={formData.subject}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors ${
-                        fieldTouched.subject && fieldErrors.subject
-                          ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                          : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                      }`}
+                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
                       placeholder="Project inquiry, collaboration, etc."
                       maxLength={charLimits.subject}
                     />
@@ -1567,13 +1541,7 @@ Time: ${new Date().toLocaleString()}`;
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-white/70 text-sm font-mono">
-                      <FileText size={16} className="inline mr-2" />
-                      Message *
-                      <span className="text-xs text-white/50 ml-2">
-                        ({formData.message.length}/{charLimits.message})
-                      </span>
-                    </label>
+                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Message</label>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
@@ -1644,11 +1612,7 @@ Time: ${new Date().toLocaleString()}`;
                       onFocus={handleMessageFocus}
                       onKeyDown={handleMessageKeyDown}
                       rows={6}
-                      className={`w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono transition-colors resize-none ${
-                        fieldTouched.message && fieldErrors.message
-                          ? "border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400"
-                          : "focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
-                      }`}
+                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 resize-none ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
                       placeholder="Tell me about your project or how we can work together... (click 'Add suggestions' for quick phrases)"
                       maxLength={charLimits.message}
                     />
@@ -1768,7 +1732,7 @@ Time: ${new Date().toLocaleString()}`;
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
+                      className={`bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
                     >
                       <p className="text-yellow-400 text-xs font-mono text-center">
                         Please complete all required fields with valid
@@ -1824,7 +1788,7 @@ Time: ${new Date().toLocaleString()}`;
         {/* Success/Error Modal - Prominent and Centered */}
         {showToast && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isDarkMode ? 'bg-black/50 backdrop-blur-sm' : 'bg-white/80 backdrop-blur-sm'}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -1832,7 +1796,7 @@ Time: ${new Date().toLocaleString()}`;
           >
             {/* Backdrop */}
             <div
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              className={`absolute inset-0 ${isDarkMode ? 'bg-black/50 backdrop-blur-sm' : 'bg-white/80 backdrop-blur-sm'}`}
               onClick={() => setShowToast(false)}
             />
 

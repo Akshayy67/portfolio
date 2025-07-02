@@ -5,6 +5,7 @@ import { Guitar, Trophy, Crown, Plane } from "lucide-react";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
 import EnhancedParallax from "./EnhancedParallax";
 import { HobbiesBackground } from "./SectionBackgrounds";
+import { useTheme } from "../contexts/ThemeContext";
 
 const HobbiesSection: React.FC = () => {
   const { ref, inView } = useInView({
@@ -13,6 +14,7 @@ const HobbiesSection: React.FC = () => {
   });
 
   const deviceInfo = useDeviceDetection();
+  const { isDarkMode } = useTheme();
 
   const hobbies = [
     { text: "play guitar", icon: Guitar, color: "text-purple-400" },
@@ -71,7 +73,7 @@ const HobbiesSection: React.FC = () => {
 
   return (
     <EnhancedParallax
-      className="py-16 relative overflow-hidden skills-section"
+      className={`py-16 relative overflow-hidden skills-section ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
       intensity="subtle"
       backgroundLayers={[
         {
@@ -121,13 +123,13 @@ const HobbiesSection: React.FC = () => {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-2xl md:text-4xl font-display font-bold text-white mb-8">
+            <h2 className={`text-2xl md:text-4xl font-display font-bold mb-8 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Apart from coding, I also...
             </h2>
 
-            <div className="glass-morphism-dark rounded-2xl p-8 md:p-12 shadow-glow-lg">
+            <div className={`glass-morphism-dark rounded-2xl p-8 md:p-12 shadow-glow-lg ${isDarkMode ? '' : 'bg-white/80 border border-orange-200 shadow-glow-md'}`}>
               <div className="flex items-center justify-center gap-4 text-3xl md:text-5xl font-mono">
-                <span className="text-white">...</span>
+                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>...</span>
 
                 {/* Animated Icon */}
                 <motion.div
@@ -146,7 +148,7 @@ const HobbiesSection: React.FC = () => {
                 </motion.div>
 
                 {/* Typing Text */}
-                <div className="relative">
+                <div className={`relative`}>
                   <span className={`${currentHobby.color} font-bold`}>
                     {displayText}
                   </span>
@@ -173,8 +175,8 @@ const HobbiesSection: React.FC = () => {
                     key={index}
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
                       index === currentHobbyIndex
-                        ? hobby.color.replace("text-", "bg-")
-                        : "bg-white/20"
+                        ? (isDarkMode ? hobby.color.replace('text-', 'bg-') : 'bg-amber-400')
+                        : (isDarkMode ? 'bg-white/20' : 'bg-orange-100')
                     }`}
                     whileHover={{ scale: 1.2 }}
                     animate={{
@@ -186,7 +188,7 @@ const HobbiesSection: React.FC = () => {
 
               {/* Fun Description */}
               <motion.p
-                className="text-white/70 text-lg mt-6 max-w-2xl mx-auto"
+                className={`text-lg mt-6 max-w-2xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.8, delay: 0.5 }}

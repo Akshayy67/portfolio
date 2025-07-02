@@ -67,8 +67,6 @@ const CustomCursor: React.FC = () => {
         setCursorType("star");
       } else if (target.classList.contains("black-hole-cursor")) {
         setCursorType("black-hole");
-      } else if (target.classList.contains("audio-cursor")) {
-        setCursorType("audio");
       } else if (target.classList.contains("event-horizon-hover")) {
         setCursorType("event-horizon");
       } else if (
@@ -161,24 +159,6 @@ const CustomCursor: React.FC = () => {
             <div
               className="absolute top-1/2 left-1/2 w-2 h-2 bg-black rounded-full"
               style={{ transform: "translate(-50%, -50%)" }}
-            />
-          </div>
-        );
-
-      case "audio":
-        return (
-          <div className="relative">
-            <div
-              className="w-3 h-4"
-              style={{
-                background: baseColor,
-                clipPath:
-                  "polygon(0 30%, 40% 30%, 70% 0%, 70% 100%, 40% 70%, 0 70%)",
-              }}
-            />
-            <div
-              className="absolute -right-1 top-1 w-1 h-2 border border-current rounded-full"
-              style={{ borderColor: baseColor }}
             />
           </div>
         );

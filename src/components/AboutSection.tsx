@@ -39,9 +39,7 @@ const AboutSection: React.FC = () => {
     <section
       id="about"
       data-section="about"
-      className={`min-h-screen py-20 relative bg-black ${
-        isDarkMode ? "text-white" : "text-gray-900"
-      }`}
+      className={`min-h-screen py-20 relative ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
     >
       <AboutBackground />
 
@@ -78,16 +76,18 @@ const AboutSection: React.FC = () => {
             transition={{ duration: 0.8 }}
           >
             <h2
-              className={`text-4xl md:text-6xl font-display font-bold ${
-                isDarkMode ? "text-white" : "text-gray-900"
-              } mb-4 text-shadow-soft`}
+              className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${
+                isDarkMode
+                  ? "text-white"
+                  : "text-gray-900"
+              }`}
             >
               About <span className="interstellar-text">Developer</span>
             </h2>
             <p
-              className={`text-xl ${
-                isDarkMode ? "text-white/70" : "text-gray-700"
-              } max-w-3xl mx-auto`}
+              className={`text-xl max-w-3xl mx-auto ${
+                isDarkMode ? "text-white/70" : "text-gray-600"
+              }`}
             >
               Personal Profile: Full Stack Developer & Problem Solver
             </p>
@@ -96,9 +96,7 @@ const AboutSection: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Enhanced Solar System Visualization */}
             <motion.div
-              className={`relative ${
-                deviceInfo.isMobile ? "h-80" : "h-96"
-              } flex items-center justify-center overflow-hidden`}
+              className={`relative w-full ${deviceInfo.isMobile ? "min-h-[400px] h-[400px]" : "min-h-[700px] h-[700px]"} flex items-center justify-center`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, delay: 0.3 }}
@@ -152,7 +150,7 @@ const AboutSection: React.FC = () => {
 
                 {/* Core Label */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-white drop-shadow-lg">
+                  <span className={isDarkMode ? "text-xs font-bold text-white drop-shadow-lg" : "text-xs font-bold text-gray-900 drop-shadow-lg"}>
                     DEV
                   </span>
                 </div>
@@ -242,7 +240,7 @@ const AboutSection: React.FC = () => {
 
                       {/* Skill Label - Always Visible */}
                       <motion.div
-                        className="absolute -top-12 left-1/2 transform -translate-x-1/2 text-xs font-mono font-bold whitespace-nowrap text-white bg-black/90 px-3 py-1.5 rounded-lg backdrop-blur-sm border shadow-lg"
+                        className={`absolute -top-12 left-1/2 transform -translate-x-1/2 text-xs font-mono font-bold whitespace-nowrap px-3 py-1.5 rounded-lg backdrop-blur-sm border shadow-lg ${isDarkMode ? 'text-white bg-black/90' : 'text-gray-900 bg-white/90 border-orange-200'}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + index * 0.1 }}
@@ -405,12 +403,18 @@ const AboutSection: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.5 }}
             >
               <motion.div
-                className="glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg"
+                className={`glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg ${
+                  isDarkMode
+                    ? ""
+                    : "bg-white/80 border border-orange-200 shadow-glow-md"
+                }`}
                 whileHover={{ scale: 1.02, y: -5 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 <motion.h3
-                  className="text-2xl font-mono text-orange-400 mb-6 glow-accretion"
+                  className={`text-2xl font-mono mb-6 glow-accretion ${
+                    isDarkMode ? "text-orange-400" : "text-amber-600"
+                  }`}
                   animate={{
                     textShadow: [
                       "0 0 10px rgba(255, 165, 0, 0.5)",
@@ -423,34 +427,34 @@ const AboutSection: React.FC = () => {
                   🚀 Developer Profile
                 </motion.h3>
                 <p
-                  className={`${
+                  className={`leading-relaxed mb-4 ${
                     isDarkMode ? "text-white/80" : "text-gray-700"
-                  } leading-relaxed mb-4`}
+                  }`}
                 >
-                  I’m a Computer Science Engineering student at Sreenidhi
+                  I'm a Computer Science Engineering student at Sreenidhi
                   Institute of Science and Technology (SNIST) with a strong
                   command of Data Structures and Algorithms (DSA)—the core of my
                   problem-solving mindset. Proficient in C, Java, Python, Dart,
                   and JavaScript, I specialize in full-stack web development,
                   Flutter-based mobile apps, and machine learning. With 500+
                   problems solved on LeetCode and consistent participation in
-                  coding contests, I’m deeply invested in algorithmic thinking
+                  coding contests, I'm deeply invested in algorithmic thinking
                   and performance optimization.
                 </p>
                 <p
-                  className={`${
+                  className={`leading-relaxed ${
                     isDarkMode ? "text-white/80" : "text-gray-700"
-                  } leading-relaxed`}
+                  }`}
                 >
-                  Currently maintaining a CGPA of 8.1, I’ve worked on impactful
+                  Currently maintaining a CGPA of 8.1, I've worked on impactful
                   projects like a Taxi Fare Predictor using Random Forests, an
                   interactive LRU Cache simulator, an AI-powered farming
                   assistant (FarmSmartAI), and a Contact Manager featuring
                   efficient search using Trie (prefix tree) for real-time
                   auto-completion and querying. As an active member of the
-                  National Cadet Corps (NCC), I’ve developed leadership,
+                  National Cadet Corps (NCC), I've developed leadership,
                   discipline, and a team-first attitude that I bring into both
-                  technical and collaborative settings. I’m driven by curiosity,
+                  technical and collaborative settings. I'm driven by curiosity,
                   continuous learning, and a passion for building tech that
                   matters.
                 </p>
@@ -461,7 +465,11 @@ const AboutSection: React.FC = () => {
                 {skills.map((skill, index) => (
                   <motion.div
                     key={skill.name}
-                    className="glass-morphism rounded-xl p-4 event-horizon-hover"
+                    className={`glass-morphism rounded-xl p-4 event-horizon-hover ${
+                      isDarkMode
+                        ? ""
+                        : "bg-white/90 border border-orange-100 shadow-glow-md"
+                    }`}
                     initial={{ opacity: 0, x: 30 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
@@ -469,7 +477,7 @@ const AboutSection: React.FC = () => {
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <skill.icon className="text-orange-400" size={20} />
+                        <skill.icon className={isDarkMode ? "text-orange-400" : "text-amber-600"} size={20} />
                         <span
                           className={`font-mono ${
                             isDarkMode ? "text-white" : "text-gray-900"
@@ -478,13 +486,13 @@ const AboutSection: React.FC = () => {
                           {skill.name}
                         </span>
                       </div>
-                      <span className="font-mono text-orange-400 text-sm">
+                      <span className={isDarkMode ? "font-mono text-orange-400 text-sm" : "font-mono text-amber-600 text-sm"}>
                         {skill.level}%
                       </span>
                     </div>
-                    <div className="w-full bg-white/10 rounded-full h-2">
+                    <div className={isDarkMode ? "w-full bg-white/10 rounded-full h-2" : "w-full bg-orange-100 rounded-full h-2"}>
                       <motion.div
-                        className="h-2 bg-gradient-to-r from-orange-400 to-orange-300 rounded-full"
+                        className={isDarkMode ? "h-2 bg-gradient-to-r from-orange-400 to-orange-300 rounded-full" : "h-2 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full"}
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${skill.level}%` } : {}}
                         transition={{ duration: 1, delay: 0.8 + index * 0.1 }}
