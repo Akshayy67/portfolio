@@ -15,7 +15,6 @@ const ContactSection = lazy(() => import("./components/ContactSection"));
 const AnalyticsDashboard = lazy(() => import("./components/AnalyticsDashboard"));
 const VoiceNavigation = lazy(() => import("./components/VoiceNavigation"));
 const HobbiesSection = lazy(() => import("./components/HobbiesSection"));
-const FeedbackWidget = lazy(() => import("./components/FeedbackWidget"));
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
@@ -170,9 +169,6 @@ const MainContent: React.FC = () => {
             </Suspense>
             <Suspense fallback={<SectionLoader />}>
               <ContactSection />
-            </Suspense>
-            <Suspense fallback={<SectionLoader />}>
-              <FeedbackWidget />
             </Suspense>
           </>
         )}

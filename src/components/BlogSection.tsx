@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Award, Trophy, Star } from "lucide-react";
+import { Award, Trophy, Star, BadgeCheck, Crown } from "lucide-react";
 import EnhancedParallax from "./EnhancedParallax";
 import { AchievementsBackground } from "./SectionBackgrounds";
 import { useTheme } from "../contexts/ThemeContext";
@@ -12,6 +12,7 @@ const AchievementsSection: React.FC = () => {
     triggerOnce: true,
   });
   const { isDarkMode } = useTheme();
+  const [trophyFlood, setTrophyFlood] = useState(false);
 
   const certifications = [
     {
@@ -54,6 +55,7 @@ const AchievementsSection: React.FC = () => {
       category: "Competition",
       icon: Trophy,
       year: "2024",
+      featured: true,
     },
     {
       id: 2,
@@ -87,32 +89,35 @@ const AchievementsSection: React.FC = () => {
         },
         {
           children: (
-            <div className="absolute inset-0">
-              {/* Victory celebration effect for mobile */}
-              {[...Array(10)].map((_, i) => (
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Animated confetti/sparkles */}
+              {[...Array(18)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="absolute"
                   style={{
-                    left: `${20 + i * 8}%`,
-                    top: `${30 + Math.sin(i) * 25}%`,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
                   }}
                   animate={{
-                    y: [-20, 20, -20],
+                    y: [0, 40 + Math.random() * 40, 0],
+                    opacity: [0.7, 0.2, 0.7],
+                    scale: [1, 1.3, 1],
                     rotate: [0, 360],
-                    scale: [1, 1.5, 1],
-                    opacity: [0.2, 0.6, 0.2],
                   }}
                   transition={{
-                    duration: 8 + i,
+                    duration: 7 + Math.random() * 3,
                     repeat: Infinity,
-                    delay: i * 0.3,
+                    delay: i * 0.2,
                   }}
                 >
-                  <Trophy
-                    className="text-orange-400/25"
-                    size={16 + Math.random() * 8}
-                  />
+                  {i % 3 === 0 ? (
+                    <Trophy className="text-orange-400 drop-shadow-glow" size={18} />
+                  ) : i % 3 === 1 ? (
+                    <Star className="text-yellow-400 drop-shadow-glow" size={16} />
+                  ) : (
+                    <BadgeCheck className="text-amber-500 drop-shadow-glow" size={16} />
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -124,6 +129,46 @@ const AchievementsSection: React.FC = () => {
       ]}
     >
       <section id="achievements" className="relative z-10">
+        {/* Soft celebratory background with floating trophies and medals */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* Minimal radial orange/gold gradient */}
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[60vw] max-w-7xl max-h-[40rem]"
+            style={{
+              filter: "blur(80px)",
+              opacity: 0.10,
+              background: "radial-gradient(circle at 50% 50%, #fb923c 0%, #ffd700 60%, transparent 100%)",
+            }}
+          />
+          {/* Minimal floating trophy and medal icons */}
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{
+                left: `${10 + i * 10 + Math.sin(i) * 5}%`,
+                top: `${20 + Math.cos(i) * 30}%`,
+              }}
+              animate={{
+                y: [0, 20, 0],
+                opacity: [0.12, 0.22, 0.12],
+                scale: [1, 1.1, 1],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: 10 + i,
+                repeat: Infinity,
+                delay: i * 0.5,
+              }}
+            >
+              {i % 2 === 0 ? (
+                <Trophy className="text-orange-400" size={32} />
+              ) : (
+                <BadgeCheck className="text-yellow-400" size={28} />
+              )}
+            </motion.div>
+          ))}
+        </div>
         <div ref={ref} className="max-w-6xl mx-auto px-4">
           <motion.div
             className="text-center mb-16"
@@ -149,7 +194,7 @@ const AchievementsSection: React.FC = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <Award className={`text-orange-400`} size={32} />
+              <Award className={`text-orange-400 drop-shadow-glow animate-pulse`} size={32} />
               Certifications
             </motion.h3>
 
@@ -157,15 +202,24 @@ const AchievementsSection: React.FC = () => {
               {certifications.map((cert, index) => (
                 <motion.div
                   key={cert.id}
-                  className={`glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover ${isDarkMode ? '' : 'bg-white/90 border-orange-200 text-gray-900 shadow-glow-md'}`}
+                  className={`glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/70 transition-all duration-500 event-horizon-hover ${isDarkMode ? '' : 'bg-white/90 border-orange-200 text-gray-900 shadow-glow-md'} border-2 border-transparent relative overflow-hidden`}
                   initial={{ opacity: 0, y: 50 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
+                  whileHover={{ y: -8, scale: 1.03 }}
                 >
+                  {/* Animated shine on hover */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 0.25 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="absolute -left-1/4 top-1/4 w-2/3 h-2/3 bg-gradient-to-r from-orange-200 via-white to-orange-100 rounded-full blur-2xl opacity-70 animate-pulse" />
+                  </motion.div>
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-orange-400/20 rounded-lg">
-                      <cert.icon className="text-orange-400" size={24} />
+                    <div className="p-3 bg-orange-400/20 rounded-lg shadow-glow-md animate-pulse">
+                      <cert.icon className="text-orange-400 drop-shadow-glow animate-bounce" size={24} />
                     </div>
                     <div className="flex-1">
                       <h4 className={`font-mono font-bold mb-2 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -178,7 +232,12 @@ const AchievementsSection: React.FC = () => {
                         {cert.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className={`px-2 py-1 rounded text-xs font-mono ${isDarkMode ? 'bg-white/10 text-white/80' : 'bg-orange-100 text-gray-900'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${isDarkMode ? 'bg-white/10 text-white/80' : 'bg-orange-100 text-gray-900'}`}
+                          style={{
+                            background: 'linear-gradient(90deg, #ffd70033 0%, #fb923c33 100%)',
+                            border: '1px solid #fb923c',
+                          }}
+                        >
                           {cert.category}
                         </span>
                         <span className={`text-xs font-mono ${isDarkMode ? 'text-white/50' : 'text-gray-400'}`}>
@@ -198,39 +257,94 @@ const AchievementsSection: React.FC = () => {
               className={`text-3xl font-mono font-bold mb-8 text-center`}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <Trophy className={`text-orange-400`} size={32} />
-              Honors & Awards
+              <Trophy className={`text-orange-400 drop-shadow-glow animate-pulse`} size={32} />
+              Achievements
             </motion.h3>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {achievements.map((achievement, index) => (
+              {achievements.map((ach, index) => (
                 <motion.div
-                  key={achievement.id}
-                  className={`glass-morphism-dark noise-texture rounded-xl p-6 hover:border-orange-400/50 transition-all duration-500 event-horizon-hover`}
+                  key={ach.id}
+                  className={`glass-morphism-dark noise-texture rounded-xl p-6 transition-all duration-500 event-horizon-hover ${isDarkMode ? '' : 'bg-white/90 border-orange-200 text-gray-900 shadow-glow-md'} border-2 relative overflow-hidden
+                    ${ach.featured ? 'border-yellow-400 shadow-[0_0_32px_4px_rgba(251,191,36,0.25)] animate-pulse' : 'border-transparent'}
+                  `}
                   initial={{ opacity: 0, y: 50 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.8, delay: 0.7 + index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
+                  whileHover={{ y: -8, scale: 1.03 }}
                 >
+                  {/* Crown for top achievement */}
+                  {ach.featured && (
+                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20">
+                      <Crown className="text-yellow-400 drop-shadow-glow animate-bounce" size={40} />
+                    </div>
+                  )}
+                  {/* Trophy Flood Button and Effect for top achievement */}
+                  {ach.featured && (
+                    <>
+                      <button
+                        className="absolute top-3 left-3 bg-orange-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-glow-md hover:bg-orange-500 transition z-20"
+                        onClick={() => {
+                          setTrophyFlood(true);
+                          setTimeout(() => setTrophyFlood(false), 1800);
+                        }}
+                      >
+                        Celebrate!
+                      </button>
+                      {trophyFlood && (
+                        <div className="pointer-events-none absolute inset-0 z-30">
+                          {[...Array(24)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              className="absolute"
+                              style={{
+                                left: `${30 + Math.random() * 40}%`,
+                                top: `50%`,
+                              }}
+                              initial={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
+                              animate={{
+                                y: [-10, -120 - Math.random() * 120],
+                                x: [0, (Math.random() - 0.5) * 300],
+                                opacity: [1, 0.7, 0],
+                                scale: [1, 1.3, 0.8],
+                                rotate: [0, Math.random() * 360],
+                              }}
+                              transition={{
+                                duration: 1.2 + Math.random() * 0.5,
+                                ease: "easeOut",
+                              }}
+                            >
+                              <Trophy className="text-orange-400 drop-shadow-glow" size={28 + Math.random() * 10} />
+                            </motion.div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                   <div className="flex items-start gap-4">
-                    <div className="p-3 bg-orange-400/20 rounded-lg">
-                      <achievement.icon className="text-orange-400" size={24} />
+                    <div className="p-3 bg-orange-400/20 rounded-lg shadow-glow-md animate-pulse">
+                      <ach.icon className="text-orange-400 drop-shadow-glow animate-bounce" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className={`font-mono font-bold mb-2 text-sm`}>
-                        {achievement.title}
+                      <h4 className={`font-mono font-bold mb-2 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {ach.title}
                       </h4>
-                      <p className={`text-xs mb-3`}>
-                        {achievement.description}
+                      <p className={`text-xs mb-3 ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        {ach.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className={`px-2 py-1 rounded text-xs font-mono`}>
-                          {achievement.category}
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${isDarkMode ? 'bg-white/10 text-white/80' : 'bg-orange-100 text-gray-900'}`}
+                          style={{
+                            background: 'linear-gradient(90deg, #ffd70033 0%, #fb923c33 100%)',
+                            border: '1px solid #fb923c',
+                          }}
+                        >
+                          {ach.category}
                         </span>
-                        <span className={`text-xs font-mono`}>
-                          {achievement.year}
+                        <span className={`text-xs font-mono ${isDarkMode ? 'text-white/50' : 'text-gray-400'}`}>
+                          {ach.year}
                         </span>
                       </div>
                     </div>

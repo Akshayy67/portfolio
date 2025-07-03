@@ -4,7 +4,7 @@ import { useDeviceDetection } from "../hooks/useDeviceDetection";
 
 interface Enhanced3DBackgroundProps {
   className?: string;
-  theme?: "space" | "tech" | "achievements" | "contact" | "hobbies";
+  theme?: "space" | "tech" | "achievements" | "contact" | "hobbies" | "light";
 }
 
 const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
@@ -61,6 +61,7 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
           achievements: ["#fbbf24", "#f59e0b", "#d97706", "#fcd34d"],
           contact: ["#10b981", "#059669", "#047857", "#34d399"],
           hobbies: ["#a855f7", "#9333ea", "#7c3aed", "#c084fc"],
+          light: ["#2563eb", "#1e40af", "#fb923c", "#f97316", "#a855f7", "#7c3aed"],
         };
 
         this.color =
@@ -120,8 +121,8 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
 
     // Create particles
     const particles: Particle3D[] = [];
-    const particleCount = deviceInfo.isLowEndDevice ? 50 : 150;
-
+    let particleCount = deviceInfo.isLowEndDevice ? 50 : 150;
+    if (theme === "light") particleCount = deviceInfo.isLowEndDevice ? 80 : 250;
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle3D());
     }
@@ -140,17 +141,23 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
         canvas.height / 2,
         Math.max(canvas.width, canvas.height)
       );
-
       const gradients = {
         space: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
         tech: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
         achievements: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
         contact: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
         hobbies: ["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0.8)"],
+        light: ["#e5e7eb", "#2563eb", "#fb923c", "#a855f7"],
       };
-
-      gradient.addColorStop(0, gradients[theme][0]);
-      gradient.addColorStop(1, gradients[theme][1]);
+      if (theme === "light") {
+        gradient.addColorStop(0, gradients.light[0]);
+        gradient.addColorStop(0.5, gradients.light[1]);
+        gradient.addColorStop(0.8, gradients.light[2]);
+        gradient.addColorStop(1, gradients.light[3]);
+      } else {
+        gradient.addColorStop(0, gradients[theme][0]);
+        gradient.addColorStop(1, gradients[theme][1]);
+      }
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -161,7 +168,16 @@ const Enhanced3DBackground: React.FC<Enhanced3DBackgroundProps> = ({
 
       particles.forEach((particle) => {
         particle.update();
-        particle.draw(ctx, centerX, centerY);
+        // Make light mode particles larger and more opaque
+        if (theme === "light") {
+          ctx.save();
+          ctx.globalAlpha = 0.8;
+          particle.size *= 1.5;
+          particle.draw(ctx, centerX, centerY);
+          ctx.restore();
+        } else {
+          particle.draw(ctx, centerX, centerY);
+        }
       });
 
       // Draw connecting lines between nearby particles

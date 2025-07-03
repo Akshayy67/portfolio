@@ -100,8 +100,21 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0 z-0 pointer-events-none">
         {isDarkMode ? (
           <ParticleBackground isDarkMode={true} />
-        ) : (
-          <Enhanced3DBackground theme="space" />
+        ) : null}
+        {/* Minimal 3D effect: soft orange ellipse for light mode */}
+        {!isDarkMode && (
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[40vw] max-w-4xl max-h-[32rem] z-0"
+            style={{
+              filter: "blur(60px)",
+              opacity: 0.18,
+              pointerEvents: "none",
+            }}
+          >
+            <svg width="100%" height="100%" viewBox="0 0 600 400" fill="none">
+              <ellipse cx="300" cy="200" rx="280" ry="160" fill="#fb923c" />
+            </svg>
+          </div>
         )}
       </div>
       {/* Main Content */}
@@ -598,6 +611,11 @@ const HeroSection: React.FC = () => {
           Scroll to explore
         </motion.p>
       </motion.div>
+
+      {/* Set plain white background for light mode */}
+      {!isDarkMode && (
+        <style>{`#hero { background: #fff !important; }`}</style>
+      )}
     </section>
   );
 };
