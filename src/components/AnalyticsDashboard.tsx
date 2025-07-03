@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BarChart3,
@@ -13,6 +13,8 @@ import {
   Play,
 } from "lucide-react";
 import { getAnalyticsSummary, trackEvent, trackLocalPageView } from "../services/analytics";
+import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
+import { GeographiesProps, GeographyProps } from "react-simple-maps";
 
 interface AnalyticsData {
   totalVisitors: number;
@@ -25,7 +27,102 @@ interface AnalyticsData {
     type: string;
     data: any;
   }>;
+  locations: Array<{
+    city?: string;
+    country?: string;
+    countryCode?: string;
+    count: number;
+  }>;
 }
+
+// Helper: get coordinates for a country/city (simple version)
+const countryCentroids: Record<string, [number, number]> = {
+  IN: [78.9629, 20.5937], // India
+  US: [-98.5795, 39.8283], // USA
+  // Add more as needed
+};
+
+// Optionally, you can use a geocoding API for more cities
+function getCoordsForLocation(loc: { city?: string; countryCode?: string; country?: string }): [number, number] {
+  if (loc.countryCode && countryCentroids[loc.countryCode]) {
+    const val = countryCentroids[loc.countryCode];
+    if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+      return [val[0], val[1]];
+    }
+  }
+  return [0, 0];
+}
+
+const WorldMap: React.FC<{ locations: any[] }> = ({ locations }) => {
+  const mapRef = useRef<any>(null);
+  const [position, setPosition] = useState({ coordinates: [0, 20] as [number, number], zoom: 1 });
+
+  const handleMoveEnd = (pos: { coordinates: [number, number]; zoom: number }) => {
+    setPosition(pos);
+  };
+
+  const handleReset = () => {
+    setPosition({ coordinates: [0, 20], zoom: 1 });
+  };
+
+  return (
+    <div className="w-full h-96 mb-8 relative" style={{ pointerEvents: 'auto' }}>
+      <button
+        onClick={handleReset}
+        className="absolute right-4 top-4 z-10 bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600"
+        title="Reset zoom"
+      >
+        Reset Zoom
+      </button>
+      <ComposableMap projectionConfig={{ scale: 120 }} width={800} height={350}>
+        <ZoomableGroup
+          center={position.coordinates}
+          zoom={position.zoom}
+          minZoom={1}
+          maxZoom={8}
+          onMoveEnd={handleMoveEnd}
+        >
+          <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
+            {({ geographies }: { geographies: any[] }) =>
+              geographies.map((geo: any) => (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  fill="#22223b"
+                  stroke="#4a4e69"
+                  style={{}}
+                />
+              ))
+            }
+          </Geographies>
+          {locations.map((loc, i) => {
+            const [lng, lat]: [number, number] = getCoordsForLocation(loc);
+            if (lng === 0 && lat === 0) return null;
+            // @ts-ignore
+            return (
+              <Marker key={i} coordinates={[lng, lat]}>
+                <circle
+                  r={6 + Math.log2(loc.count || 1) * 3}
+                  fill="#fca311"
+                  stroke="#fff"
+                  strokeWidth={1}
+                  fillOpacity={0.7}
+                />
+                <text
+                  textAnchor="middle"
+                  y={-12}
+                  style={{ fontFamily: "monospace", fontSize: 10, fill: "#fff" }}
+                >
+                  {loc.city ? `${loc.city}, ` : ""}{loc.countryCode || loc.country}
+                </text>
+              </Marker>
+            );
+          })}
+        </ZoomableGroup>
+      </ComposableMap>
+    </div>
+  );
+};
 
 const AnalyticsDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -63,6 +160,7 @@ const AnalyticsDashboard: React.FC = () => {
             avgTimeOnSite: "0m 0s",
             topPages: [],
             recentEvents: [],
+            locations: [],
           });
         }
       };
@@ -225,6 +323,43 @@ const AnalyticsDashboard: React.FC = () => {
                     {analytics.avgTimeOnSite}
                   </div>
                 </div>
+
+                {/* Location Breakdown */}
+                {analytics.locations && analytics.locations.length > 0 && (
+                  <>
+                    <WorldMap locations={analytics.locations} />
+                    <div className="bg-gray-800 p-4 rounded-lg md:col-span-2">
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <Globe className="text-blue-400" size={20} />
+                        Visitor Locations
+                      </h3>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm text-left">
+                          <thead>
+                            <tr>
+                              <th className="px-2 py-1 text-gray-400">#</th>
+                              <th className="px-2 py-1 text-gray-400">City</th>
+                              <th className="px-2 py-1 text-gray-400">Country</th>
+                              <th className="px-2 py-1 text-gray-400">Code</th>
+                              <th className="px-2 py-1 text-gray-400">Visitors</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {analytics.locations.map((loc, i) => (
+                              <tr key={i} className="border-b border-gray-700 last:border-0">
+                                <td className="px-2 py-1 text-gray-300">{i + 1}</td>
+                                <td className="px-2 py-1 text-gray-200">{loc.city || '-'}</td>
+                                <td className="px-2 py-1 text-gray-200">{loc.country || '-'}</td>
+                                <td className="px-2 py-1 text-gray-400">{loc.countryCode || '-'}</td>
+                                <td className="px-2 py-1 text-orange-400 font-bold">{loc.count}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {/* Top Pages */}
                 <div className="bg-gray-800 p-4 rounded-lg md:col-span-2">

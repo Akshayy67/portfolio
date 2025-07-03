@@ -160,6 +160,11 @@ interface LocalAnalytics {
     start: number;
     end?: number;
     pages: string[];
+    location?: {
+      city: string;
+      country: string;
+      countryCode: string;
+    };
   }>;
 }
 
@@ -222,17 +227,36 @@ export const trackLocalPageView = (path: string) => {
   }
 };
 
-// Start a new session
-export const startSession = () => {
+// Fetch user location using ipapi.co
+export const fetchUserLocation = async () => {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      city: data.city,
+      country: data.country_name,
+      countryCode: data.country_code,
+    };
+  } catch {
+    return null;
+  }
+};
+
+// Start a new session (now async to fetch location)
+export const startSession = async () => {
   try {
     if (typeof window === "undefined") {
       return;
     }
     console.log("Starting new analytics session");
     const analytics = getLocalAnalytics();
+    const locationData = await fetchUserLocation();
+    const location = locationData || undefined;
     const newSession = {
       start: Date.now(),
       pages: [window.location.pathname],
+      location,
     };
     analytics.sessions.push(newSession);
     updateLocalAnalytics(analytics);
@@ -289,6 +313,25 @@ export const getAnalyticsSummary = () => {
     .slice(0, 5)
     .map(([page, views]) => ({ page: page.replace("/", "") || "Home", views }));
 
+  // Aggregate locations
+  const locationCounts: Record<string, { city?: string; country?: string; countryCode?: string; count: number }> = {};
+  analytics.sessions.forEach((session) => {
+    if (session.location && (session.location.city || session.location.country)) {
+      const key = `${session.location.city || ''},${session.location.country || ''}`;
+      if (!locationCounts[key]) {
+        locationCounts[key] = {
+          city: session.location.city,
+          country: session.location.country,
+          countryCode: session.location.countryCode,
+          count: 1,
+        };
+      } else {
+        locationCounts[key].count++;
+      }
+    }
+  });
+  const locations = Object.values(locationCounts).sort((a, b) => b.count - a.count);
+
   return {
     totalVisitors: analytics.sessions.length,
     todayVisitors: todayEvents.filter((e) => e.type === "pageview").length,
@@ -296,6 +339,7 @@ export const getAnalyticsSummary = () => {
     avgTimeOnSite: formatTime(avgSessionTime),
     topPages,
     recentEvents: analytics.events.slice(-10).reverse(),
+    locations,
   };
 };
 

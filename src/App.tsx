@@ -1,25 +1,38 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
-import ProjectsSection from "./components/ProjectsSection";
-import AchievementsSection from "./components/BlogSection";
-import ContactSection from "./components/ContactSection";
 import Navigation from "./components/Navigation";
 import ParticleBackground from "./components/ParticleBackground";
 import ThemeToggle from "./components/ThemeToggle";
-import AnalyticsDashboard from "./components/AnalyticsDashboard";
-import VoiceNavigation from "./components/VoiceNavigation";
-import HobbiesSection from "./components/HobbiesSection";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { WarpSpeedEffect } from "./components/LaunchSequence";
-import FeedbackWidget from "./components/FeedbackWidget";
+
+// Lazy load heavy components
+const ProjectsSection = lazy(() => import("./components/ProjectsSection"));
+const AchievementsSection = lazy(() => import("./components/BlogSection"));
+const ContactSection = lazy(() => import("./components/ContactSection"));
+const AnalyticsDashboard = lazy(() => import("./components/AnalyticsDashboard"));
+const VoiceNavigation = lazy(() => import("./components/VoiceNavigation"));
+const HobbiesSection = lazy(() => import("./components/HobbiesSection"));
+const FeedbackWidget = lazy(() => import("./components/FeedbackWidget"));
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
 import SmoothTransition from "./components/SmoothTransition";
 import LazySection from "./components/LazySection";
+
+
+// Loading component for lazy-loaded sections
+const SectionLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+      <p className="text-white/60 font-mono text-sm">Loading...</p>
+    </div>
+  </div>
+);
 
 // Main content component that uses theme
 const MainContent: React.FC = () => {
@@ -36,7 +49,6 @@ const MainContent: React.FC = () => {
   // Initialize app once on mount
   useEffect(() => {
     // Default cursor behavior restored
-    // Service worker registration disabled - no caching
 
     return () => {
       // Cleanup
@@ -134,8 +146,12 @@ const MainContent: React.FC = () => {
         {showNavigation && <Navigation />}
         <ThemeToggle />
 
-        <VoiceNavigation />
-        <AnalyticsDashboard />
+        <Suspense fallback={null}>
+          <VoiceNavigation />
+        </Suspense>
+        <Suspense fallback={null}>
+          <AnalyticsDashboard />
+        </Suspense>
 
         {showWarpIntro ? (
           <div className="fixed inset-0 z-[9999] bg-black">
@@ -146,10 +162,18 @@ const MainContent: React.FC = () => {
             <HeroSection />
             <AboutSection />
             <HobbiesSection />
-            <ProjectsSection />
-            <AchievementsSection />
-            <ContactSection />
-            <FeedbackWidget />
+            <Suspense fallback={<SectionLoader />}>
+              <ProjectsSection />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <AchievementsSection />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <ContactSection />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <FeedbackWidget />
+            </Suspense>
           </>
         )}
       </div>
