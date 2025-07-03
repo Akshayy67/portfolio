@@ -31,6 +31,7 @@ const DynamicGreeting: React.FC<DynamicGreetingProps> = ({
   showDetails = false,
 }) => {
   const [weatherEmoji, setWeatherEmoji] = useState("🌎");
+  const [specialGreeting, setSpecialGreeting] = useState<string | null>(null);
 
   useEffect(() => {
     // Step 1: Get user location
@@ -51,6 +52,25 @@ const DynamicGreeting: React.FC<DynamicGreetingProps> = ({
         } else {
           setWeatherEmoji("🌎");
         }
+        // Step 3: Get today's public holidays for user's country
+        if (loc && loc.country_code) {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const day = String(today.getDate()).padStart(2, "0");
+          const todayStr = `${year}-${month}-${day}`;
+          fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/${loc.country_code}`)
+            .then((res) => res.json())
+            .then((holidays) => {
+              if (Array.isArray(holidays)) {
+                const todayHoliday = holidays.find((h: any) => h.date === todayStr);
+                if (todayHoliday) {
+                  setSpecialGreeting(`Happy ${todayHoliday.localName}! 🎉`);
+                }
+              }
+            })
+            .catch(() => {});
+        }
       })
       .catch(() => setWeatherEmoji("🌎"));
   }, []);
@@ -65,8 +85,14 @@ const DynamicGreeting: React.FC<DynamicGreetingProps> = ({
       transition={{ duration: 0.8 }}
     >
       <p className="text-orange-400/80 font-mono text-sm">
-        <span className="mr-1">{weatherEmoji}</span>
-        {greeting}
+        {specialGreeting ? (
+          <span>{specialGreeting}</span>
+        ) : (
+          <>
+            <span className="mr-1">{weatherEmoji}</span>
+            {greeting}
+          </>
+        )}
       </p>
     </motion.div>
   );

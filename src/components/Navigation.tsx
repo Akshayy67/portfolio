@@ -4,12 +4,35 @@ import { Menu, X, Rocket, Github, Linkedin } from "lucide-react";
 import { scrollToSection } from "../utils/smoothScroll";
 import { useTheme } from "../contexts/ThemeContext";
 
+// UFO SVG must be a React.FC for type safety
+const UFO: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg width="80" height="54" viewBox="0 0 80 54" fill="none" {...props}>
+    {/* Main body */}
+    <ellipse cx="40" cy="40" rx="30" ry="10" fill="#b3e5fc" />
+    <ellipse cx="40" cy="28" rx="20" ry="10" fill="#90caf9" />
+    <ellipse cx="40" cy="28" rx="14" ry="5" fill="#fff" />
+    <rect x="32" y="18" width="16" height="6" rx="3" fill="#607d8b" />
+    <ellipse cx="40" cy="18" rx="7" ry="3" fill="#b3e5fc" />
+    {/* Blinking lights */}
+    <circle cx="26" cy="28" r="2" fill="#ff5252">
+      <animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="54" cy="28" r="2" fill="#ffeb3b">
+      <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="40" cy="38" r="2" fill="#69f0ae">
+      <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" repeatCount="indefinite" />
+    </circle>
+  </svg>
+);
+
 const Navigation: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [abduct, setAbduct] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,19 +115,67 @@ const Navigation: React.FC = () => {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <motion.div
-                className="flex items-center gap-2 font-mono text-orange-400 text-xl font-bold cursor-pointer"
+                className="flex items-center gap-2 font-mono text-orange-400 text-xl font-bold cursor-pointer relative"
                 whileHover={{ scale: 1.05 }}
-                onClick={() => scrollToSection("hero", 0)}
+                onClick={() => {
+                  setAbduct(true);
+                  setTimeout(() => {
+                    setAbduct(false);
+                    scrollToSection("hero", 0);
+                  }, 2200); // Duration of abduction animation
+                }}
+                style={{ minWidth: 120 }}
               >
+                {/* UFO Animation */}
+                <AnimatePresence>
+                  {abduct ? (
+                    <motion.div
+                      key="ufo"
+                      initial={{ y: -100, x: 0, opacity: 0 }}
+                      animate={{ y: -30, x: 40, opacity: 1 }}
+                      exit={{ y: -100, x: 100, opacity: 0 }}
+                      transition={{ duration: 0.9 }}
+                      style={{ position: "absolute", left: -20, top: -90, zIndex: 10 }}
+                    >
+                      <UFO />
+                      {/* Dramatic Beam */}
+                      <motion.div
+                        key="beam"
+                        initial={{ opacity: 0, scaleY: 0.5 }}
+                        animate={{ opacity: 0.8, scaleY: [0.5, 1.2, 1] }}
+                        exit={{ opacity: 0, scaleY: 0.5 }}
+                        style={{
+                          position: "absolute",
+                          left: 32,
+                          top: 54,
+                          width: 24,
+                          height: 80,
+                          background: "radial-gradient(ellipse at center, #b3e5fc 60%, #fffde4 100%)",
+                          borderRadius: 16,
+                          filter: "blur(4px)",
+                          zIndex: 1,
+                          pointerEvents: "none",
+                        }}
+                        transition={{ duration: 0.7, repeat: 0 }}
+                      />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+                {/* Rocket Animation */}
                 <motion.div
-                  animate={{ rotate: 360 }}
+                  animate={abduct
+                    ? { y: -60, opacity: 0 }
+                    : { y: [0, -10, 0], opacity: 1, rotate: 360 }}
                   transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear",
+                    y: abduct
+                      ? { duration: 1.4, ease: [0.4, 0.0, 0.2, 1] }
+                      : { duration: 1.2, repeat: Infinity, repeatType: "loop", ease: "easeInOut" },
+                    opacity: { duration: 0.7 },
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
                   }}
+                  style={{ zIndex: 2 }}
                 >
-                  <Rocket size={24} />
+                  <Rocket size={32} />
                 </motion.div>
                 <span className="hidden sm:inline">Akshay Juluri</span>
                 <span className="sm:hidden">AJ</span>
