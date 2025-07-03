@@ -377,6 +377,7 @@ const ContactSection: React.FC = () => {
     // If message is empty, show popular starting phrases
     if (!currentMessage) {
       return [
+        "Let's meet for a coffee and discuss!",
         "I need help with",
         "I'm looking for",
         "Can you help me",
@@ -391,11 +392,9 @@ const ContactSection: React.FC = () => {
     // Get all possible completions (AI + static)
     let allSuggestions: string[] = [];
 
-    // Add AI suggestions if available
+    // Add AI suggestions if available (show as-is, not prepended)
     if (useAI && aiSuggestions.length > 0) {
-      allSuggestions.push(
-        ...aiSuggestions.map((s) => currentMessage + " " + s)
-      );
+      allSuggestions.push(...aiSuggestions);
     }
 
     // Add contextual completions based on what they're typing
@@ -1089,18 +1088,9 @@ Time: ${new Date().toLocaleString()}`;
       setSelectedSuggestionIndex(-1);
 
       // Trigger AI suggestions if enabled and message is long enough
-      if (useAI && value.length > 15) {
-        // Debounce AI calls - trigger on word boundaries or every 15 characters
-        const shouldTrigger =
-          value.endsWith(" ") ||
-          value.endsWith(".") ||
-          value.endsWith(",") ||
-          value.length % 15 === 0;
-
-        if (shouldTrigger) {
-          console.log("🤖 Auto-triggering AI for:", value.slice(-20));
-          generateAISuggestions(value);
-        }
+      if (useAI && value.length > 10) {
+        // Trigger AI after every keystroke
+        generateAISuggestions(value);
       }
     }
 
@@ -1376,7 +1366,7 @@ Time: ${new Date().toLocaleString()}`;
 
               {/* Resume Download */}
               <motion.div
-                className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
+                className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-gray-200'}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -1636,88 +1626,51 @@ Time: ${new Date().toLocaleString()}`;
                     />
 
                     {/* Autocomplete Suggestions Dropdown */}
-                    {showSuggestions &&
-                      (() => {
-                        const filteredSuggestions = getYouTubeLikeSuggestions();
-                        return filteredSuggestions.length > 0 ? (
-                          <motion.div
-                            className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-xl z-10 max-h-64 overflow-y-auto"
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            transition={{ duration: 0.15 }}
-                          >
-                            {filteredSuggestions.map(
-                              (suggestion: string, index: number) => (
-                                <motion.button
-                                  key={suggestion}
-                                  type="button"
-                                  data-suggestion-button="true"
-                                  onMouseDown={(e) => {
-                                    e.preventDefault(); // Prevent blur
-                                    handleSuggestionClick(suggestion);
-                                  }}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    handleSuggestionClick(suggestion);
-                                  }}
-                                  className={`w-full text-left px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors flex items-center gap-3 ${
-                                    index === selectedSuggestionIndex
-                                      ? "bg-gray-100"
-                                      : ""
-                                  }`}
-                                  whileHover={{
-                                    backgroundColor: "rgba(0,0,0,0.05)",
-                                  }}
-                                >
-                                  <div className="text-gray-400">🔍</div>
-                                  <div className="flex-1 text-sm">
-                                    {suggestion}
-                                  </div>
-                                </motion.button>
-                              )
-                            )}
-                            {isLoadingAI && (
-                              <div className="px-4 py-3 text-gray-500 text-sm flex items-center gap-3">
-                                <div className="animate-spin w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full"></div>
-                                <span>
-                                  🤖 AI generating smart suggestions...
-                                </span>
-                              </div>
-                            )}
-                            {aiStatus === "error" && aiError && (
-                              <div className="px-4 py-3 text-red-400 text-sm flex items-center gap-3">
-                                <span>⚠️</span>
-                                <span>
-                                  AI temporarily unavailable - using smart
-                                  fallbacks
-                                </span>
-                              </div>
-                            )}
-                            {aiStatus === "fallback" && (
-                              <div className="px-4 py-3 text-yellow-400 text-sm flex items-center gap-3">
-                                <span>💡</span>
-                                <span>Using contextual suggestions</span>
-                              </div>
-                            )}
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-sm border border-orange-400/30 rounded-lg shadow-2xl z-10"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <div className="p-3 text-center">
-                              <div className="text-xs text-white/60 font-mono">
-                                No more suggestions for this context
-                              </div>
+                    {showSuggestions && (() => {
+                      const filteredSuggestions = getYouTubeLikeSuggestions();
+                      return (
+                        <div className="absolute left-0 right-0 z-20 mt-2 bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-fade-in">
+                          {isLoadingAI && (
+                            <div className="flex items-center justify-center py-4">
+                              <span className="animate-spin rounded-full h-8 w-8 border-4 border-orange-400 border-t-transparent mr-2"></span>
+                              <span className="text-orange-500 font-mono font-semibold text-base">Generating smart suggestions...</span>
                             </div>
-                          </motion.div>
-                        );
-                      })()}
+                          )}
+                          {filteredSuggestions.length === 0 && !isLoadingAI && (
+                            <div className="px-4 py-3 text-gray-400 text-center font-mono text-base">No suggestions available for this context.</div>
+                          )}
+                          {filteredSuggestions.map(
+                            (suggestion: string, index: number) => (
+                              <motion.button
+                                key={suggestion}
+                                type="button"
+                                data-suggestion-button="true"
+                                onMouseDown={(e) => {
+                                  e.preventDefault(); // Prevent blur
+                                  handleSuggestionClick(suggestion);
+                                }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleSuggestionClick(suggestion);
+                                }}
+                                className={`w-full text-left px-6 py-4 text-base font-semibold font-mono rounded-lg mb-1 transition-colors flex items-center gap-3 border border-transparent
+                                  ${index === selectedSuggestionIndex ?
+                                    (isDarkMode ? 'bg-orange-500/20 text-orange-300 border-orange-400' : 'bg-orange-100 text-orange-700 border-orange-300') :
+                                    (isDarkMode ? 'text-white hover:bg-orange-400/10' : 'text-gray-900 hover:bg-orange-50')}
+                                `}
+                                whileHover={{
+                                  backgroundColor: isDarkMode ? "rgba(251,146,60,0.08)" : "rgba(251,146,60,0.12)",
+                                }}
+                              >
+                                <div className={index === selectedSuggestionIndex ? (isDarkMode ? "text-orange-300" : "text-orange-500") : "text-orange-400"}>💡</div>
+                                <div className="flex-1">{suggestion}</div>
+                              </motion.button>
+                            )
+                          )}
+                        </div>
+                      );
+                    })()}
                     {fieldTouched.message &&
                       !fieldErrors.message &&
                       formData.message && (
