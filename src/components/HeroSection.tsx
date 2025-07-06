@@ -4,6 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { Github, Linkedin } from "lucide-react";
 import Typed from "typed.js";
 import DynamicGreeting from "./DynamicGreeting";
+import ProfilePhoto from "./ProfilePhoto";
 import { useTheme } from "../contexts/ThemeContext";
 import Enhanced3DBackground from "./Enhanced3DBackground";
 import ParticleBackground from "./ParticleBackground";
@@ -133,6 +134,22 @@ const HeroSection: React.FC = () => {
           damping: 30,
         }}
       >
+        {/* Profile Photo */}
+        <motion.div
+          className="mb-8 sm:mb-12 flex justify-center"
+          initial={{ opacity: 0, y: -30, scale: 0.8 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{
+            duration: 1,
+            delay: 0.1,
+            type: "spring",
+            stiffness: 100,
+            damping: 20,
+          }}
+        >
+          <ProfilePhoto size={isMobile ? "md" : "lg"} />
+        </motion.div>
+
         {/* Dynamic Greeting */}
         {isMobile ? (
           <motion.div

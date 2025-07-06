@@ -5,6 +5,7 @@ import { Code2, Rocket, Globe, Database, Network } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useDeviceDetection } from "../hooks/useDeviceDetection";
 import { AboutBackground } from "./SectionBackgrounds";
+import ProfilePhoto from "./ProfilePhoto";
 import { trackSectionView } from "../services/analytics";
 
 const AboutSection: React.FC = () => {
@@ -420,6 +421,16 @@ const AboutSection: React.FC = () => {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
+              {/* Profile Photo in About Section */}
+              <motion.div
+                className="flex justify-center mb-8"
+                initial={{ opacity: 0, y: -20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <ProfilePhoto size={deviceInfo.isMobile ? "md" : "lg"} />
+              </motion.div>
+
               <motion.div
                 className={`glass-morphism-dark noise-texture rounded-xl p-6 shadow-glow-lg ${
                   isDarkMode
