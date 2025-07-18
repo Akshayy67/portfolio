@@ -882,187 +882,10 @@ Time: ${new Date().toLocaleString()}`;
   };
 
   const handleDownloadResume = () => {
-    // Create a well-formatted HTML resume
-    const resumeHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akshay Juluri - Full Stack Developer Resume</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-        .header h1 { margin: 0; font-size: 2.5em; color: #2c3e50; }
-        .contact-info { margin: 10px 0; font-size: 1.1em; }
-        .section { margin-bottom: 30px; }
-        .section h2 { color: #2c3e50; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; }
-        .education-item, .project-item { margin-bottom: 20px; }
-        .education-item h3, .project-item h3 { margin: 0; color: #34495e; }
-        .education-details { color: #7f8c8d; font-style: italic; }
-        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .skill-category { margin-bottom: 10px; }
-        .skill-category strong { color: #2c3e50; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 5px; }
-        .project-tech { color: #e67e22; font-weight: bold; margin-top: 5px; }
-        .achievement { margin-bottom: 10px; }
-        .achievement::before { content: "🏆 "; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>AKSHAY JULURI</h1>
-        <div class="contact-info">
-            <strong>Full Stack Developer & Computer Science Engineer</strong><br>
-            📧 akshayjuluri6704@gmail.com | 📱 +91-7382005522 | 📍 Hyderabad, India<br>
-            🔗 <a href="https://github.com/Akshayy67" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">GitHub: Akshayy67</a> | 💼 <a href="https://www.linkedin.com/in/akshay-juluri-84813928a/" target="_blank" rel="noopener noreferrer" style="color: #FFA500;">LinkedIn</a>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>PROFESSIONAL SUMMARY</h2>
-        <p>Passionate Computer Science Engineering student with expertise in full-stack development, machine learning, and mobile app development. Proven track record with 500+ LeetCode problems solved, hackathon victories, and hands-on experience in modern technologies including React, Flutter, Python, and JavaScript. Strong foundation in data structures, algorithms, and software engineering principles with a focus on building scalable, user-centric applications.</p>
-    </div>
-
-    <div class="section">
-        <h2>EDUCATION</h2>
-        <div class="education-item">
-            <h3>Sreenidhi Institute of Science and Technology (SNIST)</h3>
-            <div class="education-details">Computer Science and Engineering, B.Tech | CGPA: 8.1/10 | 2022 - 2026 | Ghatkesar, Telangana</div>
-        </div>
-        <div class="education-item">
-            <h3>Narayana Junior College</h3>
-            <div class="education-details">MPC Intermediate | Percentage: 97.8% | 2020 - 2022 | Hyderabad</div>
-        </div>
-        <div class="education-item">
-            <h3>St Peters Grammar School</h3>
-            <div class="education-details">SSC (10th Board) | GPA: 10 | 2019 - 2020 | Hyderabad</div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>SKILLS</h2>
-        <div class="skills-grid">
-            <div class="skill-category"><strong>Programming Languages:</strong> C, Java, Python, Dart, JavaScript</div>
-            <div class="skill-category"><strong>Libraries/Frameworks:</strong> Flutter, TensorFlow, NumPy, Pandas</div>
-            <div class="skill-category"><strong>Tools/Platforms:</strong> Git, GitHub, VS Code, Android Studio</div>
-            <div class="skill-category"><strong>Databases:</strong> SQL, MongoDB</div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>PROJECTS / OPEN-SOURCE</h2>
-
-        <div class="project-item">
-            <h3>Predicting Taxi Fares Using Random Forests</h3>
-            <div class="project-tech">Python, Pandas, NumPy, Scikit-learn</div>
-            <ul>
-                <li>Built a predictive model for estimating taxi fares using features like distance, location, and time</li>
-                <li>Collected and preprocessed real-world taxi fare datasets</li>
-                <li>Trained a Random Forest model achieving 85% accuracy</li>
-                <li>Visualized results using Matplotlib and Seaborn</li>
-            </ul>
-        </div>
-
-        <div class="project-item">
-            <h3>LRU-Cache Implementation</h3>
-            <div class="project-tech">HTML, CSS, JavaScript, ServiceNow APIs</div>
-            <ul>
-                <li>Implemented LRU logic by converting Java doubly linked list and hash map code into JavaScript</li>
-                <li>Enhanced user experience with dark/light theme toggle, intuitive visuals, and operation log</li>
-                <li>The cache automatically removes the least recently used item when exceeding capacity</li>
-            </ul>
-        </div>
-
-        <div class="project-item">
-            <h3>Equipment Loaner Request App</h3>
-            <div class="project-tech">JavaScript, ServiceNow, APIs, No-Code Platform</div>
-            <ul>
-                <li>Developed a No-Code Loaner App using JavaScript and ServiceNow specific technologies</li>
-                <li>Integrated ServiceNow APIs for data handling and automation</li>
-                <li>Designed custom tables and forms within the ServiceNow platform</li>
-            </ul>
-        </div>
-
-        <div class="project-item">
-            <h3>QuizApp_Flutter</h3>
-            <div class="project-tech">Flutter, Dart</div>
-            <ul>
-                <li>Built a fully operational Quiz App using Dart</li>
-                <li>Implemented state management to enable dynamic screen updates and real-time question result ranking</li>
-                <li>Designed a responsive UI with engaging question interfaces</li>
-            </ul>
-        </div>
-
-        <div class="project-item">
-            <h3>FarmSmart AI (UD)</h3>
-            <div class="project-tech">HTML, React.js, Node.js, Python</div>
-            <ul>
-                <li>Developed an AI-powered platform assisting farmers in improving crop production</li>
-                <li>Integrated AI for crop health analysis, pest detection, and actionable farming insights</li>
-                <li>Implemented real-time weather forecasting using OpenWeatherMap API</li>
-            </ul>
-        </div>
-
-        <div class="project-item">
-            <h3>Contact Manager</h3>
-            <div class="project-tech">HTML, JavaScript, SQLite</div>
-            <ul>
-                <li>Web-based Contact Manager with efficient search, manage, and email contacts</li>
-                <li>Integrated Trie (prefix tree) data structure for optimized search performance</li>
-                <li>Ensures fast and accurate contact lookups, even with large datasets</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>TECHNICAL SKILLS</h2>
-        <div class="skill-category">
-            <strong>Programming Languages:</strong> C, Java, Python, Dart, JavaScript, TypeScript, HTML5, CSS3
-        </div>
-        <div class="skill-category">
-            <strong>Frameworks & Libraries:</strong> React.js, Flutter, TensorFlow, Node.js, Express.js, Framer Motion
-        </div>
-        <div class="skill-category">
-            <strong>Databases & Tools:</strong> SQLite, Git, GitHub, ServiceNow, Vite, Tailwind CSS
-        </div>
-        <div class="skill-category">
-            <strong>Specializations:</strong> Data Structures & Algorithms, Machine Learning, Full-Stack Development, Mobile Development
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>CERTIFICATIONS & ACHIEVEMENTS</h2>
-        <ul>
-            <li><strong>Supervised Machine Learning: Regression and Classification</strong> - DeepLearning.AI, Stanford University (Coursera) - 2024</li>
-            <li><strong>LeetCode Achievements:</strong> 500+ problems solved, Contest rating: 1,600+, 100Days Leetcoding badge</li>
-            <li><strong>Juniper Networks Virtual Internship</strong> - Network Technologies & Solutions - 2024</li>
-            <li><strong>ServiceNow Certified:</strong> SNAF (ServiceNow Application Developer), CAD (Certified Application Developer) badges</li>
-            <li><strong>Hackathon Winner:</strong> Summer Hackathon at SNIST - 2024</li>
-            <li><strong>Hackathon Finalist:</strong> SNIST by Swedha (IIIT Hyderabad) - 2024</li>
-        </ul>
-    </div>
-
-
-</body>
-</html>`;
-
-    // Create and download the resume as an HTML file
-    const blob = new Blob([resumeHTML], { type: "text/html" });
-    const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = url;
-    link.download = "Akshay_Juluri_Resume.html";
-    document.body.appendChild(link);
+    link.href = "/AkshayResume.pdf";
+    link.download = "AkshayResume.pdf";
     link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-
-    // Show success message
-    alert(
-      "Resume downloaded successfully! You can open the HTML file in your browser and print it as PDF if needed."
-    );
   };
 
   const handleChange = (
@@ -1238,7 +1061,9 @@ Time: ${new Date().toLocaleString()}`;
 
   return (
     <EnhancedParallax
-      className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen py-20 relative overflow-hidden ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      }`}
       intensity="medium"
       backgroundLayers={[
         {
@@ -1302,18 +1127,30 @@ Time: ${new Date().toLocaleString()}`;
           />
         ))}
 
-        <div ref={contactRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          ref={contactRef}
+          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
           <motion.div
             className="text-center mb-12 sm:mb-16"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2
+              className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${
+                isDarkMode ? "text-white" : "text-gray-900"
+              }`}
+            >
               Contact <span className="interstellar-text">Me</span>
             </h2>
-            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}>
-              Let's connect! Whether you have a question, want to collaborate, or just want to say hi, my inbox is always open.
+            <p
+              className={`text-xl max-w-3xl mx-auto ${
+                isDarkMode ? "text-white/70" : "text-gray-600"
+              }`}
+            >
+              Let's connect! Whether you have a question, want to collaborate,
+              or just want to say hi, my inbox is always open.
             </p>
             <div className="mt-4 p-3 bg-orange-400/10 border border-orange-400/20 rounded-lg max-w-2xl mx-auto">
               <p className="text-sm text-orange-400/90 text-center">
@@ -1331,7 +1168,13 @@ Time: ${new Date().toLocaleString()}`;
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}>
+              <div
+                className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${
+                  isDarkMode
+                    ? "bg-white/10 border-white/20"
+                    : "bg-gray-800 border-gray-700"
+                }`}
+              >
                 <h3 className="text-xl sm:text-2xl font-mono text-orange-400 mb-4 sm:mb-6 glow-accretion">
                   Contact Information
                 </h3>
@@ -1366,7 +1209,11 @@ Time: ${new Date().toLocaleString()}`;
 
               {/* Resume Download */}
               <motion.div
-                className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-gray-200'}`}
+                className={`bg-black/40 backdrop-blur-sm border border-white/10 rounded-lg p-6 ${
+                  isDarkMode
+                    ? "bg-white/10 border-white/20"
+                    : "bg-white border-gray-200"
+                }`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -1399,7 +1246,11 @@ Time: ${new Date().toLocaleString()}`;
 
               {/* Status Indicator */}
               <motion.div
-                className={`bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
+                className={`bg-black/40 backdrop-blur-sm border border-green-400/20 rounded-lg p-4 ${
+                  isDarkMode
+                    ? "bg-white/10 border-white/20"
+                    : "bg-gray-800 border-gray-700"
+                }`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
@@ -1419,19 +1270,33 @@ Time: ${new Date().toLocaleString()}`;
 
             {/* Contact Form */}
             <motion.div
-              className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-gray-300'}`}
+              className={`glass-morphism-dark noise-texture rounded-xl p-4 sm:p-6 shadow-glow-lg ${
+                isDarkMode
+                  ? "bg-white/10 border-white/20"
+                  : "bg-white border-gray-300"
+              }`}
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <h3 className={`text-xl sm:text-2xl font-mono mb-4 sm:mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h3
+                className={`text-xl sm:text-2xl font-mono mb-4 sm:mb-6 ${
+                  isDarkMode ? "text-white" : "text-gray-900"
+                }`}
+              >
                 Send Message
               </h3>
 
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Name</label>
+                    <label
+                      className={`block mb-2 font-mono text-sm ${
+                        isDarkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Name
+                    </label>
                     <div className="relative">
                       <input
                         type="text"
@@ -1439,7 +1304,11 @@ Time: ${new Date().toLocaleString()}`;
                         value={formData.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
+                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${
+                          isDarkMode
+                            ? "bg-white/10 border-white/20 text-white"
+                            : "bg-gray-800 border-gray-700 text-gray-900"
+                        }`}
                         placeholder="Enter your name"
                         maxLength={charLimits.name}
                       />
@@ -1470,7 +1339,13 @@ Time: ${new Date().toLocaleString()}`;
                   </div>
 
                   <div>
-                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Email</label>
+                    <label
+                      className={`block mb-2 font-mono text-sm ${
+                        isDarkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Email
+                    </label>
                     <div className="relative">
                       <input
                         type="email"
@@ -1478,7 +1353,11 @@ Time: ${new Date().toLocaleString()}`;
                         value={formData.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
+                        className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${
+                          isDarkMode
+                            ? "bg-white/10 border-white/20 text-white"
+                            : "bg-gray-800 border-gray-700 text-gray-900"
+                        }`}
                         placeholder="your.email@domain.com"
                       />
                       {fieldTouched.email &&
@@ -1509,7 +1388,13 @@ Time: ${new Date().toLocaleString()}`;
                 </div>
 
                 <div>
-                  <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Subject</label>
+                  <label
+                    className={`block mb-2 font-mono text-sm ${
+                      isDarkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Subject
+                  </label>
                   <div className="relative">
                     <input
                       type="text"
@@ -1517,7 +1402,11 @@ Time: ${new Date().toLocaleString()}`;
                       value={formData.subject}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
+                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 ${
+                        isDarkMode
+                          ? "bg-white/10 border-white/20 text-white"
+                          : "bg-gray-800 border-gray-700 text-gray-900"
+                      }`}
                       placeholder="Project inquiry, collaboration, etc."
                       maxLength={charLimits.subject}
                     />
@@ -1549,7 +1438,13 @@ Time: ${new Date().toLocaleString()}`;
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className={`block mb-2 font-mono text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Message</label>
+                    <label
+                      className={`block mb-2 font-mono text-sm ${
+                        isDarkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Message
+                    </label>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
@@ -1620,57 +1515,85 @@ Time: ${new Date().toLocaleString()}`;
                       onFocus={handleMessageFocus}
                       onKeyDown={handleMessageKeyDown}
                       rows={6}
-                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 resize-none ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-gray-800 border-gray-700 text-gray-900'}`}
+                      className={`w-full p-3 rounded-lg border outline-none font-mono text-base transition-all duration-200 resize-none ${
+                        isDarkMode
+                          ? "bg-white/10 border-white/20 text-white"
+                          : "bg-gray-800 border-gray-700 text-gray-900"
+                      }`}
                       placeholder="Tell me about your project or how we can work together... (click 'Add suggestions' for quick phrases)"
                       maxLength={charLimits.message}
                     />
 
                     {/* Autocomplete Suggestions Dropdown */}
-                    {showSuggestions && (() => {
-                      const filteredSuggestions = getYouTubeLikeSuggestions();
-                      return (
-                        <div className="absolute left-0 right-0 z-20 mt-2 bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-fade-in">
-                          {isLoadingAI && (
-                            <div className="flex items-center justify-center py-4">
-                              <span className="animate-spin rounded-full h-8 w-8 border-4 border-orange-400 border-t-transparent mr-2"></span>
-                              <span className="text-orange-500 font-mono font-semibold text-base">Generating smart suggestions...</span>
-                            </div>
-                          )}
-                          {filteredSuggestions.length === 0 && !isLoadingAI && (
-                            <div className="px-4 py-3 text-gray-400 text-center font-mono text-base">No suggestions available for this context.</div>
-                          )}
-                          {filteredSuggestions.map(
-                            (suggestion: string, index: number) => (
-                              <motion.button
-                                key={suggestion}
-                                type="button"
-                                data-suggestion-button="true"
-                                onMouseDown={(e) => {
-                                  e.preventDefault(); // Prevent blur
-                                  handleSuggestionClick(suggestion);
-                                }}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  handleSuggestionClick(suggestion);
-                                }}
-                                className={`w-full text-left px-6 py-4 text-base font-semibold font-mono rounded-lg mb-1 transition-colors flex items-center gap-3 border border-transparent
-                                  ${index === selectedSuggestionIndex ?
-                                    (isDarkMode ? 'bg-orange-500/20 text-orange-300 border-orange-400' : 'bg-orange-100 text-orange-700 border-orange-300') :
-                                    (isDarkMode ? 'text-white hover:bg-orange-400/10' : 'text-gray-900 hover:bg-orange-50')}
+                    {showSuggestions &&
+                      (() => {
+                        const filteredSuggestions = getYouTubeLikeSuggestions();
+                        return (
+                          <div className="absolute left-0 right-0 z-20 mt-2 bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-fade-in">
+                            {isLoadingAI && (
+                              <div className="flex items-center justify-center py-4">
+                                <span className="animate-spin rounded-full h-8 w-8 border-4 border-orange-400 border-t-transparent mr-2"></span>
+                                <span className="text-orange-500 font-mono font-semibold text-base">
+                                  Generating smart suggestions...
+                                </span>
+                              </div>
+                            )}
+                            {filteredSuggestions.length === 0 &&
+                              !isLoadingAI && (
+                                <div className="px-4 py-3 text-gray-400 text-center font-mono text-base">
+                                  No suggestions available for this context.
+                                </div>
+                              )}
+                            {filteredSuggestions.map(
+                              (suggestion: string, index: number) => (
+                                <motion.button
+                                  key={suggestion}
+                                  type="button"
+                                  data-suggestion-button="true"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault(); // Prevent blur
+                                    handleSuggestionClick(suggestion);
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleSuggestionClick(suggestion);
+                                  }}
+                                  className={`w-full text-left px-6 py-4 text-base font-semibold font-mono rounded-lg mb-1 transition-colors flex items-center gap-3 border border-transparent
+                                  ${
+                                    index === selectedSuggestionIndex
+                                      ? isDarkMode
+                                        ? "bg-orange-500/20 text-orange-300 border-orange-400"
+                                        : "bg-orange-100 text-orange-700 border-orange-300"
+                                      : isDarkMode
+                                      ? "text-white hover:bg-orange-400/10"
+                                      : "text-gray-900 hover:bg-orange-50"
+                                  }
                                 `}
-                                whileHover={{
-                                  backgroundColor: isDarkMode ? "rgba(251,146,60,0.08)" : "rgba(251,146,60,0.12)",
-                                }}
-                              >
-                                <div className={index === selectedSuggestionIndex ? (isDarkMode ? "text-orange-300" : "text-orange-500") : "text-orange-400"}>💡</div>
-                                <div className="flex-1">{suggestion}</div>
-                              </motion.button>
-                            )
-                          )}
-                        </div>
-                      );
-                    })()}
+                                  whileHover={{
+                                    backgroundColor: isDarkMode
+                                      ? "rgba(251,146,60,0.08)"
+                                      : "rgba(251,146,60,0.12)",
+                                  }}
+                                >
+                                  <div
+                                    className={
+                                      index === selectedSuggestionIndex
+                                        ? isDarkMode
+                                          ? "text-orange-300"
+                                          : "text-orange-500"
+                                        : "text-orange-400"
+                                    }
+                                  >
+                                    💡
+                                  </div>
+                                  <div className="flex-1">{suggestion}</div>
+                                </motion.button>
+                              )
+                            )}
+                          </div>
+                        );
+                      })()}
                     {fieldTouched.message &&
                       !fieldErrors.message &&
                       formData.message && (
@@ -1703,7 +1626,11 @@ Time: ${new Date().toLocaleString()}`;
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-gray-800 border-gray-700'}`}
+                      className={`bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 ${
+                        isDarkMode
+                          ? "bg-white/10 border-white/20"
+                          : "bg-gray-800 border-gray-700"
+                      }`}
                     >
                       <p className="text-yellow-400 text-xs font-mono text-center">
                         Please complete all required fields with valid
@@ -1766,8 +1693,14 @@ Time: ${new Date().toLocaleString()}`;
             aria-label="Visit my LinkedIn profile"
           >
             {/* LinkedIn SVG Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.841-1.563 3.039 0 3.6 2.001 3.6 4.601v5.595z"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.841-1.563 3.039 0 3.6 2.001 3.6 4.601v5.595z" />
             </svg>
             Connect on LinkedIn
           </a>
@@ -1776,7 +1709,11 @@ Time: ${new Date().toLocaleString()}`;
         {/* Success/Error Modal - Prominent and Centered */}
         {showToast && (
           <motion.div
-            className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isDarkMode ? 'bg-black/50 backdrop-blur-sm' : 'bg-white/80 backdrop-blur-sm'}`}
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+              isDarkMode
+                ? "bg-black/50 backdrop-blur-sm"
+                : "bg-white/80 backdrop-blur-sm"
+            }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -1784,7 +1721,11 @@ Time: ${new Date().toLocaleString()}`;
           >
             {/* Backdrop */}
             <div
-              className={`absolute inset-0 ${isDarkMode ? 'bg-black/50 backdrop-blur-sm' : 'bg-white/80 backdrop-blur-sm'}`}
+              className={`absolute inset-0 ${
+                isDarkMode
+                  ? "bg-black/50 backdrop-blur-sm"
+                  : "bg-white/80 backdrop-blur-sm"
+              }`}
               onClick={() => setShowToast(false)}
             />
 

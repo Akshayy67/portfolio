@@ -58,7 +58,9 @@ const AboutSection: React.FC = () => {
     <section
       id="about"
       data-section="about"
-      className={`min-h-screen py-20 relative ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen py-20 relative ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      }`}
     >
       <AboutBackground />
 
@@ -96,9 +98,7 @@ const AboutSection: React.FC = () => {
           >
             <h2
               className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${
-                isDarkMode
-                  ? "text-white"
-                  : "text-gray-900"
+                isDarkMode ? "text-white" : "text-gray-900"
               }`}
             >
               About <span className="interstellar-text">Developer</span>
@@ -115,7 +115,11 @@ const AboutSection: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Enhanced Solar System Visualization */}
             <motion.div
-              className={`relative w-full ${deviceInfo.isMobile ? "min-h-[400px] h-[400px]" : "min-h-[700px] h-[700px]"} flex items-center justify-center`}
+              className={`relative w-full ${
+                deviceInfo.isMobile
+                  ? "min-h-[400px] h-[400px]"
+                  : "min-h-[700px] h-[700px]"
+              } flex items-center justify-center`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, delay: 0.3 }}
@@ -169,7 +173,13 @@ const AboutSection: React.FC = () => {
 
                 {/* Core Label */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className={isDarkMode ? "text-xs font-bold text-white drop-shadow-lg" : "text-xs font-bold text-gray-900 drop-shadow-lg"}>
+                  <span
+                    className={
+                      isDarkMode
+                        ? "text-xs font-bold text-white drop-shadow-lg"
+                        : "text-xs font-bold text-gray-900 drop-shadow-lg"
+                    }
+                  >
                     DEV
                   </span>
                 </div>
@@ -259,7 +269,11 @@ const AboutSection: React.FC = () => {
 
                       {/* Skill Label - Always Visible */}
                       <motion.div
-                        className={`absolute -top-12 left-1/2 transform -translate-x-1/2 text-xs font-mono font-bold whitespace-nowrap px-3 py-1.5 rounded-lg backdrop-blur-sm border shadow-lg ${isDarkMode ? 'text-white bg-black/90' : 'text-gray-900 bg-white/90 border-orange-200'}`}
+                        className={`absolute -top-12 left-1/2 transform -translate-x-1/2 text-xs font-mono font-bold whitespace-nowrap px-3 py-1.5 rounded-lg backdrop-blur-sm border shadow-lg ${
+                          isDarkMode
+                            ? "text-white bg-black/90"
+                            : "text-gray-900 bg-white/90 border-orange-200"
+                        }`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + index * 0.1 }}
@@ -428,7 +442,10 @@ const AboutSection: React.FC = () => {
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
-                <ProfilePhoto size={deviceInfo.isMobile ? "md" : "lg"} />
+                <ProfilePhoto
+                  size={deviceInfo.isMobile ? "md" : "lg"}
+                  src="/profile-2.jpg"
+                />
               </motion.div>
 
               <motion.div
@@ -460,14 +477,23 @@ const AboutSection: React.FC = () => {
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  I'm a Computer Science Engineering student at SNIST with a strong foundation in Data Structures and Algorithms. Skilled in C, Java, Python, Dart, and JavaScript, I build full-stack web apps, Flutter mobile apps, and machine learning projects. With 500+ LeetCode problems solved and active participation in coding contests, I thrive on algorithmic challenges.
+                  I'm a Computer Science Engineering student at SNIST with a
+                  strong foundation in Data Structures and Algorithms. Skilled
+                  in C, Java, Python, Dart, and JavaScript, I build full-stack
+                  web apps, Flutter mobile apps, and machine learning projects.
+                  With 500+ LeetCode problems solved and active participation in
+                  coding contests, I thrive on algorithmic challenges.
                 </p>
                 <p
                   className={`leading-relaxed ${
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  Currently holding a CGPA of 8.1, I've developed projects like a Taxi Fare Predictor, LRU Cache simulator, FarmSmartAI, and a Trie-based Contact Manager. As an NCC member, I value leadership, discipline, and teamwork. I'm passionate about learning and creating impactful technology.
+                  Currently holding a CGPA of 8.1, I've developed projects like
+                  a Taxi Fare Predictor, LRU Cache simulator, FarmSmartAI, and a
+                  Trie-based Contact Manager. As an NCC member, I value
+                  leadership, discipline, and teamwork. I'm passionate about
+                  learning and creating impactful technology.
                 </p>
               </motion.div>
 
@@ -488,7 +514,12 @@ const AboutSection: React.FC = () => {
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <skill.icon className={isDarkMode ? "text-orange-400" : "text-amber-600"} size={20} />
+                        <skill.icon
+                          className={
+                            isDarkMode ? "text-orange-400" : "text-amber-600"
+                          }
+                          size={20}
+                        />
                         <span
                           className={`font-mono ${
                             isDarkMode ? "text-white" : "text-gray-900"
@@ -497,13 +528,29 @@ const AboutSection: React.FC = () => {
                           {skill.name}
                         </span>
                       </div>
-                      <span className={isDarkMode ? "font-mono text-orange-400 text-sm" : "font-mono text-amber-600 text-sm"}>
+                      <span
+                        className={
+                          isDarkMode
+                            ? "font-mono text-orange-400 text-sm"
+                            : "font-mono text-amber-600 text-sm"
+                        }
+                      >
                         {skill.level}%
                       </span>
                     </div>
-                    <div className={isDarkMode ? "w-full bg-white/10 rounded-full h-2" : "w-full bg-orange-100 rounded-full h-2"}>
+                    <div
+                      className={
+                        isDarkMode
+                          ? "w-full bg-white/10 rounded-full h-2"
+                          : "w-full bg-orange-100 rounded-full h-2"
+                      }
+                    >
                       <motion.div
-                        className={isDarkMode ? "h-2 bg-gradient-to-r from-orange-400 to-orange-300 rounded-full" : "h-2 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full"}
+                        className={
+                          isDarkMode
+                            ? "h-2 bg-gradient-to-r from-orange-400 to-orange-300 rounded-full"
+                            : "h-2 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full"
+                        }
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${skill.level}%` } : {}}
                         transition={{ duration: 1, delay: 0.8 + index * 0.1 }}

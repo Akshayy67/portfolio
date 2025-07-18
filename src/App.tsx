@@ -6,7 +6,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { WarpSpeedEffect } from "./components/LaunchSequence";
 import CinematicFooter from "./components/CinematicFooter";
-
+import React from "react";
 // Lazy load heavy components
 const ProjectsSection = lazy(() => import("./components/ProjectsSection"));
 const AchievementsSection = lazy(() => import("./components/BlogSection"));
@@ -30,8 +30,8 @@ const SectionLoader = () => (
 const MainContent: React.FC = () => {
   const { isDarkMode } = useTheme();
   const deviceInfo = useDeviceDetection();
-  const timer1Ref = useRef<NodeJS.Timeout | null>(null);
-  const timer2Ref = useRef<NodeJS.Timeout | null>(null);
+  const timer1Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timer2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [currentScene, setCurrentScene] = useState<"launch" | "main">("launch"); // Always start with launch sequence
   const [showNavigation, setShowNavigation] = useState(false);
