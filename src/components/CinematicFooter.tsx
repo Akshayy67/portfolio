@@ -94,30 +94,9 @@ const CinematicFooter: React.FC = () => {
           alt="Blackhole"
           className="w-full h-full object-cover opacity-85 blur-[0.5px]"
         />
-        {/* Lens Flare */}
-        <div
-          className="absolute left-1/2 bottom-0 w-[400px] h-[80px] z-20"
-          style={{ transform: "translateX(-50%)" }}
-        >
-          <div className="w-full h-full bg-gradient-to-r from-blue-300/20 via-white/5 to-blue-300/20 blur" />
-        </div>
+        {/* Lens Flare removed for cleanup */}
       </div>
-      {/* Floating Dust Particles (Parallax) */}
-      <div className="absolute inset-0 z-20 pointer-events-none">
-        {[...Array(24)].map((_, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full bg-blue-200/30 blur-[2px] animate-dust"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 8 + 2}px`,
-              height: `${Math.random() * 8 + 2}px`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Floating Dust Particles removed for cleanup */}
       {/* Footer Text with Typewriter Effect */}
       <div className="absolute bottom-0 left-0 w-full z-40 text-center pb-6">
         <div className="absolute left-0 bottom-0 w-full h-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />

@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
 import Navigation from "./components/Navigation";
-import ParticleBackground from "./components/ParticleBackground";
 import ThemeToggle from "./components/ThemeToggle";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { WarpSpeedEffect } from "./components/LaunchSequence";
@@ -13,10 +11,6 @@ import CinematicFooter from "./components/CinematicFooter";
 const ProjectsSection = lazy(() => import("./components/ProjectsSection"));
 const AchievementsSection = lazy(() => import("./components/BlogSection"));
 const ContactSection = lazy(() => import("./components/ContactSection"));
-const AnalyticsDashboard = lazy(
-  () => import("./components/AnalyticsDashboard")
-);
-const VoiceNavigation = lazy(() => import("./components/VoiceNavigation"));
 const HobbiesSection = lazy(() => import("./components/HobbiesSection"));
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
@@ -143,12 +137,7 @@ const MainContent: React.FC = () => {
         {showNavigation && <Navigation />}
         <ThemeToggle />
 
-        <Suspense fallback={null}>
-          <VoiceNavigation />
-        </Suspense>
-        <Suspense fallback={null}>
-          <AnalyticsDashboard />
-        </Suspense>
+        {/* Removed VoiceNavigation and AnalyticsDashboard for cleanup */}
 
         {showWarpIntro ? (
           <div className="fixed inset-0 z-[9999] bg-black">
