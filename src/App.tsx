@@ -7,21 +7,20 @@ import ParticleBackground from "./components/ParticleBackground";
 import ThemeToggle from "./components/ThemeToggle";
 import GlobalCustomCursor from "./components/GlobalCustomCursor";
 import { WarpSpeedEffect } from "./components/LaunchSequence";
+import CinematicFooter from "./components/CinematicFooter";
 
 // Lazy load heavy components
 const ProjectsSection = lazy(() => import("./components/ProjectsSection"));
 const AchievementsSection = lazy(() => import("./components/BlogSection"));
 const ContactSection = lazy(() => import("./components/ContactSection"));
-const AnalyticsDashboard = lazy(() => import("./components/AnalyticsDashboard"));
+const AnalyticsDashboard = lazy(
+  () => import("./components/AnalyticsDashboard")
+);
 const VoiceNavigation = lazy(() => import("./components/VoiceNavigation"));
 const HobbiesSection = lazy(() => import("./components/HobbiesSection"));
 
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
-import { useAnalytics } from "./hooks/useAnalytics";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
-import SmoothTransition from "./components/SmoothTransition";
-import LazySection from "./components/LazySection";
-
 
 // Loading component for lazy-loaded sections
 const SectionLoader = () => (
@@ -36,7 +35,6 @@ const SectionLoader = () => (
 // Main content component that uses theme
 const MainContent: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const analytics = useAnalytics();
   const deviceInfo = useDeviceDetection();
   const timer1Ref = useRef<NodeJS.Timeout | null>(null);
   const timer2Ref = useRef<NodeJS.Timeout | null>(null);
@@ -181,6 +179,7 @@ function App() {
   return (
     <ThemeProvider>
       <MainContent />
+      <CinematicFooter />
     </ThemeProvider>
   );
 }
