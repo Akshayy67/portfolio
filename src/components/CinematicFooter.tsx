@@ -127,7 +127,7 @@ const CinematicFooter: React.FC = () => {
         <p className="relative text-base font-semibold font-sans text-white/90 drop-shadow">
           Dream big, create boldly, explore endlessly.
         </p>
-        <p className="relative text-blue-100/90 text-base font-semibold font-mono min-h-[32px]">
+        <p className="relative text-white text-base font-semibold font-mono min-h-[32px]">
           {displayedText}
           <span className="animate-blink">|</span>
         </p>
