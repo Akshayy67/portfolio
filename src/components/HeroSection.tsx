@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Github, Linkedin } from "lucide-react";
 import Typed from "typed.js";
 import DynamicGreeting from "./DynamicGreeting";
 import ProfilePhoto from "./ProfilePhoto";
 import { useTheme } from "../contexts/ThemeContext";
-import Enhanced3DBackground from "./Enhanced3DBackground";
 import ParticleBackground from "./ParticleBackground";
 
 const HeroSection: React.FC = () => {
@@ -21,11 +20,6 @@ const HeroSection: React.FC = () => {
     threshold: 0.1,
     triggerOnce: true,
   });
-
-  const { scrollY } = useScroll();
-  const parallaxY = useTransform(scrollY, [0, 1000], [0, -200]);
-  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 };
-  const smoothParallaxY = useSpring(parallaxY, springConfig);
 
   // Device detection
   useEffect(() => {
@@ -60,7 +54,6 @@ const HeroSection: React.FC = () => {
   }, [isMobile]);
 
   useEffect(() => {
-    console.log("HeroSection mounted");
     if (typedRef.current) {
       try {
         const typed = new Typed(typedRef.current, {
@@ -93,15 +86,15 @@ const HeroSection: React.FC = () => {
       ref={containerRef}
       id="hero"
       data-section="hero"
-      className={`min-h-screen relative flex items-center justify-center overflow-hidden hero-section ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen relative flex items-center justify-center overflow-hidden hero-section ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Premium 3D Parallax Background */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {isDarkMode ? (
-          <ParticleBackground isDarkMode={true} />
-        ) : null}
+        {isDarkMode ? <ParticleBackground isDarkMode={true} /> : null}
         {/* Minimal 3D effect: soft orange ellipse for light mode */}
         {!isDarkMode && (
           <div
@@ -630,9 +623,7 @@ const HeroSection: React.FC = () => {
       </motion.div>
 
       {/* Set plain white background for light mode */}
-      {!isDarkMode && (
-        <style>{`#hero { background: #fff !important; }`}</style>
-      )}
+      {!isDarkMode && <style>{`#hero { background: #fff !important; }`}</style>}
     </section>
   );
 };

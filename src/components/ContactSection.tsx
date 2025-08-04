@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import emailjs from "@emailjs/browser";
 import {
   Send,
   MapPin,
   Mail,
   MessageSquare,
-  User,
   FileText,
   Phone,
   CheckCircle,
@@ -26,10 +24,6 @@ import { useTheme } from "../contexts/ThemeContext";
 import { trackSectionView } from "../services/analytics";
 
 const ContactSection: React.FC = () => {
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
   const { isDarkMode } = useTheme();
 
   const [formData, setFormData] = useState({
@@ -78,30 +72,6 @@ const ContactSection: React.FC = () => {
     subject: 100,
     message: 1000,
   };
-
-  // Message suggestions with categories
-  const messageSuggestions = [
-    "I love your work!",
-    "How can I collaborate with you?",
-    "Let's connect!",
-    "I have a project idea for you.",
-    "I'd like to discuss a potential opportunity.",
-    "Your portfolio is impressive! Can we chat?",
-    "I'm interested in hiring you for a project.",
-    "Would you be available for freelance work?",
-    "I'd love to learn more about your experience.",
-    "Can you help me with my project?",
-    "I need help with web development.",
-    "Looking for a React developer.",
-    "Interested in full-stack development.",
-    "Want to discuss mobile app development.",
-    "Need assistance with UI/UX design.",
-    "Looking for machine learning expertise.",
-    "Interested in your Python skills.",
-    "Can we schedule a call?",
-    "What's your availability?",
-    "Let's discuss rates and timeline.",
-  ];
 
   // Enhanced AI-powered suggestion generation with better error handling
   const generateAISuggestions = async (currentMessage: string) => {

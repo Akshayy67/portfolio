@@ -1,20 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import { ExternalLink, Github, Rocket } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
-import EnhancedParallax from "./EnhancedParallax";
 import { ProjectsBackground } from "./SectionBackgrounds";
-import Enhanced3DBackground from "./Enhanced3DBackground";
 import { trackSectionView } from "../services/analytics";
 
 const ProjectsSection: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const { ref, inView } = useInView({
-    threshold: 0.01,
-    triggerOnce: true,
-    rootMargin: "100px 0px",
-  });
 
   const [clickedProject, setClickedProject] = useState<number | null>(null);
 

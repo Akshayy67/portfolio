@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 
 interface LazyImageProps {
   src: string;
@@ -16,7 +16,7 @@ interface LazyImageProps {
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   alt,
-  className = '',
+  className = "",
   placeholder,
   blurDataURL,
   width,
@@ -40,7 +40,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       },
       {
         threshold: 0.1,
-        rootMargin: '50px',
+        rootMargin: "50px",
       }
     );
 
@@ -64,21 +64,26 @@ const LazyImage: React.FC<LazyImageProps> = ({
   const getPlaceholder = () => {
     if (blurDataURL) return blurDataURL;
     if (placeholder) return placeholder;
-    
+
     // Generate a simple gradient placeholder
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = width || 400;
     canvas.height = height || 300;
-    const ctx = canvas.getContext('2d');
-    
+    const ctx = canvas.getContext("2d");
+
     if (ctx) {
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, '#f3f4f6');
-      gradient.addColorStop(1, '#e5e7eb');
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      gradient.addColorStop(0, "#f3f4f6");
+      gradient.addColorStop(1, "#e5e7eb");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    
+
     return canvas.toDataURL();
   };
 
@@ -116,16 +121,16 @@ const LazyImage: React.FC<LazyImageProps> = ({
           src={src}
           alt={alt}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
+            isLoaded ? "opacity-100" : "opacity-0"
           }`}
           onLoad={handleLoad}
           onError={handleError}
           loading="lazy"
           decoding="async"
           initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ 
-            opacity: isLoaded ? 1 : 0, 
-            scale: isLoaded ? 1 : 1.1 
+          animate={{
+            opacity: isLoaded ? 1 : 0,
+            scale: isLoaded ? 1 : 1.1,
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         />

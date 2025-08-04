@@ -34,13 +34,10 @@ const MainContent: React.FC = () => {
   const timer2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [currentScene, setCurrentScene] = useState<"launch" | "main">("launch"); // Always start with launch sequence
-  const [showNavigation, setShowNavigation] = useState(false);
   const [showWarpIntro, setShowWarpIntro] = useState(true);
 
   // Initialize app once on mount
   useEffect(() => {
-    // Default cursor behavior restored
-
     return () => {
       // Cleanup
     };
@@ -49,15 +46,10 @@ const MainContent: React.FC = () => {
   // Handle animation sequence based on device preferences
   useEffect(() => {
     // Auto-skip animations only if user explicitly prefers reduced motion
-    // TEMPORARILY DISABLED FOR DEBUGGING
-    // if (deviceInfo.prefersReducedMotion) {
-    //   setCurrentScene("main");
-    //   setShowNavigation(true);
-    //   return;
-    // }
-
-    // Let the LaunchSequence component handle its own timing
-    // No need for App-level timer since LaunchSequence will call onSkip when done
+    if (deviceInfo.prefersReducedMotion) {
+      setCurrentScene("main");
+      return;
+    }
 
     return () => {
       if (timer1Ref.current) clearTimeout(timer1Ref.current);
@@ -91,7 +83,7 @@ const MainContent: React.FC = () => {
 
   useEffect(() => {
     if (!showWarpIntro) {
-      setShowNavigation(true);
+      // Warp intro finished
     }
   }, [showWarpIntro]);
 
@@ -108,7 +100,6 @@ const MainContent: React.FC = () => {
 
     // Immediate state update
     setCurrentScene("main");
-    setShowNavigation(true);
 
     // Scroll to hero section after a brief delay to ensure content is loaded
     setTimeout(() => {
@@ -134,10 +125,8 @@ const MainContent: React.FC = () => {
         }`}
       >
         {/* Navigation and Content */}
-        {showNavigation && <Navigation />}
+        <Navigation />
         <ThemeToggle />
-
-        {/* Removed VoiceNavigation and AnalyticsDashboard for cleanup */}
 
         {showWarpIntro ? (
           <div className="fixed inset-0 z-[9999] bg-black">
