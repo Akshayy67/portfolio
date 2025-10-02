@@ -1,0 +1,25 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="300" fill="#000000"/>
+<!-- LeetCode Badge Background -->
+<circle cx="200" cy="150" r="80" fill="#FFA500" opacity="0.2"/>
+<circle cx="200" cy="150" r="65" fill="#FFA500" opacity="0.4"/>
+<circle cx="200" cy="150" r="50" fill="#FFA500" opacity="0.6"/>
+<!-- LeetCode Logo Style -->
+<path d="M180 130L220 130L220 170L180 170Z" fill="#FFA500" opacity="0.8"/>
+<circle cx="190" cy="140" r="8" fill="#000000"/>
+<circle cx="210" cy="140" r="8" fill="#000000"/>
+<rect x="185" y="155" width="30" height="8" fill="#000000" rx="4"/>
+<!-- Badge Elements -->
+<text x="200" y="105" fill="#FFA500" font-family="monospace" font-size="14" text-anchor="middle" font-weight="bold">605+</text>
+<text x="200" y="120" fill="#FFFFFF" font-family="monospace" font-size="10" text-anchor="middle">PROBLEMS</text>
+<text x="200" y="195" fill="#FFA500" font-family="monospace" font-size="14" text-anchor="middle" font-weight="bold">1,695</text>
+<text x="200" y="210" fill="#FFFFFF" font-family="monospace" font-size="10" text-anchor="middle">RATING</text>
+<!-- Stars -->
+<circle cx="150" cy="150" r="3" fill="#FFA500"/>
+<circle cx="250" cy="150" r="3" fill="#FFA500"/>
+<circle cx="175" cy="120" r="2" fill="#FFA500" opacity="0.8"/>
+<circle cx="225" cy="120" r="2" fill="#FFA500" opacity="0.8"/>
+<circle cx="175" cy="180" r="2" fill="#FFA500" opacity="0.8"/>
+<circle cx="225" cy="180" r="2" fill="#FFA500" opacity="0.8"/>
+<text x="200" y="260" fill="#FFFFFF" font-family="monospace" font-size="14" text-anchor="middle">LeetCode Badge</text>
+</svg>

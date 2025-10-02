@@ -1,0 +1,14 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="300" fill="#000000"/>
+<rect x="80" y="80" width="240" height="140" fill="#FFA500" opacity="0.2" rx="10"/>
+<circle cx="130" cy="130" r="20" fill="#FFA500" opacity="0.6"/>
+<circle cx="200" cy="130" r="20" fill="#FFA500" opacity="0.6"/>
+<circle cx="270" cy="130" r="20" fill="#FFA500" opacity="0.6"/>
+<rect x="120" y="170" width="20" height="10" fill="#FFA500" opacity="0.8"/>
+<rect x="190" y="170" width="20" height="10" fill="#FFA500" opacity="0.8"/>
+<rect x="260" y="170" width="20" height="10" fill="#FFA500" opacity="0.8"/>
+<path d="M320 200L340 200L340 220L320 220Z" fill="#FFA500" opacity="0.8"/>
+<circle cx="325" cy="225" r="3" fill="#FFA500"/>
+<circle cx="335" cy="225" r="3" fill="#FFA500"/>
+<text x="200" y="260" fill="#FFFFFF" font-family="monospace" font-size="14" text-anchor="middle">E-commerce</text>
+</svg>

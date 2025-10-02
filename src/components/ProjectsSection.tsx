@@ -9,14 +9,21 @@ const ProjectsSection: React.FC = () => {
   const { isDarkMode } = useTheme();
 
   const [clickedProject, setClickedProject] = useState<number | null>(null);
+  const [showMoreProjects, setShowMoreProjects] = useState(false);
 
-  const handleProjectClick = (projectId: number, url: string) => {
+  const handleProjectClick = (
+    projectId: number,
+    liveUrl: string,
+    githubUrl: string
+  ) => {
     setClickedProject(projectId);
 
     // Show animation for 1 second, then redirect
     setTimeout(() => {
-      if (url !== "#") {
-        window.open(url, "_blank");
+      // Prioritize live demo URL, fall back to GitHub if live is "#"
+      const targetUrl = liveUrl !== "#" ? liveUrl : githubUrl;
+      if (targetUrl !== "#") {
+        window.open(targetUrl, "_blank");
       }
       setClickedProject(null);
     }, 1000);
@@ -25,84 +32,144 @@ const ProjectsSection: React.FC = () => {
   const projects = [
     {
       id: 1,
-      title: "Predicting Taxi Fares Using Random Forests",
+      title: "SuperApp",
       description:
-        "Built a predictive model for estimating taxi fares using features like distance, location, and time. Collected and preprocessed real-world taxi fare datasets, trained a Random Forest model achieving 85% accuracy, and visualized results using Matplotlib and Seaborn.",
-      tech: [
-        "Python",
-        "Pandas",
-        "NumPy",
-        "Scikit-learn",
-        "Matplotlib",
-        "Seaborn",
-      ],
-      image:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNDAiIGZpbGw9IiNGRkE1MDAiIG9wYWNpdHk9IjAuOCIvPgo8dGV4dCB4PSIyMDAiIHk9IjIwMCIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VGF4aSBGYXJlIE1MPC90ZXh0Pgo8L3N2Zz4=",
+        "AI-powered academic assistant with comprehensive study tools, note-taking capabilities, and intelligent learning recommendations. Features include smart scheduling, progress tracking, and collaborative study sessions.",
+      tech: ["React", "Node.js", "AI/ML", "MongoDB", "Express"],
+      image: "/superapp dp.png",
       github: "https://github.com/Akshayy67",
-      live: "#",
+      live: "https://super-app.tech",
       status: "Completed",
     },
     {
       id: 2,
-      title: "LRU-Cache Implementation",
+      title: "LRU Cache",
       description:
-        "Implemented LRU logic by converting Java doubly linked list and hash map code into JavaScript, enabling dynamic screen updates and real-time question result ranking. Enhanced user experience with dark/light theme toggle, intuitive visuals, and an operation log.",
-      tech: ["HTML", "CSS", "JavaScript", "Servicenow APIs"],
-      image:
-        "https://images.pexels.com/photos/2159149/pexels-photo-2159149.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "Interactive LRU Cache implementation with real-time visualization. Features dynamic screen updates, operation logging, and intuitive visual representation of cache operations with dark/light theme support.",
+      tech: ["HTML", "CSS", "JavaScript", "Data Structures"],
+      image: "/Lru dp.png",
       github: "https://github.com/Akshayy67",
-      live: "#",
+      live: "https://lru-cache-iota.vercel.app/",
       status: "Completed",
     },
     {
       id: 3,
-      title: "Equipment Loaner Request App",
+      title: "URL Shortener",
       description:
-        "Developed a No-Code Loaner App using JavaScript and Servicenow specific technologies to manage equipment lending, integrating ServiceNow APIs for data handling and automation. Designed custom tables and forms within the ServiceNow platform, enabling users to request, track, and return loaner equipment with real-time status updates.",
-      tech: ["JavaScript", "ServiceNow", "APIs", "No-Code Platform"],
-      image:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGRkE1MDAiIG9wYWNpdHk9IjAuMiIgcng9IjEwIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTgwIiBmaWxsPSIjRkZGRkZGIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZXJ2aWNlTm93PC90ZXh0Pgo8L3N2Zz4=",
+        "Fast and reliable URL shortening service with advanced analytics, custom aliases, and QR code generation. Perfect for social media, marketing campaigns, and tracking engagement with enterprise-grade security.",
+      tech: ["Next.js", "Supabase", "TypeScript", "TailwindCSS"],
+      image: "/url-shortener.svg",
       github: "https://github.com/Akshayy67",
-      live: "#",
+      live: "https://url-shortner-five-sable.vercel.app/",
       status: "Completed",
     },
     {
       id: 4,
-      title: "QuizApp_Flutter",
+      title: "Contact Manager",
       description:
-        "Built a fully operational Quiz App using Dart, implementing state management to enable dynamic screen updates and real-time question result ranking. Designed a responsive UI with engaging question interfaces and comprehensive result summaries, ensuring a seamless user experience across devices.",
-      tech: ["Flutter", "Dart", "State Management"],
-      image:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjEwMCIgcj0iMzAiIGZpbGw9IiNGRkE1MDAiIG9wYWNpdHk9IjAuOCIvPgo8Y2lyY2xlIGN4PSIxNTAiIGN5PSIyMDAiIHI9IjIwIiBmaWxsPSIjRkZBNTAwIiBvcGFjaXR5PSIwLjYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIyMCIgZmlsbD0iI0ZGQTUwMCIgb3BhY2l0eT0iMC42Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmaWxsPSIjRkZGRkZGIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GbHV0dGVyIFF1aXo8L3RleHQ+Cjwvc3ZnPg==",
+        "Advanced contact management system with Trie data structure implementation for efficient search. Features real-time search, contact categorization, and optimized data retrieval performance.",
+      tech: ["React", "Trie Data Structure", "JavaScript", "CSS3"],
+      image: "/contact dp.png",
       github: "https://github.com/Akshayy67",
-      live: "#",
+      live: "https://contact-manager-trie.vercel.app/",
       status: "Completed",
     },
     {
       id: 5,
-      title: "FarmSmart AI (UD)",
+      title: "AVL Tree Visualizer",
       description:
-        "Developed an AI-powered platform assisting farmers in improving crop production and minimizing losses. Integrated AI for crop health analysis, pest detection, and actionable farming insights. Implemented real-time weather forecasting using OpenWeatherMap API and optional location-based insights with GoogleMapsAPI.",
-      tech: ["HTML", "React.js", "Node.js", "Python", "AI/ML"],
-      image:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMDAwMDAwIi8+CjxwYXRoIGQ9Ik0xMDAgMTAwTDMwMCAxMDBMMzAwIDIwMEwxMDAgMjAwWiIgZmlsbD0iI0ZGQTUwMCIgb3BhY2l0eT0iMC4zIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjMwIiBmaWxsPSIjRkZGRkZGIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GYXJtU21hcnQgQUk8L3RleHQ+Cjwvc3ZnPg==",
+        "Interactive AVL Tree visualization tool for understanding self-balancing binary search trees. Features step-by-step insertion, deletion, and rotation operations with educational animations.",
+      tech: ["JavaScript", "HTML5 Canvas", "CSS3", "Data Structures"],
+      image: "/avl-tree.svg",
       github: "https://github.com/Akshayy67",
-      live: "#",
+      live: "https://avl-tree-visualizer-blue.vercel.app/",
       status: "Completed",
     },
     {
       id: 6,
-      title: "Contact Manager",
+      title: "Weather Dashboard",
       description:
-        "This web-based Contact Manager allows users to efficiently search, manage, and email contacts from a centralized interface. To optimize search performance, especially for prefix-based queries (like autocomplete), a Trie (prefix tree) data structure is integrated. This ensures fast and accurate contact lookups, even with large datasets.",
-      tech: ["HTML", "JavaScript", "SQLite", "Trie Data Structure"],
-      image:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTUiIGZpbGw9IiNGRkE1MDAiIG9wYWNpdHk9IjAuOCIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMDAiIHI9IjE1IiBmaWxsPSIjRkZBNTAwIiBvcGFjaXR5PSIwLjgiLz4KPGNpcmNsZSBjeD0iMzAwIiBjeT0iMTAwIiByPSIxNSIgZmlsbD0iI0ZGQTUwMCIgb3BhY2l0eT0iMC44Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjMwIiBmaWxsPSIjRkZGRkZGIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Db250YWN0IE1hbmFnZXI8L3RleHQ+Cjwvc3ZnPg==",
+        "Responsive weather application with real-time data, 7-day forecasts, and location-based services. Integrated with OpenWeatherMap API for accurate weather information and geolocation features.",
+      tech: ["React", "API Integration", "CSS3", "JavaScript"],
+      image: "/weather dp.png",
       github: "https://github.com/Akshayy67",
+      live: "https://weather-dash-ten.vercel.app/",
+      status: "Completed",
+    },
+  ];
+
+  const additionalProjects = [
+    {
+      id: 7,
+      title: "Todo List",
+      description:
+        "Modern task management application with intuitive interface, priority levels, and deadline tracking. Features include drag-and-drop functionality, categories, and progress visualization.",
+      tech: ["React", "Local Storage", "CSS3", "JavaScript"],
+      image: "/todo-app.svg",
+      github: "https://github.com/Akshayy67",
+      live: "https://todo-theta-bice-92.vercel.app/",
+      status: "Completed",
+    },
+    {
+      id: 8,
+      title: "Version Control",
+      description:
+        "Custom version control system implementation demonstrating Git-like functionality. Features include branching, merging, commit history, and file tracking with command-line interface.",
+      tech: ["Node.js", "File System", "CLI", "JavaScript"],
+      image: "/version-control.svg",
+      github: "https://github.com/Akshayy67/Version-control",
+      live: "#",
+      status: "Completed",
+    },
+    {
+      id: 9,
+      title: "Ecommerce Platform",
+      description:
+        "Full-stack e-commerce platform with React frontend and Node.js backend. Features include product management, shopping cart, user authentication, order processing, and admin dashboard.",
+      tech: ["React", "Node.js", "Express", "SQLite", "Prisma"],
+      image: "/ecommerce.svg",
+      github: "https://github.com/Akshayy67/Ecommerce",
+      live: "#",
+      status: "Completed",
+    },
+    {
+      id: 10,
+      title: "Blog Platform",
+      description:
+        "Modern blogging platform with rich text editor, user authentication, and content management. Features include post creation, commenting system, and responsive design.",
+      tech: ["JavaScript", "Node.js", "Express", "MongoDB"],
+      image: "/blog-platform.svg",
+      github: "https://github.com/Akshayy67/Blog-platform",
+      live: "#",
+      status: "Completed",
+    },
+    {
+      id: 11,
+      title: "Expense Tracker (Flutter)",
+      description:
+        "Cross-platform mobile expense tracking application built with Flutter. Features include expense categorization, budget management, visual analytics, and data persistence.",
+      tech: ["Flutter", "Dart", "SQLite", "Charts"],
+      image: "/expense-tracker.svg",
+      github: "https://github.com/Akshayy67/Expense_tracker",
+      live: "#",
+      status: "Completed",
+    },
+    {
+      id: 12,
+      title: "Quiz App (Flutter)",
+      description:
+        "Interactive quiz application with multiple question types, scoring system, and progress tracking. Features include timed quizzes, result analytics, and customizable question sets.",
+      tech: ["Flutter", "Dart", "State Management", "UI/UX"],
+      image: "/quiz-app.svg",
+      github: "https://github.com/Akshayy67/QuizApp_Flutter",
       live: "#",
       status: "Completed",
     },
   ];
+
+  const displayedProjects = showMoreProjects
+    ? [...projects, ...additionalProjects]
+    : projects;
 
   const refProjects = useRef<HTMLDivElement>(null);
 
@@ -125,7 +192,9 @@ const ProjectsSection: React.FC = () => {
     <section
       id="projects"
       data-section="projects"
-      className={`min-h-screen py-20 relative overflow-hidden ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen py-20 relative overflow-hidden ${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      }`}
     >
       {/* Background */}
       <ProjectsBackground />
@@ -164,12 +233,16 @@ const ProjectsSection: React.FC = () => {
             transition={{ duration: 0.8 }}
           >
             <h2
-              className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
+              className={`text-4xl md:text-6xl font-display font-bold mb-4 text-shadow-soft ${
+                isDarkMode ? "text-white" : "text-gray-900"
+              }`}
             >
               Featured <span className="interstellar-text">Projects</span>
             </h2>
             <p
-              className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-white/70' : 'text-gray-600'}`}
+              className={`text-xl max-w-3xl mx-auto ${
+                isDarkMode ? "text-white/70" : "text-gray-600"
+              }`}
             >
               A showcase of my development journey - from concept to deployment,
               each project represents a unique challenge and learning experience
@@ -177,15 +250,21 @@ const ProjectsSection: React.FC = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
+            {displayedProjects.map((project, index) => (
               <motion.div
                 key={project.id}
-                className={`group relative backdrop-blur-sm border rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-white/90 border-orange-100 text-gray-900 shadow-glow-md'}`}
+                className={`group relative backdrop-blur-sm border rounded-xl overflow-hidden hover:border-orange-400/50 transition-all duration-500 cursor-pointer ${
+                  isDarkMode
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/90 border-orange-100 text-gray-900 shadow-glow-md"
+                }`}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                onClick={() => handleProjectClick(project.id, project.github)}
+                onClick={() =>
+                  handleProjectClick(project.id, project.live, project.github)
+                }
               >
                 {/* Click Animation Overlay */}
                 <AnimatePresence>
@@ -243,7 +322,9 @@ const ProjectsSection: React.FC = () => {
                       isDarkMode ? "text-white" : "text-gray-900"
                     } mb-3 group-hover:text-orange-400 transition-colors`}
                   >
-                    <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                    <span
+                      className={isDarkMode ? "text-white" : "text-gray-900"}
+                    >
                       {project.title}
                     </span>
                   </h3>
@@ -253,7 +334,9 @@ const ProjectsSection: React.FC = () => {
                       isDarkMode ? "text-white/70" : "text-gray-700"
                     } text-sm leading-relaxed mb-4`}
                   >
-                    <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                    <span
+                      className={isDarkMode ? "text-white" : "text-gray-900"}
+                    >
                       {project.description}
                     </span>
                   </p>
@@ -314,22 +397,22 @@ const ProjectsSection: React.FC = () => {
             ))}
           </div>
 
-          {/* View More Projects */}
+          {/* More Projects Button */}
           <motion.div
             className="text-center mt-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            <motion.a
-              href="#"
+            <motion.button
+              onClick={() => setShowMoreProjects(!showMoreProjects)}
               className="inline-flex items-center gap-3 px-8 py-3 border border-orange-400 text-orange-400 font-mono font-medium rounded-full hover:bg-orange-400/10 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Rocket size={20} />
-              View More Projects
-            </motion.a>
+              {showMoreProjects ? "Show Less Projects" : "More Projects"}
+            </motion.button>
           </motion.div>
         </div>
       </div>
