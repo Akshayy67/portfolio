@@ -25,6 +25,12 @@ const GlobalCustomCursor: React.FC = () => {
       // Detect cursor type based on element
       const target = e.target as HTMLElement;
 
+      // Hide custom cursor in hero section
+      if (target.closest("#hero")) {
+        setIsVisible(false);
+        return;
+      }
+
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
@@ -32,8 +38,6 @@ const GlobalCustomCursor: React.FC = () => {
         target.classList.contains("cursor-pointer")
       ) {
         setCursorType("pointer");
-      } else if (target.closest("#hero")) {
-        setCursorType("hero");
       } else if (target.closest("#about")) {
         setCursorType("about");
       } else if (target.closest("#projects")) {

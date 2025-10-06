@@ -7,6 +7,7 @@ import { useDeviceDetection } from "../hooks/useDeviceDetection";
 import { AboutBackground } from "./SectionBackgrounds";
 import ProfilePhoto from "./ProfilePhoto";
 import { trackSectionView } from "../services/analytics";
+import ResumeDownloadButton from "./ResumeDownloadButton";
 
 const AboutSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -108,7 +109,7 @@ const AboutSection: React.FC = () => {
                 isDarkMode ? "text-white/70" : "text-gray-600"
               }`}
             >
-              Personal Profile: Full Stack Developer & Problem Solver
+              Software Engineer | System Design | Algorithms & Data Structures
             </p>
           </motion.div>
 
@@ -477,24 +478,95 @@ const AboutSection: React.FC = () => {
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  I'm a Computer Science Engineering student at SNIST with a
-                  strong foundation in Data Structures and Algorithms. Skilled
-                  in C, Java, Python, Dart, and JavaScript, I build full-stack
-                  web apps, Flutter mobile apps, and machine learning projects.
-                  With 500+ LeetCode problems solved and active participation in
-                  coding contests, I thrive on algorithmic challenges.
+                  Computer Science Engineering student at SNIST specializing in{" "}
+                  <span className="text-orange-400 font-semibold">
+                    scalable system design
+                  </span>
+                  ,{" "}
+                  <span className="text-orange-400 font-semibold">
+                    algorithms
+                  </span>
+                  , and{" "}
+                  <span className="text-orange-400 font-semibold">
+                    full-stack development
+                  </span>
+                  . Proficient in React, Node.js, Python, and Flutter with
+                  production experience building{" "}
+                  <span className="text-orange-400 font-semibold">
+                    LRU caching systems
+                  </span>
+                  ,{" "}
+                  <span className="text-orange-400 font-semibold">
+                    Trie-based search
+                  </span>
+                  ,{" "}
+                  <span className="text-orange-400 font-semibold">
+                    custom version control
+                  </span>
+                  , and{" "}
+                  <span className="text-orange-400 font-semibold">
+                    AI-powered platforms
+                  </span>
+                  .
+                </p>
+                <p
+                  className={`leading-relaxed mb-4 ${
+                    isDarkMode ? "text-white/80" : "text-gray-700"
+                  }`}
+                >
+                  Strong competitive programming foundation:{" "}
+                  <span className="text-orange-400 font-semibold">
+                    600+ LeetCode problems solved
+                  </span>
+                  ,{" "}
+                  <span className="text-orange-400 font-semibold">
+                    1695+ rating (Top 13% globally)
+                  </span>
+                  . Stanford/DeepLearning.AI{" "}
+                  <span className="text-orange-400 font-semibold">
+                    ML certified
+                  </span>
+                  . Won{" "}
+                  <span className="text-orange-400 font-semibold">
+                    SNIST Summer Hackathon
+                  </span>{" "}
+                  among 100+ teams, demonstrating ability to deliver optimized
+                  solutions under pressure.
                 </p>
                 <p
                   className={`leading-relaxed ${
                     isDarkMode ? "text-white/80" : "text-gray-700"
                   }`}
                 >
-                  Currently holding a CGPA of 8.1, I've developed projects like
-                  a Taxi Fare Predictor, LRU Cache simulator, FarmSmartAI, and a
-                  Trie-based Contact Manager. As an NCC member, I value
-                  leadership, discipline, and teamwork. I'm passionate about
-                  learning and creating impactful technology.
+                  Proven leadership as{" "}
+                  <span className="text-orange-400 font-semibold">
+                    NCC cadet
+                  </span>
+                  . Certified{" "}
+                  <span className="text-orange-400 font-semibold">
+                    ServiceNow CSA
+                  </span>
+                  , completed{" "}
+                  <span className="text-orange-400 font-semibold">
+                    Juniper Networks internship
+                  </span>
+                  . Maintaining{" "}
+                  <span className="text-orange-400 font-semibold">
+                    8.1 CGPA
+                  </span>{" "}
+                  while building impactful solutions. Seeking opportunities to
+                  solve complex problems at scale.
                 </p>
+
+                {/* Resume Download Button */}
+                <motion.div
+                  className="flex justify-center mt-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 0.8 }}
+                >
+                  <ResumeDownloadButton variant="outline" size="md" />
+                </motion.div>
               </motion.div>
 
               {/* Skill Levels */}

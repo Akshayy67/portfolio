@@ -22,6 +22,7 @@ import EnhancedParallax from "./EnhancedParallax";
 import { ContactBackground } from "./SectionBackgrounds";
 import { useTheme } from "../contexts/ThemeContext";
 import { trackSectionView } from "../services/analytics";
+import ResumeDownloadButton from "./ResumeDownloadButton";
 
 const ContactSection: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -1235,6 +1236,16 @@ Time: ${new Date().toLocaleString()}`;
                     Available for new opportunities
                   </span>
                 </div>
+              </motion.div>
+
+              {/* Resume Download Button */}
+              <motion.div
+                className="flex justify-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+              >
+                <ResumeDownloadButton variant="secondary" size="md" />
               </motion.div>
             </motion.div>
 

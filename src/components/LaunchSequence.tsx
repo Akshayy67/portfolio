@@ -250,10 +250,10 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
   }, [phase, countdown]);
 
   useEffect(() => {
-    let countdownTimer: NodeJS.Timeout;
-    let ignitionTimer: NodeJS.Timeout;
-    let launchTimer: NodeJS.Timeout;
-    let travelTimer: NodeJS.Timeout;
+    let countdownTimer: number;
+    let ignitionTimer: number;
+    let launchTimer: number;
+    let travelTimer: number;
 
     // Start countdown
     countdownTimer = setInterval(() => {

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Award, Trophy, Star, BadgeCheck, Crown } from "lucide-react";
 import EnhancedParallax from "./EnhancedParallax";
 import { AchievementsBackground } from "./SectionBackgrounds";
 import { useTheme } from "../contexts/ThemeContext";
+import { fetchLeetCodeStats, LeetCodeStats } from "../services/leetcodeApi";
 
 const AchievementsSection: React.FC = () => {
   const { ref, inView } = useInView({
@@ -14,6 +15,27 @@ const AchievementsSection: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [trophyFlood, setTrophyFlood] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [leetcodeStats, setLeetcodeStats] = useState<LeetCodeStats | null>(
+    null
+  );
+  const [isLoadingLeetcode, setIsLoadingLeetcode] = useState(true);
+
+  // Fetch LeetCode stats on component mount
+  useEffect(() => {
+    const loadLeetCodeStats = async () => {
+      try {
+        setIsLoadingLeetcode(true);
+        const stats = await fetchLeetCodeStats("akshayjuluri");
+        setLeetcodeStats(stats);
+      } catch (error) {
+        console.error("Failed to load LeetCode stats:", error);
+      } finally {
+        setIsLoadingLeetcode(false);
+      }
+    };
+
+    loadLeetCodeStats();
+  }, []);
 
   const certifications = [
     {
@@ -64,12 +86,13 @@ const AchievementsSection: React.FC = () => {
     {
       id: 2,
       title: "Problem Solving on LeetCode",
-      description:
-        "Achieved 605+ solved problems on LeetCode with a contest rating of 1,695+. Demonstrated consistent problem-solving skills across algorithms, data structures, and competitive programming challenges. Ranked in top 13.28% globally with active participation in weekly contests.",
+      description: "Click to view my LeetCode profile",
       category: "Programming",
       icon: Star,
       year: "2024",
-      image: "/leetcode-badge.svg",
+      isLeetCode: true,
+      clickable: true,
+      url: "https://leetcode.com/u/akshayjuluri/",
     },
     {
       id: 3,
@@ -351,11 +374,17 @@ const AchievementsSection: React.FC = () => {
                         ? "border-yellow-400 shadow-[0_0_32px_4px_rgba(251,191,36,0.25)] animate-pulse"
                         : "border-transparent"
                     }
+                    ${(ach as any).clickable ? "cursor-pointer" : ""}
                   `}
                   initial={{ opacity: 0, y: 50 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
                   whileHover={{ y: -8, scale: 1.03 }}
+                  onClick={() => {
+                    if ((ach as any).clickable && (ach as any).url) {
+                      window.open((ach as any).url, "_blank");
+                    }
+                  }}
                 >
                   {/* Crown for top achievement */}
                   {ach.featured && (
@@ -423,64 +452,253 @@ const AchievementsSection: React.FC = () => {
                       )}
                     </>
                   )}
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-orange-400/20 rounded-lg shadow-glow-md animate-pulse">
-                      <ach.icon
-                        className="text-orange-400 drop-shadow-glow animate-bounce"
-                        size={24}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4
-                        className={`font-mono font-bold mb-2 text-sm ${
-                          isDarkMode ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {ach.title}
-                      </h4>
-                      <p
-                        className={`text-xs mb-3 ${
-                          isDarkMode ? "text-white/70" : "text-gray-600"
-                        }`}
-                      >
-                        {ach.description}
-                      </p>
-                      {/* Achievement Image */}
-                      {ach.image && (
-                        <div className="mb-3">
-                          <img
-                            src={ach.image}
-                            alt={ach.title}
-                            className="w-full h-32 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
-                            onClick={() => setSelectedImage(ach.image)}
-                          />
+                  {/* LeetCode Dashboard Card */}
+                  {(ach as any).isLeetCode ? (
+                    <div className="w-full h-full flex flex-col">
+                      {isLoadingLeetcode ? (
+                        <div className="flex items-center justify-center flex-1 py-16">
+                          <div className="animate-spin rounded-full h-12 w-12 border-3 border-orange-400 border-t-transparent"></div>
+                        </div>
+                      ) : leetcodeStats ? (
+                        <div className="flex-1 flex flex-col">
+                          {/* Header with Total */}
+                          <div className="text-center mb-8">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                              <Star className="text-orange-400" size={24} />
+                              <h4
+                                className={`font-mono font-bold text-xl ${
+                                  isDarkMode ? "text-white" : "text-gray-900"
+                                }`}
+                              >
+                                LeetCode Stats
+                              </h4>
+                            </div>
+                            <div
+                              className={`text-7xl font-black mb-2 bg-gradient-to-r ${
+                                isDarkMode
+                                  ? "from-orange-400 via-orange-300 to-orange-400"
+                                  : "from-orange-600 via-orange-500 to-orange-600"
+                              } bg-clip-text text-transparent`}
+                            >
+                              {leetcodeStats.solved.solvedProblem}
+                            </div>
+                            <div
+                              className={`text-xs font-mono uppercase tracking-widest ${
+                                isDarkMode ? "text-white/60" : "text-gray-500"
+                              }`}
+                            >
+                              Total Solved
+                            </div>
+                          </div>
+
+                          {/* Stats Grid */}
+                          <div className="grid grid-cols-3 gap-4 flex-1">
+                            {/* Easy */}
+                            <div className="flex flex-col items-center justify-center">
+                              <div
+                                className={`text-4xl font-bold mb-2 ${
+                                  isDarkMode
+                                    ? "text-green-400"
+                                    : "text-green-600"
+                                }`}
+                              >
+                                {leetcodeStats.solved.easySolved}
+                              </div>
+                              <div
+                                className={`text-xs font-mono uppercase tracking-wider ${
+                                  isDarkMode
+                                    ? "text-green-400/70"
+                                    : "text-green-600/70"
+                                }`}
+                              >
+                                Easy
+                              </div>
+                              <div
+                                className={`mt-2 w-full h-1 rounded-full ${
+                                  isDarkMode
+                                    ? "bg-green-400/30"
+                                    : "bg-green-500/30"
+                                }`}
+                              >
+                                <div
+                                  className={`h-full rounded-full ${
+                                    isDarkMode ? "bg-green-400" : "bg-green-500"
+                                  }`}
+                                  style={{
+                                    width: `${
+                                      (leetcodeStats.solved.easySolved /
+                                        leetcodeStats.solved.solvedProblem) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+
+                            {/* Medium */}
+                            <div className="flex flex-col items-center justify-center">
+                              <div
+                                className={`text-4xl font-bold mb-2 ${
+                                  isDarkMode
+                                    ? "text-yellow-400"
+                                    : "text-yellow-600"
+                                }`}
+                              >
+                                {leetcodeStats.solved.mediumSolved}
+                              </div>
+                              <div
+                                className={`text-xs font-mono uppercase tracking-wider ${
+                                  isDarkMode
+                                    ? "text-yellow-400/70"
+                                    : "text-yellow-600/70"
+                                }`}
+                              >
+                                Medium
+                              </div>
+                              <div
+                                className={`mt-2 w-full h-1 rounded-full ${
+                                  isDarkMode
+                                    ? "bg-yellow-400/30"
+                                    : "bg-yellow-500/30"
+                                }`}
+                              >
+                                <div
+                                  className={`h-full rounded-full ${
+                                    isDarkMode
+                                      ? "bg-yellow-400"
+                                      : "bg-yellow-500"
+                                  }`}
+                                  style={{
+                                    width: `${
+                                      (leetcodeStats.solved.mediumSolved /
+                                        leetcodeStats.solved.solvedProblem) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+
+                            {/* Hard */}
+                            <div className="flex flex-col items-center justify-center">
+                              <div
+                                className={`text-4xl font-bold mb-2 ${
+                                  isDarkMode ? "text-red-400" : "text-red-600"
+                                }`}
+                              >
+                                {leetcodeStats.solved.hardSolved}
+                              </div>
+                              <div
+                                className={`text-xs font-mono uppercase tracking-wider ${
+                                  isDarkMode
+                                    ? "text-red-400/70"
+                                    : "text-red-600/70"
+                                }`}
+                              >
+                                Hard
+                              </div>
+                              <div
+                                className={`mt-2 w-full h-1 rounded-full ${
+                                  isDarkMode ? "bg-red-400/30" : "bg-red-500/30"
+                                }`}
+                              >
+                                <div
+                                  className={`h-full rounded-full ${
+                                    isDarkMode ? "bg-red-400" : "bg-red-500"
+                                  }`}
+                                  style={{
+                                    width: `${
+                                      (leetcodeStats.solved.hardSolved /
+                                        leetcodeStats.solved.solvedProblem) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Footer */}
+                          <div className="text-center mt-6">
+                            <span className="text-xs text-orange-400 font-mono flex items-center justify-center gap-1">
+                              <span className="animate-pulse">🔗</span>
+                              Click card to view profile
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <p
+                            className={`text-sm font-mono ${
+                              isDarkMode ? "text-white/60" : "text-gray-600"
+                            }`}
+                          >
+                            Failed to load stats
+                          </p>
                         </div>
                       )}
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-mono ${
-                            isDarkMode
-                              ? "bg-white/10 text-white/80"
-                              : "bg-orange-100 text-gray-900"
-                          }`}
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #ffd70033 0%, #fb923c33 100%)",
-                            border: "1px solid #fb923c",
-                          }}
-                        >
-                          {ach.category}
-                        </span>
-                        <span
-                          className={`text-xs font-mono ${
-                            isDarkMode ? "text-white/50" : "text-gray-400"
+                    </div>
+                  ) : (
+                    /* Regular Achievement Card */
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-orange-400/20 rounded-lg shadow-glow-md animate-pulse">
+                        <ach.icon
+                          className="text-orange-400 drop-shadow-glow animate-bounce"
+                          size={24}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4
+                          className={`font-mono font-bold mb-2 text-sm ${
+                            isDarkMode ? "text-white" : "text-gray-900"
                           }`}
                         >
-                          {ach.year}
-                        </span>
+                          {ach.title}
+                        </h4>
+                        <p
+                          className={`text-xs mb-3 ${
+                            isDarkMode ? "text-white/70" : "text-gray-600"
+                          }`}
+                        >
+                          {ach.description}
+                        </p>
+                        {/* Achievement Image */}
+                        {ach.image && (
+                          <div className="mb-3">
+                            <img
+                              src={ach.image}
+                              alt={ach.title}
+                              className="w-full h-32 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
+                              onClick={() => setSelectedImage(ach.image)}
+                            />
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-mono ${
+                              isDarkMode
+                                ? "bg-white/10 text-white/80"
+                                : "bg-orange-100 text-gray-900"
+                            }`}
+                            style={{
+                              background:
+                                "linear-gradient(90deg, #ffd70033 0%, #fb923c33 100%)",
+                              border: "1px solid #fb923c",
+                            }}
+                          >
+                            {ach.category}
+                          </span>
+                          <span
+                            className={`text-xs font-mono ${
+                              isDarkMode ? "text-white/50" : "text-gray-400"
+                            }`}
+                          >
+                            {ach.year}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </motion.div>
               ))}
             </div>
