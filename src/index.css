@@ -985,6 +985,74 @@ a,
   }
 }
 
+/* Typed.js cursor styling for launch sequence */
+.typed-cursor {
+  color: #fb923c !important;
+  font-weight: bold;
+  animation: typed-cursor-blink 1s infinite;
+}
+
+@keyframes typed-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Minimal cursive text styling for typed text */
+.warp-typed-text-minimal {
+  text-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
+  filter: drop-shadow(0 0 5px rgba(251, 146, 60, 0.2));
+  font-weight: 400 !important;
+  letter-spacing: 0.02em;
+  font-family: "Dancing Script", "Brush Script MT", cursive !important;
+  text-transform: lowercase !important;
+  display: block;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cursive text class */
+.cursive-text {
+  font-family: "Dancing Script", "Brush Script MT", cursive !important;
+  font-style: italic;
+  text-transform: lowercase !important;
+}
+
+/* Responsive text sizing for cursive warp sequence */
+@media (max-width: 640px) {
+  .warp-typed-text-minimal {
+    font-size: 4rem !important;
+    line-height: 1.1;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .warp-typed-text-minimal {
+    font-size: 6rem !important;
+    line-height: 1.1;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .warp-typed-text-minimal {
+    font-size: 8rem !important;
+    line-height: 1.1;
+  }
+}
+
+@media (min-width: 1025px) {
+  .warp-typed-text-minimal {
+    font-size: 10rem !important;
+    line-height: 1.1;
+  }
+}
+
 @keyframes rocketLaunch {
   0% {
     transform: translateY(300px) scale(2);

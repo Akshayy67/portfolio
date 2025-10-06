@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play } from "lucide-react";
+import Typed from "typed.js";
 
 interface LaunchSequenceProps {
   onSkip: () => void;
@@ -10,132 +11,212 @@ interface WarpSpeedEffectProps {
   windowWidth?: number;
 }
 
-const WarpSpeedEffect: React.FC<WarpSpeedEffectProps> = ({ windowWidth = 1920 }) => (
-  <motion.div
-    className="absolute inset-0 z-20"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    {/* Warp Lines - Multiple layers for depth */}
-    {[...Array(120)].map((_, i) => (
-      <motion.div
-        key={i}
-        className={`absolute h-px ${
-          i % 3 === 0
-            ? "bg-gradient-to-r from-transparent via-orange-400 to-transparent"
-            : i % 3 === 1
-            ? "bg-gradient-to-r from-transparent via-blue-400 to-transparent"
-            : "bg-gradient-to-r from-transparent via-white to-transparent"
-        }`}
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          transformOrigin: "left center",
-        }}
-        initial={{ width: "0px", opacity: 0 }}
-        animate={{
-          width: ["0px", `${200 + Math.random() * 400}px`, "0px"],
-          opacity: [0, 0.8 + Math.random() * 0.2, 0],
-          x: [0, windowWidth * (1.2 + Math.random() * 0.6)],
-        }}
-        transition={{
-          duration: 0.8 + Math.random() * 0.8,
-          delay: Math.random() * 1.2,
-          ease: "easeOut",
-          repeat: Infinity,
-          repeatDelay: Math.random() * 1.5,
-        }}
-      />
-    ))}
+const WarpSpeedEffect: React.FC<WarpSpeedEffectProps> = ({
+  windowWidth = 1920,
+}) => {
+  const typedElementRef = useRef<HTMLSpanElement>(null);
+  const typedInstanceRef = useRef<Typed | null>(null);
 
-    {/* Central Warp Tunnel */}
+  useEffect(() => {
+    if (typedElementRef.current) {
+      // Initialize Typed.js with a delay to start after warp animation begins
+      const timer = setTimeout(() => {
+        typedInstanceRef.current = new Typed(typedElementRef.current!, {
+          strings: [
+            "<span style='color: #fb923c; font-size: inherit; font-weight: normal;'>hello world!</span>",
+          ],
+          typeSpeed: 75,
+          backSpeed: 0,
+          backDelay: 0,
+          startDelay: 0,
+          loop: false,
+          showCursor: true,
+          cursorChar: "|",
+          autoInsertCss: true,
+          onComplete: () => {
+            // Keep the final text visible with blinking cursor
+            if (typedElementRef.current) {
+              const style = document.createElement("style");
+              style.textContent = `
+                .typed-cursor {
+                  animation: typed-cursor-blink 1s infinite;
+                  color: #fb923c !important;
+                  font-weight: bold !important;
+                  font-size: inherit !important;
+                }
+              `;
+              document.head.appendChild(style);
+            }
+          },
+        });
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+        if (typedInstanceRef.current) {
+          typedInstanceRef.current.destroy();
+        }
+      };
+    }
+  }, []);
+
+  return (
     <motion.div
-      className="absolute inset-0 flex items-center justify-center"
+      className="absolute inset-0 z-20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.3 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      {[...Array(5)].map((_, i) => (
+      {/* Warp Lines - Multiple layers for depth */}
+      {[...Array(120)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute border border-white/20 rounded-full"
+          className={`absolute h-px ${
+            i % 3 === 0
+              ? "bg-gradient-to-r from-transparent via-orange-400 to-transparent"
+              : i % 3 === 1
+              ? "bg-gradient-to-r from-transparent via-blue-400 to-transparent"
+              : "bg-gradient-to-r from-transparent via-white to-transparent"
+          }`}
           style={{
-            width: `${(i + 1) * 100}px`,
-            height: `${(i + 1) * 100}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            transformOrigin: "left center",
           }}
+          initial={{ width: "0px", opacity: 0 }}
           animate={{
-            scale: [1, 3, 5],
-            opacity: [0.8, 0.3, 0],
+            width: ["0px", `${200 + Math.random() * 400}px`, "0px"],
+            opacity: [0, 0.8 + Math.random() * 0.2, 0],
+            x: [0, windowWidth * (1.2 + Math.random() * 0.6)],
           }}
           transition={{
-            duration: 2,
-            delay: i * 0.2,
+            duration: 0.8 + Math.random() * 0.8,
+            delay: Math.random() * 1.2,
             ease: "easeOut",
             repeat: Infinity,
-            repeatDelay: 1,
+            repeatDelay: Math.random() * 1.5,
           }}
         />
       ))}
-    </motion.div>
 
-    {/* Particle Stream */}
-    {[...Array(30)].map((_, i) => (
+      {/* Central Warp Tunnel */}
       <motion.div
-        key={`particle-${i}`}
-        className="absolute bg-white rounded-full"
-        style={{
-          width: "2px",
-          height: "2px",
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          x: [0, windowWidth * 2],
-          opacity: [0, 1, 0],
-          scale: [0.5, 1, 0.5],
-        }}
-        transition={{
-          duration: 1 + Math.random() * 0.5,
-          delay: Math.random() * 2,
-          ease: "easeOut",
-          repeat: Infinity,
-          repeatDelay: Math.random() * 1,
-        }}
-      />
-    ))}
-
-    {/* Warp Text */}
-    <motion.div
-      className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.8 }}
-    >
-      <motion.div
-        className="font-mono text-orange-400 text-2xl font-bold mb-2"
-        animate={{
-          textShadow: [
-            "0 0 10px rgba(251, 146, 60, 0.5)",
-            "0 0 20px rgba(251, 146, 60, 0.8)",
-            "0 0 15px rgba(251, 146, 60, 0.6)",
-          ],
-        }}
-        transition={{
-          duration: 1,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
+        className="absolute inset-0 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
       >
-        ⚡ HYPERSPACE JUMP
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute border border-white/20 rounded-full"
+            style={{
+              width: `${(i + 1) * 100}px`,
+              height: `${(i + 1) * 100}px`,
+            }}
+            animate={{
+              scale: [1, 3, 5],
+              opacity: [0.8, 0.3, 0],
+            }}
+            transition={{
+              duration: 2,
+              delay: i * 0.2,
+              ease: "easeOut",
+              repeat: Infinity,
+              repeatDelay: 1,
+            }}
+          />
+        ))}
       </motion.div>
-      <div className="font-mono text-white/60 text-lg">
-        Approaching black hole vicinity...
-      </div>
+
+      {/* Professional Typed Text Animation - Perfectly Centered */}
+      <motion.div
+        className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-30"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        <div className="text-center">
+          <span
+            ref={typedElementRef}
+            className="cursive-text text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] font-normal leading-tight block warp-typed-text-minimal"
+            style={{
+              minHeight: "1.2em", // Prevent layout shift
+              fontSize: "clamp(3rem, 8vw, 12rem)", // Responsive but very large
+              fontWeight: "400", // Normal weight
+              fontFamily: "'Dancing Script', 'Brush Script MT', cursive", // Cursive font
+              textTransform: "lowercase", // Ensure lowercase
+            }}
+          ></span>
+        </div>
+      </motion.div>
+
+      {/* Particle Stream */}
+      {[...Array(30)].map((_, i) => (
+        <motion.div
+          key={`particle-${i}`}
+          className="absolute bg-white rounded-full"
+          style={{
+            width: "2px",
+            height: "2px",
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            x: [0, windowWidth * 2],
+            opacity: [0, 1, 0],
+            scale: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 1 + Math.random() * 0.5,
+            delay: Math.random() * 2,
+            ease: "easeOut",
+            repeat: Infinity,
+            repeatDelay: Math.random() * 1,
+          }}
+        />
+      ))}
+
+      {/* Status Text - Bottom */}
+      <motion.div
+        className="absolute bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 text-center z-25"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5 }}
+      >
+        <motion.div
+          className="font-mono text-orange-400/80 text-lg sm:text-xl font-medium mb-2"
+          animate={{
+            opacity: [0.6, 1, 0.6],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        >
+          ⚡ HYPERSPACE JUMP
+        </motion.div>
+        <div className="font-mono text-white/50 text-sm sm:text-base">
+          Approaching portfolio vicinity...
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
+};
 
 const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
   const [countdown, setCountdown] = useState(3);
@@ -185,24 +266,24 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
           return 0;
         }
       });
-    }, 600); // Faster countdown for 6-second total
+    }, 700); // Slightly slower countdown for extended sequence
 
     // Ignition phase with screen shake
     ignitionTimer = setTimeout(() => {
       setShakeIntensity(5);
-      setTimeout(() => setPhase("launch"), 800); // Shorter ignition
-    }, 2400); // 3 seconds countdown + ignition
+      setTimeout(() => setPhase("launch"), 1000); // Extended ignition phase
+    }, 2800); // Extended countdown + ignition timing
 
     // Launch phase
     launchTimer = setTimeout(() => {
       setShakeIntensity(10);
-    }, 3200);
+    }, 3800);
 
-    // Travel phase
+    // Travel phase - delayed to give more time for typed text
     travelTimer = setTimeout(() => {
       setShakeIntensity(0);
       setPhase("travel");
-    }, 4500); // Complete within 6 seconds
+    }, 7500); // Start travel phase at 7.5 seconds
 
     return () => {
       clearInterval(countdownTimer);
@@ -217,7 +298,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
     const autoCompleteTimer = setTimeout(() => {
       console.log("🚀 Launch sequence completed, transitioning to main");
       onSkip(); // This will trigger the transition to main
-    }, 6000); // 6 seconds total
+    }, 11500); // 11.5 seconds total - extended duration for slower sequence
 
     return () => {
       clearTimeout(autoCompleteTimer);
@@ -693,9 +774,7 @@ const LaunchSequence: React.FC<LaunchSequenceProps> = ({ onSkip }) => {
 
       {/* Enhanced Warp Speed Effect */}
       <AnimatePresence>
-        {phase === "travel" && (
-          <WarpSpeedEffect windowWidth={windowWidth} />
-        )}
+        {phase === "travel" && <WarpSpeedEffect windowWidth={windowWidth} />}
       </AnimatePresence>
     </motion.div>
   );
